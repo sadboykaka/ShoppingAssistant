@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:custom="clr-namespace:ShoppingAssistant"
+             x:Class="ShoppingAssistant.ShoppingListView">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+        <ListView ItemsSource="{Binding Items}"
+            CachingStrategy="RecycleElement"
+            x:Name="ShoppingListListView"
+            Grid.Row="0">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Name}" 
+                               Style="{DynamicResource ListItemTextStyle}"
+                               HorizontalOptions="StartAndExpand"/>
+                            <Label Text="{Binding Quantity}" 
+                               Style="{DynamicResource ListItemDetailTextStyle}"
+                               HorizontalOptions="End"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Text="Add Item"
+                x:Name="btnAddItem"
+                Grid.Row="1"/>
+    </Grid>
+</ContentPage>

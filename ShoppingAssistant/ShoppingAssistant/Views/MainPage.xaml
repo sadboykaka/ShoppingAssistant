@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ShoppingAssistant"
+             x:Class="ShoppingAssistant.MainPage">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+        <ListView ItemsSource="{Binding ShoppingLists}"
+            ItemTapped="Handle_ItemTapped"
+            CachingStrategy="RecycleElement"
+            x:Name="ItemListView"
+            Grid.Row="0">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Clicked="OnDelete"
+                                      CommandParameter="{Binding .}"
+                                      Text="Delete"
+                                      IsDestructive="True" />
+                        </ViewCell.ContextActions>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Name}" 
+                               Style="{DynamicResource ListItemTextStyle}"
+                               HorizontalOptions="StartAndExpand"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Label Text="Welcome to Xamarin Forms!" 
+           Grid.Row="1"
+           VerticalOptions="Center" 
+           HorizontalOptions="Center"/>
+        <Button Text="Shopping List"
+           x:Name="btnShoppingList"
+           Grid.Row="2"/>
+    </Grid>
+    
+</ContentPage>
