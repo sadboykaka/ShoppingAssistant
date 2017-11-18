@@ -4,23 +4,23 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-  IgnorableNamespaces="uap mp">
+  IgnorableNameFieldspaces="uap mp">
 
   <Identity 
-    Name="7c76aec5-703e-4426-9edf-f73c118caa07"
+    NameField="7c76aec5-703e-4426-9edf-f73c118caa07"
     Publisher="CN=Ben"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="f736c883-f105-4d30-a719-4bf328872f5e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>ShoppingAssistant.UWP</DisplayName>
-    <PublisherDisplayName>Ben</PublisherDisplayName>
+    <DisplayNameField>ShoppingAssistant.UWP</DisplayNameField>
+    <PublisherDisplayNameField>Ben</PublisherDisplayNameField>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+    <TargetDeviceFamily NameField="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
   </Dependencies>
 
   <Resources>
@@ -32,7 +32,7 @@
         Executable="$targetnametoken$.exe"
         EntryPoint="ShoppingAssistant.UWP.App">
       <uap:VisualElements
-        DisplayName="ShoppingAssistant.UWP"
+        DisplayNameField="ShoppingAssistant.UWP"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="ShoppingAssistant.UWP"
@@ -44,6 +44,6 @@
   </Applications>
 
   <Capabilities>
-    <Capability Name="internetClient" />
+    <Capability NameField="internetClient" />
   </Capabilities>
 </Package>

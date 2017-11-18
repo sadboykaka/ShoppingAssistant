@@ -2,18 +2,17 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:ShoppingAssistant"
-             x:Class="ShoppingAssistant.MainPage">
+             x:Class="ShoppingAssistant.Views.ShoppingListsView">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="80"/>
-            <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
         <ListView ItemsSource="{Binding ShoppingLists}"
-            ItemTapped="Handle_ItemTapped"
-            CachingStrategy="RecycleElement"
-            x:Name="ItemListView"
-            Grid.Row="0">
+                  ItemTapped="Handle_ItemTapped"
+                  CachingStrategy="RecycleElement"
+                  x:Name="ItemListView"
+                  Grid.Row="0">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
@@ -23,22 +22,21 @@
                                       Text="Delete"
                                       IsDestructive="True" />
                         </ViewCell.ContextActions>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="{Binding Name}" 
-                               Style="{DynamicResource ListItemTextStyle}"
-                               HorizontalOptions="StartAndExpand"/>
+                        <StackLayout Orientation="Horizontal"
+                                     Padding="15,10,10,0">
+                            <Label Text="{Binding Name}"
+                                   Style="{DynamicResource ListItemTextStyle}"
+                                   HorizontalOptions="StartAndExpand"/>
+                            <Label Text="{Binding ID}"
+                                   Style="{DynamicResource ListItemTextStyle}"/>
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Label Text="Welcome to Xamarin Forms!" 
-           Grid.Row="1"
-           VerticalOptions="Center" 
-           HorizontalOptions="Center"/>
-        <Button Text="Shopping List"
-           x:Name="btnShoppingList"
-           Grid.Row="2"/>
+        <Button Text="New Shopping List"
+                x:Name="BtnNewShoppingList"
+                Grid.Row="1"/>
     </Grid>
-    
+
 </ContentPage>

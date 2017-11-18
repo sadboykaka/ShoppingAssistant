@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using ShoppingAssistant.DatabaseClasses;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using ShoppingAssistant.DataClasses;
 using ShoppingAssistant.EventClasses;
+using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant
 {
@@ -15,7 +15,7 @@ namespace ShoppingAssistant
 	public partial class AddItemView : ContentPage
 	{
         private ItemQuantityPairEventHandler callBack;
-        public string Item { get; set; }
+        public string Name { get; set; }
         public string Quantity { get; set; }
 
 		public AddItemView (ItemQuantityPairEventHandler callBack)
@@ -36,10 +36,11 @@ namespace ShoppingAssistant
 
         private void RaiseNewItemQuantityPairEvent()
         {
-            if (this.callBack == null)
-                return;
-
-            this.callBack((object)this, new ItemQuantityPairArgs(new ItemQuantityPair(this.Item, Int32.Parse(this.Quantity))));
+            callBack?.Invoke((object)this, new ItemQuantityPairArgs(new ItemQuantityPairModel()
+            {
+                Name = this.Name,
+                Quantity = Int32.Parse(this.Quantity)
+            }));
         }
 	}
 }

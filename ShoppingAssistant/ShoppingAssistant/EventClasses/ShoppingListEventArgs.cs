@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
-using ShoppingAssistant.DataClasses;
+using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant.EventClasses
 {
@@ -10,9 +9,9 @@ namespace ShoppingAssistant.EventClasses
 
     public class ShoppingListEventArgs : EventArgs
     {
-        public ShoppingList ShoppingList { get; set; }
+        public ShoppingListModel ShoppingList { get; set; }
 
-        public ShoppingListEventArgs(ShoppingList list)
+        public ShoppingListEventArgs(ShoppingListModel list)
         {
             this.ShoppingList = list;
         }

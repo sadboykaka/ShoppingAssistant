@@ -3,11 +3,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-
+using ShoppingAssistant.APIClasses;
+using ShoppingAssistant.DatabaseClasses;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using ShoppingAssistant.DataClasses;
 using ShoppingAssistant.EventClasses;
+using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant
 {
@@ -19,19 +20,21 @@ namespace ShoppingAssistant
 
         public event ItemQuantityPairEventHandler ItemQuantityPairEvent;
 
-        private ShoppingList shoppingList;
+        private ShoppingListModel shoppingList;
+
+        private bool requiresUpdate = false;
         
         // ObservableCollection getter for the ListView items with property for data binding
-        public ObservableCollection<ItemQuantityPair> Items { get { return this.shoppingList.Items; } }
+        public ObservableCollection<ItemQuantityPairModel > Items { get { return this.shoppingList.Items; } }
 
         // Constructor
-        public ShoppingListView(ShoppingList list)
+        public ShoppingListView(ShoppingListModel list)
         {
             InitializeComponent();
 
             this.shoppingList = list;
 
-            this.ItemQuantityPairEvent += new ItemQuantityPairEventHandler(this.AddItemEvent);
+            this.ItemQuantityPairEvent += AddItemEvent;
 
             Button btnAddItem = this.FindByName<Button>("btnAddItem");
             btnAddItem.Clicked += delegate { OnAddItemClick(); };
@@ -41,32 +44,36 @@ namespace ShoppingAssistant
 
         async private void AddItemEvent(object sender, ItemQuantityPairArgs args)
         {
-            this.shoppingList.AddItem(args.ItemQuantityPair);
+            this.requiresUpdate = true;
+            this.shoppingList.Items.Add(args.ItemQuantityPairModel);
             await Navigation.PopAsync();
         }
 
         // Method to add the delete button to the toolbar
         private void AddToolbarItems()
         {
+            // TODO filter.png??
             ToolbarItems.Add(new ToolbarItem("Delete", "filter.png", async () => { var page = new ContentPage(); DeleteSelectedItem(); }));
         }
 
         /// <summary>
-        /// Method to delete the ItemQuantityPair currently selected in the ListView
+        /// Method to delete the ItemQuantityPairModel currently selected in the ListView
         /// </summary>
         private void DeleteSelectedItem()
         {
             // Find the selected item in the list view and get the associated ItemQuantityPair
-            ListView listView = this.FindByName<ListView>("ItemListView");
-            ItemQuantityPair iqp = (ItemQuantityPair)listView.SelectedItem;
+            var listView = this.FindByName<ListView>("ItemListView");
+            var iqp = (ItemQuantityPairModel)listView.SelectedItem;
 
             // Deselect the selected item and change the stored value
             listView.SelectedItem = null;
             this.selectedItem = null;
 
             // Remove the item from the list and the delete button from the toolbar
-            this.shoppingList.RemoveItem(iqp);
+            this.shoppingList.Items.Remove(iqp);
             this.RemoveToolbarItems();
+
+            this.requiresUpdate = true;
         }
 
         // Method to remove the delete button from the toolbar
@@ -74,11 +81,16 @@ namespace ShoppingAssistant
         {
             ToolbarItems.Clear();
         }
-
-        // Back navigation action
-        async void OnPreviousPageButtonClicked(object sender, EventArgs e)
+        
+        /// <summary>
+        /// Called when this page is removed from the NavigationStack
+        /// </summary>
+        protected override void OnDisappearing()
         {
-            await Navigation.PopAsync();
+            // Save the shopping list in the local database
+            if (this.requiresUpdate)
+                App.ModelManager.ShoppingListModelManager.SaveShoppingListModel(this.shoppingList);
+            base.OnDisappearing();
         }
 
         async void OnAddItemClick()

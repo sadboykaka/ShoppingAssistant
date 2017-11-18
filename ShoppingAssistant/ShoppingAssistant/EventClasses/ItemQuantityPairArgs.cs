@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ShoppingAssistant.DataClasses;
+using ShoppingAssistant.DatabaseClasses;
+using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant.EventClasses
 {
@@ -9,11 +8,11 @@ namespace ShoppingAssistant.EventClasses
 
     public class ItemQuantityPairArgs : EventArgs
     {
-        public ItemQuantityPair ItemQuantityPair { get; set; }
+        public ItemQuantityPairModel  ItemQuantityPairModel { get; set; }
 
-        public ItemQuantityPairArgs(ItemQuantityPair iqp)
+        public ItemQuantityPairArgs(ItemQuantityPairModel  iqp)
         {
-            this.ItemQuantityPair = iqp;
+            this.ItemQuantityPairModel = iqp;
         }
     }
 }

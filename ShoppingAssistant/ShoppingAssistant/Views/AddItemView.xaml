@@ -5,7 +5,7 @@
   <ContentPage.Content>
       <StackLayout>
             <Entry Placeholder="Item"
-                   Text="{Binding Item}"/>
+                   Text="{Binding Name}"/>
             <Entry Placeholder="Quantity"
                    Text="{Binding Quantity}"/>
             <Button Text="Add"
