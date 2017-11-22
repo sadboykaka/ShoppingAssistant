@@ -16,6 +16,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\DatabaseHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\IFileHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\ShoppingAssistantDatabaseHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ItemPriceLocationArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ShoppingListEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GeolocationController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\ILog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemIdModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemPriceLocationModel.cs" />
@@ -24,13 +27,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\LocationModelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Model.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ItemQuantityPairArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ShoppingListEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ModelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ShoppingListModelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ShoppingListModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Views\AddItemInfo.xaml.cs">
-      <DependentUpon>AddItemInfo.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\AddItemPriceLocation.xaml.cs">
+      <DependentUpon>AddItemPriceLocation.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\NearbyLocationsView.xaml.cs">
+      <DependentUpon>NearbyLocationsView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\AddItemView.xaml.cs">
@@ -107,7 +113,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\AddItemInfo.xaml">
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\NearbyLocationsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\AddItemPriceLocation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

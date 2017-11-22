@@ -26,6 +26,11 @@ namespace ShoppingAssistant.APIClasses
             client = new HttpClient(new NativeMessageHandler());
         }
 
+        public async Task<List<T>> RefreshDataAsync<T>(T model, string baseurl) where T : Model
+        {
+            return await this.RefreshDataAsync<T>(baseurl + "/" + model.UrlSuffixProperty + "/" + model.RemoteDbId);
+        }
+
         public async Task<List<T>> RefreshDataAsync<T>(string url)
         {
             // Get http response
@@ -39,6 +44,11 @@ namespace ShoppingAssistant.APIClasses
             var content = await response.Content.ReadAsStringAsync();
             var items = JsonConvert.DeserializeObject<List<T>>(content);
             return items;
+        }
+
+        public async Task<bool> DeleteItemAsync<T>(T model, string baseUrl) where T : Model
+        {
+            return await DeleteItemAsync<T>(baseUrl + "/" + model.UrlSuffixProperty + "/" + model.RemoteDbId);
         }
 
         public async Task<bool> DeleteItemAsync<T>(string url) where T : Model

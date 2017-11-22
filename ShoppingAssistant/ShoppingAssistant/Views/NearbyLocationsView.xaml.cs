@@ -13,7 +13,7 @@ using XLabs.Platform.Services.Geolocation;
 namespace ShoppingAssistant.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AddItemInfo : ContentPage
+	public partial class NearbyLocationsView : ContentPage
 	{
 	    private LocationModelManager locationModelManager;
 
@@ -23,7 +23,7 @@ namespace ShoppingAssistant.Views
 
         public ObservableCollection<LocationModel> Locations { get { return locations; } }
 
-		public AddItemInfo ()
+		public NearbyLocationsView ()
 		{
 			InitializeComponent ();
 

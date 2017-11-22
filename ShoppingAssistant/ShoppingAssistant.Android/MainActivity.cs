@@ -8,6 +8,7 @@ using Android.Widget;
 using Android.OS;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
+using XLabs.Platform.Services.Geolocation;
 
 namespace ShoppingAssistant.Droid
 {
@@ -17,7 +18,10 @@ namespace ShoppingAssistant.Droid
 	{
 		protected override void OnCreate (Bundle bundle)
 		{
-			TabLayoutResource = Resource.Layout.Tabbar;
+            // Inject the geolocator dependency service
+		    DependencyService.Register<Geolocator>();
+
+            TabLayoutResource = Resource.Layout.Tabbar;
 			ToolbarResource = Resource.Layout.Toolbar; 
 
 			base.OnCreate (bundle);

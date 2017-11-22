@@ -5,7 +5,7 @@ using SQLite;
 
 namespace ShoppingAssistant.Models
 {
-    class ItemPriceLocationModel : ItemIdModel
+    public class ItemPriceLocationModel : ItemIdModel
     {
         public const string UrlSuffix = "ipls";
         [Ignore]

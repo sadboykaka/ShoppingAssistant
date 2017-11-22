@@ -27,7 +27,7 @@ namespace ShoppingAssistant.Models
             this.localDatabaseName = localDatabaseName;
             this.baseApiUrl = baseApiUrl;
 
-            databaseHelper = new ShoppingAssistantDatabaseHelper(DependencyService.Get<IFileHelper>().GetLocalFilePath(localDatabaseName), true);
+            databaseHelper = new ShoppingAssistantDatabaseHelper(this.localDatabaseName, true);
             apiHelper = new ShoppingAssistantAPIHelper(baseApiUrl);
 
             this.ShoppingListModels = new ObservableCollection<ShoppingListModel>();

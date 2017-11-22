@@ -14,14 +14,17 @@ namespace ShoppingAssistant
 	{
 	    public static ModelManager ModelManager;
 	    public static ILog Log;
+
+	    public static GeolocationController GeolocationController;
+        
         public static MDP MD { get; set; }
 
         public App ()
 		{
 			InitializeComponent();
 		    Log = DependencyService.Get<ILog>();
+		    GeolocationController = new GeolocationController();
             ModelManager = new ModelManager();
-
 
 		    MD = new MDP();
 
