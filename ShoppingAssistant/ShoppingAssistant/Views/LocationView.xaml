@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShoppingAssistant.Views.LocationView">
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="80"/>
+            </Grid.RowDefinitions>
+            <StackLayout Orientation="Horizontal"
+                         Grid.Row="0"
+                         Padding="15,0,0,0">
+                <Label Text="Item: "
+                       VerticalOptions="Center"/>
+                <Entry Placeholder="Search"
+                       x:Name="ItemFilterTextEntry"
+                       Text="{Binding ItemFilterText}"
+                       HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+            <ListView ItemsSource="{Binding Ipls}"
+                      CachingStrategy="RecycleElement"
+                      x:Name="IplsListView"
+                      Grid.Row="1">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Name}" 
+                                       Style="{DynamicResource ListItemTextStyle}"
+                                       HorizontalOptions="StartAndExpand"/>
+                                <Label Text="{Binding Price}" 
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       HorizontalOptions="End"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Text="Add Item Price Info"
+                    x:Name="btnAddpl"
+                    Grid.Row="2"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

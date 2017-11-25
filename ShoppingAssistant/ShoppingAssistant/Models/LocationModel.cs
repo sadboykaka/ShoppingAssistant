@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SQLite;
+using XLabs;
 
 namespace ShoppingAssistant.Models
 {
@@ -62,5 +64,20 @@ namespace ShoppingAssistant.Models
 
         [Ignore]
         public double Distance { get; set; }
+
+
+        private ObservableCollection<ItemPriceLocationModel> ipls = new ObservableCollection<ItemPriceLocationModel>();
+
+        public ObservableCollection<ItemPriceLocationModel> ItemPriceLocations => ipls;
+
+        public void AddItem(ItemPriceLocationModel newIpl)
+        {
+            this.ipls.Add(newIpl);
+        }
+
+        public void AddItems(IEnumerable<ItemPriceLocationModel> newIpls)
+        {
+            newIpls.ForEach(newItem => this.ipls.Add(newItem));
+        }
     }
 }

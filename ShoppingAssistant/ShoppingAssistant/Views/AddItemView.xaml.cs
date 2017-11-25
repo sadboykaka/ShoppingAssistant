@@ -36,6 +36,7 @@ namespace ShoppingAssistant
 
         private void RaiseNewItemQuantityPairEvent()
         {
+            // TODO error handling for non-int values
             callBack?.Invoke((object)this, new ItemQuantityPairArgs(new ItemQuantityPairModel()
             {
                 Name = this.Name,

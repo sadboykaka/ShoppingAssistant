@@ -12,14 +12,31 @@ using XLabs.Platform.Services.Geolocation;
 
 namespace ShoppingAssistant.Models
 {
+    /// <summary>
+    /// Manager class for the LocationModels
+    /// Gets LocationMOdels from the local database and API
+    /// </summary>
     public class LocationModelManager
     {
-        private static DatabaseHelper databaseHelper;
+        /// <summary>
+        /// Static reference to database helper class
+        /// </summary>
+        private static LocationModelDatabaseHelper databaseHelper;
 
-        private static APIHelper apiHelper;
-        
+        /// <summary>
+        /// Static reference to api helper class
+        /// </summary>
+        private static LocationModelAPIHelper apiHelper;
+
+        /// <summary>
+        /// GeolocationController class that gets current location using platofmr specific methods
+        /// </summary>
         private readonly GeolocationController geolocationController = App.GeolocationController;
 
+        /// <summary>
+        /// Collection of LocationModels
+        
+        /// </summary>
         public ObservableCollection<LocationModel> LocationModels { get; private set; }
 
         private string localDatabaseName;
@@ -31,8 +48,8 @@ namespace ShoppingAssistant.Models
             this.localDatabaseName = localDatabaseName;
             this.baseApiUrl = baseApiUrl;
 
-            databaseHelper = new DatabaseHelper(this.localDatabaseName);
-            apiHelper = APIHelper.Helper;
+            databaseHelper = new LocationModelDatabaseHelper(this.localDatabaseName, true);
+            apiHelper = new LocationModelAPIHelper(this.baseApiUrl);
 
             this.LocationModels = new ObservableCollection<LocationModel>();
 
@@ -53,8 +70,10 @@ namespace ShoppingAssistant.Models
             try
             {
                 // Get the location models for the current location
-                this.AddLocationModels(databaseHelper.GetItemsAsync<LocationModel>().Result);
-                this.AddLocationModels(await apiHelper.RefreshDataAsync<LocationModel>(baseApiUrl + LocationModel.UrlSuffix));
+                this.AddLocationModels(databaseHelper.GetLocationModels());
+                this.AddLocationModels(await apiHelper.GetLocationModelsAsync(
+                    this.geolocationController.Position.Latitude,
+                    this.geolocationController.Position.Longitude));
             }
             catch (Exception ex)
             {
@@ -78,7 +97,7 @@ namespace ShoppingAssistant.Models
             databaseHelper.SaveItemsAsync(model);
 
             // Try to delete this item from the API database, await response befoe continuing this exectuion
-            bool deleted = await apiHelper.DeleteItemAsync(model, LocationModel.UrlSuffix);
+            bool deleted = await apiHelper.DeleteLocationModelAsync(model);
 
             // Delete the item from the local database if successfully deleted from API database
             if (deleted) databaseHelper.DeleteItemAsync(model);
@@ -115,20 +134,7 @@ namespace ShoppingAssistant.Models
                 if (oldList == null)
                 {
                     // Insert the list as no list with the same RemoteDbId could be found
-                    for (int i = 0; i <= this.LocationModels.Count; i++)
-                    {
-                        if (i == this.LocationModels.Count)
-                        {
-                            this.LocationModels.Insert(i, model);
-                            break;
-                        }
-
-                        if (this.LocationModels.ElementAt(i).Distance > model.Distance)
-                        {
-                            this.LocationModels.Insert(i, model);
-                            break;
-                        }
-                    }
+                    this.LocationModels.Add(model);
                 }
                 else if (RubyDateParser.Compare(oldList.LastUpdated, model.LastUpdated) < 0)
                 {
@@ -138,6 +144,12 @@ namespace ShoppingAssistant.Models
             }
         }
 
+        public void SaveLocationModel(LocationModel location)
+        {
+            databaseHelper.SaveLocationModelAsync(location);
+            apiHelper.SaveLocationModelAsync(location);
+        }
+            
         /// <summary>
         /// Method that returns an approximate distance between two latitude and longitude values using equirectangular approximation
         /// </summary>

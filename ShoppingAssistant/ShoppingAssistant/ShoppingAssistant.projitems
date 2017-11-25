@@ -10,11 +10,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\APIHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)APIClasses\LocationModelAPIHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\RubyDateParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\ShoppingAssistantAPIHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CustomEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\DatabaseHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\IFileHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\LocationModelDatabaseHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\ShoppingAssistantDatabaseHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ItemPriceLocationArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ShoppingListEventArgs.cs" />
@@ -31,8 +33,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\ModelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ShoppingListModelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ShoppingListModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Views\AddItemPriceLocation.xaml.cs">
-      <DependentUpon>AddItemPriceLocation.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\AddItemPriceLocationView.xaml.cs">
+      <DependentUpon>AddItemPriceLocationView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\LocationView.xaml.cs">
+      <DependentUpon>LocationView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\NearbyLocationsView.xaml.cs">
@@ -119,7 +125,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\AddItemPriceLocation.xaml">
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\AddItemPriceLocationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\LocationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

@@ -39,11 +39,6 @@ namespace ShoppingAssistant.APIClasses
             //return await helper.RefreshDataAsync<ItemQuantityPairModel>(url);
         }
 
-        public async void SaveShoppingListModelsAsync(IEnumerable<ShoppingListModel> lists)
-        {
-            lists.ForEach(SaveShoppingListModelAsync);
-        }
-
         public async void SaveShoppingListModelAsync(ShoppingListModel list)
         {
             var url = baseUrl + ShoppingListModel.UrlSuffix;

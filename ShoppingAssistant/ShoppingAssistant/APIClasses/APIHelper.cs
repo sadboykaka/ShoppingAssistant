@@ -31,12 +31,39 @@ namespace ShoppingAssistant.APIClasses
             return await this.RefreshDataAsync<T>(baseurl + "/" + model.UrlSuffixProperty + "/" + model.RemoteDbId);
         }
 
+        public async Task<List<T>> RefreshDataAsync<T>(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
+        {
+            UriBuilder builder = new UriBuilder(url);
+
+            // Create query string using urlparams
+            StringBuilder sb = new StringBuilder();
+            foreach (var param in urlparams)
+            {
+                sb.Append(param.Key + "=" + param.Value + "&");
+            }
+            sb.Remove(sb.Length - 1, 1);
+
+            builder.Query = sb.ToString();
+            
+            // Get response
+            var response = await client.GetAsync(builder.Uri);
+            
+            // Return null if not successful
+            if (!response.IsSuccessStatusCode) return null;
+
+            // Convert json in http response to a List of T items
+            var content = await response.Content.ReadAsStringAsync();
+            var items = JsonConvert.DeserializeObject<List<T>>(content);
+            return items;   
+        }
+
         public async Task<List<T>> RefreshDataAsync<T>(string url)
         {
             // Get http response
             var uri = new Uri(url);
             var response = await client.GetAsync(uri);
             
+
             // Return null if not successful
             if (!response.IsSuccessStatusCode) return null;
 

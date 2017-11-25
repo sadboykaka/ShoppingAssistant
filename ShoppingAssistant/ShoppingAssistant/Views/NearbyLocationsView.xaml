@@ -11,9 +11,10 @@
             <StackLayout Orientation="Horizontal"
                          Grid.Row="0"
                          Padding="15,0,0,0">
-                    <Label Text="Location: "
+                    <Label Text="Store: "
                            VerticalOptions="Center"/>
-                    <Entry Placeholder="Name"
+                    <Entry Placeholder="Search"
+                           x:Name="LocationFilterTextEntry"
                            Text="{Binding LocationFilterText}"
                            HorizontalOptions="FillAndExpand"/>
             </StackLayout>

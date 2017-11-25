@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Java.Lang;
 using ShoppingAssistant.EventClasses;
 using ShoppingAssistant.Models;
 using Xamarin.Forms;
@@ -12,7 +11,7 @@ using Xamarin.Forms.Xaml;
 namespace ShoppingAssistant.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AddItemPriceLocation : ContentPage
+	public partial class AddItemPriceLocationView : ContentPage
 	{
         /// <summary>
         /// ItemPriceLocationEventHandler on which we callback with new ItemPriceLocationModel
@@ -32,7 +31,7 @@ namespace ShoppingAssistant.Views
         /// <summary>
         /// Constructor
         /// </summary>
-		public AddItemPriceLocation(ItemPriceLocationEventHandler callBack)
+		public AddItemPriceLocationView(ItemPriceLocationEventHandler callBack)
         {
             InitializeComponent ();
             BindingContext = this;
@@ -51,7 +50,7 @@ namespace ShoppingAssistant.Views
 	        callBack?.Invoke(this, new ItemPriceLocationEventArgs(new ItemPriceLocationModel()
 	        {
 	            Name = this.Name,
-                Price = Float.ParseFloat(this.Price)
+                Price = float.Parse(this.Price)
 	        }));
 	    }
 

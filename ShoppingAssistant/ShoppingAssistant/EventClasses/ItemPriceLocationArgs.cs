@@ -5,11 +5,15 @@ using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant.EventClasses
 {
-    public class ItemPriceLocationArgs
+    public delegate void ItemPriceLocationEventHandler(object sender, ItemPriceLocationEventArgs args);
+
+    public class ItemPriceLocationEventArgs : EventArgs
     {
-        public ItemPriceLocationArgs(ItemPriceLocationModel args)
+        public ItemPriceLocationModel ItemPriceLocationModel { get; set; }
+
+        public ItemPriceLocationEventArgs(ItemPriceLocationModel ipl)
         {
-            
+            this.ItemPriceLocationModel = ipl;
         }
     }
 }
