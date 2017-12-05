@@ -4,9 +4,11 @@
     "Microsoft.Net.Http": "2.2.28",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
     "Newtonsoft.Json": "10.0.3",
+    "PCLCrypto": "2.0.147",
     "sqlite-net-pcl": "1.4.118",
     "SQLite.Net-PCL": "3.1.1",
     "SQLite.Net.Async-PCL": "3.1.1",
+    "SQLite.Net.Cipher-PCL": "2.0.0",
     "Xamarin.Forms": "2.4.0.280",
     "XLabs.Forms": "2.0.5782"
   },

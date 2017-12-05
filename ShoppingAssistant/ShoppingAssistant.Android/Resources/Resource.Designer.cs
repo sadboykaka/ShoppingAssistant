@@ -27,6 +27,8 @@ namespace ShoppingAssistant.Droid
 		public static void UpdateIdValues()
 		{
 			global::ModernHttpClient.Resource.String.library_name = global::ShoppingAssistant.Droid.Resource.String.library_name;
+			global::PCLCrypto.Resource.String.ApplicationName = global::ShoppingAssistant.Droid.Resource.String.ApplicationName;
+			global::PCLCrypto.Resource.String.Hello = global::ShoppingAssistant.Droid.Resource.String.Hello;
 			global::SQLite.Net.Platform.XamarinAndroid.Resource.String.ApplicationName = global::ShoppingAssistant.Droid.Resource.String.ApplicationName;
 			global::SQLite.Net.Platform.XamarinAndroid.Resource.String.Hello = global::ShoppingAssistant.Droid.Resource.String.Hello;
 			global::Xamarin.Forms.Platform.Android.Resource.Attribute.actionBarSize = global::ShoppingAssistant.Droid.Resource.Attribute.actionBarSize;

@@ -43,13 +43,13 @@ namespace ShoppingAssistant.Models
 
         private string baseApiUrl;
 
-        public LocationModelManager(string localDatabaseName, string baseApiUrl)
+        public LocationModelManager(string localDatabaseName, LoginAPIHelper loginApiHelper)
         {
             this.localDatabaseName = localDatabaseName;
             this.baseApiUrl = baseApiUrl;
 
             databaseHelper = new LocationModelDatabaseHelper(this.localDatabaseName, true);
-            apiHelper = new LocationModelAPIHelper(this.baseApiUrl);
+            apiHelper = new LocationModelAPIHelper(loginApiHelper);
 
             this.LocationModels = new ObservableCollection<LocationModel>();
 

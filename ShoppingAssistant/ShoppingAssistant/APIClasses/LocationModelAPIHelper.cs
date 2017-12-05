@@ -10,11 +10,12 @@ namespace ShoppingAssistant.APIClasses
 {
     public class LocationModelAPIHelper
     {
-        private static APIHelper helper = APIHelper.Helper;
+        private readonly LoginAPIHelper helper;
         private readonly string baseUrl;
 
-        public LocationModelAPIHelper(string baseUrl)
+        public LocationModelAPIHelper(LoginAPIHelper helper)
         {
+            this.helper = helper;
             this.baseUrl = baseUrl;
         }
 
@@ -22,7 +23,7 @@ namespace ShoppingAssistant.APIClasses
         {
             var locations = await helper.RefreshDataAsync<LocationModel>(
                 baseUrl + LocationModel.UrlSuffix,
-                new List<KeyValuePair<string, string>>()
+                new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("lat", lat.ToString()),
                     new KeyValuePair<string, string>("lng", lng.ToString())

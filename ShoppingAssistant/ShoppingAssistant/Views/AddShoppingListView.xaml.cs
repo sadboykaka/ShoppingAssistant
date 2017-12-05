@@ -14,32 +14,33 @@ namespace ShoppingAssistant.Views
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class AddShoppingListView : ContentPage
 	{
-	    private ShoppingListEventHandler callback;
-	    public string NameField{ get; set; }
+		private ShoppingListEventHandler callback;
+		public string NameField{ get; set; }
 
-        public AddShoppingListView (ShoppingListEventHandler callback)
+		public AddShoppingListView (ShoppingListEventHandler callback)
 		{
-		    InitializeComponent();
-		    this.callback = callback;
+			InitializeComponent();
+			this.callback = callback;
 
-		    this.NameField = DateTime.Now.ToString();
+			this.NameField = DateTime.Now.ToString();
 
-		    BindingContext = this;
+			BindingContext = this;
 
-            Button btnAddItem = this.FindByName<Button>("BtnAddList");
-		    btnAddItem.Clicked += delegate { RaiseNewShoppingListEvent(); };
-
-		    Entry entryName = this.FindByName<Entry>("EntryName");
-            //entryName.Focused += entryName.
+			var btnAddItem = this.FindByName<Button>("BtnAddList");
+			btnAddItem.Clicked += delegate { RaiseNewShoppingListEvent(); };
 		}
+		
+		private void RaiseNewShoppingListEvent()
+		{
+			var newShoppingListModel = new ShoppingListModel()
+			{
+				Name = this.NameField,
+				DateCreated = DateTime.Now.ToString()
+			};
 
-	    private void RaiseNewShoppingListEvent()
-	    {
-	        callback?.Invoke((object)this, new ShoppingListEventArgs(new ShoppingListModel()
-	        {
-	            Name = this.NameField,
-	            DateCreated = DateTime.Now.ToString()
-	        }));
-        }
+			App.ModelManager.ShoppingListModelManager.SaveShoppingListModel(newShoppingListModel);
+
+			callback?.Invoke(this, new ShoppingListEventArgs(newShoppingListModel));
+		}
 	}
 }

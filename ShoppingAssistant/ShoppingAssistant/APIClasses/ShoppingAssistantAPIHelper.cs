@@ -9,17 +9,17 @@ namespace ShoppingAssistant.APIClasses
 {
     class ShoppingAssistantAPIHelper
     {
-        private static APIHelper helper = APIHelper.Helper;
-        private readonly string baseUrl;
+        private readonly LoginAPIHelper helper;
+        
 
-        public ShoppingAssistantAPIHelper(string baseUrl)
+        public ShoppingAssistantAPIHelper(LoginAPIHelper helper)
         {
-            this.baseUrl = baseUrl;
+            this.helper = helper;
         }
 
         public async Task<List<ShoppingListModel>> GetShoppingListModelsAsync()
         {
-            List<ShoppingListModel> lists = await helper.RefreshDataAsync<ShoppingListModel>(baseUrl + ShoppingListModel.UrlSuffix);
+            List<ShoppingListModel> lists = await helper.RefreshDataAsync<ShoppingListModel>(helper.BaseUrl + ShoppingListModel.UrlSuffix);
 
             lists.ForEach(GetItemQuantityPairModelsAsync);
             //lists.ForEach(list => list.AddItems(GetItemQuantityPairModelsAsync(list).Result));
@@ -29,7 +29,7 @@ namespace ShoppingAssistant.APIClasses
 
         public async void GetItemQuantityPairModelsAsync(ShoppingListModel list)
         {
-            var url = baseUrl + ShoppingListModel.UrlSuffix + "/" + list.RemoteDbId + "/" +
+            var url = helper.BaseUrl + ShoppingListModel.UrlSuffix + "/" + list.RemoteDbId + "/" +
                       ItemQuantityPairModel.UrlSuffix;
 
             var items = await helper.RefreshDataAsync<ItemQuantityPairModel>(url);
@@ -41,7 +41,7 @@ namespace ShoppingAssistant.APIClasses
 
         public async void SaveShoppingListModelAsync(ShoppingListModel list)
         {
-            var url = baseUrl + ShoppingListModel.UrlSuffix;
+            var url = helper.BaseUrl + ShoppingListModel.UrlSuffix;
 
             await helper.SaveItemAsync(list, url);
 
@@ -52,7 +52,7 @@ namespace ShoppingAssistant.APIClasses
 
         public async Task<bool> DeleteShoppingListModelAsync<T>(T item) where T : Model
         {
-            return await helper.DeleteItemAsync<T>(baseUrl + "/" + item.UrlSuffixProperty + "/" + item.RemoteDbId);
+            return await helper.DeleteItemAsync<T>(helper.BaseUrl + "/" + item.UrlSuffixProperty + "/" + item.RemoteDbId);
         }
     }
 }

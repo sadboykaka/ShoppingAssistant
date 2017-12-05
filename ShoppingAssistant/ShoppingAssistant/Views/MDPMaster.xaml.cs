@@ -34,6 +34,14 @@ namespace ShoppingAssistant.Views
             IconSource = "Icon.png";
             
             var masterPageItems = new List<MDPMenuItem>();
+
+            masterPageItems.Add(new MDPMenuItem
+            {
+                Title = "Login",
+                IconSource="Icon.png",
+                TargetType = typeof(LoginView)
+            });
+
             masterPageItems.Add(new MDPMenuItem
             {
                 Title = "Shopping Lists",

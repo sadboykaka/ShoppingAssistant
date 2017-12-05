@@ -26,11 +26,14 @@ namespace ShoppingAssistant
 		    GeolocationController = new GeolocationController();
             ModelManager = new ModelManager();
 
-		    MD = new MDP();
+		    
 
-		    Application.Current.MainPage = MD;
 
-            //MainPage = new NavigationPage(new ShoppingAssistant.MainPage());
+		    //MD = new MDP();
+
+		    //Application.Current.MainPage = MD;
+
+		    MainPage = new NavigationPage(new LoginView());
 		}
 
 		protected override void OnStart ()

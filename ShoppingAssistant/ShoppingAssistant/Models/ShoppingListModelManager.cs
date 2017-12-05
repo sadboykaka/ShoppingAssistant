@@ -22,13 +22,13 @@ namespace ShoppingAssistant.Models
 
         private string baseApiUrl;
 
-        public ShoppingListModelManager(string localDatabaseName, string baseApiUrl)
+        public ShoppingListModelManager(string localDatabaseName, LoginAPIHelper helper)
         {
             this.localDatabaseName = localDatabaseName;
             this.baseApiUrl = baseApiUrl;
 
             databaseHelper = new ShoppingAssistantDatabaseHelper(this.localDatabaseName, true);
-            apiHelper = new ShoppingAssistantAPIHelper(baseApiUrl);
+            apiHelper = new ShoppingAssistantAPIHelper(helper);
 
             this.ShoppingListModels = new ObservableCollection<ShoppingListModel>();
             this.GetShoppingListModelsAsync();

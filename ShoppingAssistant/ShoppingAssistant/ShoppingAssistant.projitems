@@ -11,17 +11,21 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\APIHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\LocationModelAPIHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)APIClasses\LoginAPIHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\RubyDateParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\ShoppingAssistantAPIHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\LoginController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CustomEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\DatabaseHelper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\IFileHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\IFileHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\LocationModelDatabaseHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Crypt\Crypt.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\ShoppingAssistantDatabaseHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\IIdentifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ItemPriceLocationArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ShoppingListEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GeolocationController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\ILog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\ILog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemIdModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemPriceLocationModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemQuantityPairModel.cs" />
@@ -33,12 +37,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\ModelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ShoppingListModelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ShoppingListModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UserModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\AddItemPriceLocationView.xaml.cs">
       <DependentUpon>AddItemPriceLocationView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\LocationView.xaml.cs">
       <DependentUpon>LocationView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\NearbyLocationsView.xaml.cs">
@@ -65,6 +74,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\MDPMenuItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\RegisterView.xaml.cs">
+      <DependentUpon>RegisterView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\ShoppingListsView.xaml.cs">
@@ -135,5 +148,20 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\RegisterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Crypt\" />
   </ItemGroup>
 </Project>
