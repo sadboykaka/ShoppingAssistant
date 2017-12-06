@@ -80,7 +80,7 @@ namespace ShoppingAssistant.DatabaseClasses
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        public Task<int> SaveLocationModelAsync(LocationModel location)
+        public Task SaveLocationModelAsync(LocationModel location)
         {
             // Save the ipls
             location.ItemPriceLocations.ForEach(ipl => SaveItemsAsync(ipl));

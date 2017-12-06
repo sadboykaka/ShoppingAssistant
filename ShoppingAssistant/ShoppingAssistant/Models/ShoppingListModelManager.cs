@@ -17,7 +17,7 @@ namespace ShoppingAssistant.Models
         private static ShoppingAssistantAPIHelper apiHelper;
 
         public ObservableCollection<ShoppingListModel> ShoppingListModels { get; }
-
+        
         private string localDatabaseName;
 
         private string baseApiUrl;
@@ -31,7 +31,6 @@ namespace ShoppingAssistant.Models
             apiHelper = new ShoppingAssistantAPIHelper(helper);
 
             this.ShoppingListModels = new ObservableCollection<ShoppingListModel>();
-            this.GetShoppingListModelsAsync();
         }
 
         public async void DeleteShoppingListAsync(ShoppingListModel list)
@@ -64,14 +63,18 @@ namespace ShoppingAssistant.Models
             {
 
                 this.AddShoppingLists(databaseHelper.GetShoppingLists());
-                this.AddShoppingLists(await apiHelper.GetShoppingListModelsAsync());
+
+                var apiShoppingListModels = await apiHelper.GetShoppingListModelsAsync();
+                apiShoppingListModels.ForEach(SaveShoppingListModelsToDatabase);
+
+                this.AddShoppingLists(apiShoppingListModels);
             }
             catch (Exception e)
             {
-                App.Log.Error("GetShoppingListModels()", "Meesage - " + e.Message + " " + "Source - " + e.Source + e.GetBaseException().Message);
+                App.Log.Error("GetShoppingListModels()", "Message - " + e.Message + " " + "Source - " + e.Source + e.GetBaseException().Message);
             }
         }
-
+        
         public void AddShoppingLists(IEnumerable<ShoppingListModel> lists)
         {
             if (lists != null)
@@ -101,8 +104,18 @@ namespace ShoppingAssistant.Models
 
         public void SaveShoppingListModel(ShoppingListModel list)
         {
-            databaseHelper.SaveShoppingListAsync(list);
+            SaveShoppingListModelsToDatabase(list);
             apiHelper.SaveShoppingListModelAsync(list);
+        }
+
+        private void SaveShoppingListModelsToDatabase(ShoppingListModel list)
+        {
+            databaseHelper.SaveShoppingListAsync(list);
+        }
+
+        public void AddOwner(ShoppingListModel list)
+        {
+            
         }
     }
 }

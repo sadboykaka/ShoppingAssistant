@@ -39,6 +39,8 @@ namespace ShoppingAssistant.APIClasses
             return response;
         }
 
+        
+
         public new async Task<List<T>> RefreshDataAsync<T>(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
         {
             while(!loggedIn)
@@ -46,7 +48,7 @@ namespace ShoppingAssistant.APIClasses
                 await Task.Delay(2000);
             }
 
-            return await base.RefreshDataAsync<T>(BaseUrl + "/" + url, urlparams);
+            return await base.RefreshDataAsync<T>(url, urlparams);
         }
 
         public new async Task<List<T>> RefreshDataAsync<T>(string url)
@@ -56,7 +58,17 @@ namespace ShoppingAssistant.APIClasses
                 await Task.Delay(2000);
             }
             
-            return await base.RefreshDataAsync<T>(BaseUrl + "/" + url);
+            return await base.RefreshDataAsync<T>(url);
+        }
+
+        public new async Task<bool> DeleteItemAsync<T>(string url) where T : Model
+        {
+            while (!loggedIn)
+            {
+                await Task.Delay(2000);
+            }
+
+            return await base.DeleteItemAsync<T>(url);
         }
     }
 }

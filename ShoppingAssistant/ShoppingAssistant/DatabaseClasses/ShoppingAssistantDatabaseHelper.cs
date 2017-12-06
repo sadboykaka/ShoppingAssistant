@@ -28,6 +28,8 @@ namespace ShoppingAssistant.DatabaseClasses
             DatabaseAsyncConnection.CreateTableAsync<LocationModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
             DatabaseAsyncConnection.CreateTableAsync<ShoppingListModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
             DatabaseAsyncConnection.CreateTableAsync<ItemQuantityPairModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
+            DatabaseAsyncConnection
+                .CreateTableAsync<ListOwnerModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
         }
 
         public void DeleteShoppingListAsync(ShoppingListModel list)
@@ -50,39 +52,47 @@ namespace ShoppingAssistant.DatabaseClasses
         /// <returns>List of shopping lists stored in the database</returns>
         public List<ShoppingListModel> GetShoppingLists()
         {
-            // Get list of ShoppingListModels and ItemQuantityPairModels
+            // Get the ListOwnerModels and ShoppingListModels
+            var listowners = GetItemsAsync<ListOwnerModel>().Result;
             var lists = GetItemsAsync<ShoppingListModel>().Result;
+               
+            // Select the ListOwnerModels relevant to the current user
+            listowners = listowners.Where(listowner =>
+                listowner.UserModelId == App.ModelManager.LoginController.CurrentUser.LocalDbId).ToList();
+
+            // Select the lists that belong to the current owner
+            lists = lists.Where(slist => listowners.Any(listowner => listowner.ShoppingListModelId == slist.LocalDbId))
+                .ToList();
+
+            // Get the ItemQuantityPairModels
             var items = GetItemsAsync<ItemQuantityPairModel>().Result;
-
-            // Create output list
-            //var lists = new List<ShoppingListModel>();
-
-            // Create the ShoppingList objects
-            //models.ForEach(m => lists.Add(new ShoppingListModel(m)));
-
-            //lists.AddRange(models);
-
-            // Populate the item quantity pairs
-            //foreach (var item in items)
-            //{
-            //    var list = lists.Where(l => l.LocalDbId == )
-            //}
+            
+            // Select the ItemQuantityPairModels and attach them to the relevant ShoppingListModels
             items.ForEach(i => lists.FirstOrDefault(l => l.RemoteDbId == i.RemoteDbShoppingListId)?.Items.Add(i));
-            //lists.ForEach(l => items.Where(i => i.ShoppingListID == l.LocalDbId).ForEach(l.Items.Add(i)));
-
-
+            
+            // Return the ShoppingListModels
             return lists;
         }
 
 
-        public Task<int> SaveShoppingListAsync(ShoppingListModel list)
+        public async Task SaveShoppingListAsync(ShoppingListModel list)
         {
+            var user = App.ModelManager.LoginController.CurrentUser;
 
             // Save the item quantity pairs
             list.Items.ForEach(item => SaveItemsAsync(item));
 
             // Return and save the shopping list model object
-            return SaveItemsAsync(list);
+            await SaveItemsAsync(list);
+
+            // Create the ListOwnerModel if required
+            var listOwnerModel = new ListOwnerModel()
+            {
+                ShoppingListModelId = list.LocalDbId.Value,
+                UserModelId = user.LocalDbId.Value
+            };
+
+            SaveItemsAsync(listOwnerModel);
         }
     }
 }

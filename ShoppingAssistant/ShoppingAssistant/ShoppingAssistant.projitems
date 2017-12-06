@@ -29,6 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemIdModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemPriceLocationModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemQuantityPairModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ListOwnerModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\LocationModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\LocationModelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Model.cs" />

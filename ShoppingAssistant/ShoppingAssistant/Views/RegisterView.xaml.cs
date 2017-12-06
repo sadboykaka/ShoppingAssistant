@@ -76,7 +76,7 @@ namespace ShoppingAssistant.Views
 
             this.DisableUI();
 
-            var response = await App.ModelManager.LoginController.Register(new UserModel
+            var response = await App.ModelManager.Register(new UserModel
             {
                 Name = this.Name,
                 Email = this.Email.Replace(" ", string.Empty),

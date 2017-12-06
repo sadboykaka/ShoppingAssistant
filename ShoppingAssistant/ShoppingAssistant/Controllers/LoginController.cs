@@ -22,6 +22,12 @@ namespace ShoppingAssistant.Controllers
         private readonly DatabaseHelper dbHelper;
 
         /// <summary>
+        /// The currently logged in user
+        /// </summary>
+        public UserModel CurrentUser { get; private set; }
+        
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="dbName"></param>
@@ -48,6 +54,7 @@ namespace ShoppingAssistant.Controllers
             {
                 // If success then save the login to the database
                 case LoginResponse.Success:
+                    CurrentUser = user;
                     user.Password = Crypt.Crypt.Encrypt(user.Password);
                     App.Log.Debug("Login", "Saving credentials for user " + user.Email);
                     await dbHelper.SaveItemsAsync(user);
@@ -58,8 +65,12 @@ namespace ShoppingAssistant.Controllers
                 // If we cannot connect to the API then we try to log in from the credentials stored in the database
                 case LoginResponse.NoResponse:
                     var localUsers = await dbHelper.GetItemsAsync<UserModel>();
-                    if (localUsers.Any(dbUser => Crypt.Crypt.Encrypt(user.Password) == dbUser.Password))
+                    var cryptPass = Crypt.Crypt.Encrypt(user.Password);
+                    var matchingUsers = localUsers.Where(dbUser => user.Email == dbUser.Email && cryptPass == dbUser.Password);
+                    if (matchingUsers.Any())
                     {
+                        user.LocalDbId = matchingUsers.First().LocalDbId;
+                        CurrentUser = user;
                         App.Log.Debug("Login", "Logged user " + user.Email + " in from the local database");
                         return LoginResponse.Success;
                     }
@@ -83,9 +94,10 @@ namespace ShoppingAssistant.Controllers
             {
                 // Save the login details to the local database
                 case LoginResponse.Success:
+                    CurrentUser = user;
                     App.Log.Debug("Register", "Registered user " + user.Email + " on the API, saving to local database");
                     user.Password = Crypt.Crypt.Encrypt(user.Password);
-                    dbHelper.SaveItemsAsync(user);
+                    await dbHelper.SaveItemsAsync(user);
                     break;
                 case LoginResponse.InvalidCredentials:
                 case LoginResponse.NoResponse:

@@ -23,7 +23,7 @@ namespace ShoppingAssistant.Models
 
         private const string BaseApiUrl = "https://rails-tutorial-benhudds.c9users.io/";
 
-        private const string LocalDatabaseBaseName = "TodoSQLite.db3";
+        private const string LocalDatabaseBaseName = "TodoSQLite1.db3";
 
         private readonly string localDatabaseName =
             DependencyService.Get<IFileHelper>().GetLocalFilePath(LocalDatabaseBaseName);
@@ -35,6 +35,40 @@ namespace ShoppingAssistant.Models
             this.shoppingListModelManager = new ShoppingListModelManager(localDatabaseName, helper);
             this.locationModelManager = new LocationModelManager(localDatabaseName, helper);
             this.LoginController = new LoginController(localDatabaseName, helper);
+        }
+
+        public async Task<LoginResponse> Login(UserModel user)
+        {
+            var response = await LoginController.Login(user);
+
+            switch (response)
+            {
+                case LoginResponse.Success:
+                    ShoppingListModelManager.GetShoppingListModelsAsync();
+                    break;
+                case LoginResponse.InvalidCredentials:
+                case LoginResponse.NoResponse:
+                    break;
+            }
+
+            return response;
+        }
+
+        public async Task<LoginResponse> Register(UserModel user)
+        {
+            var response = await LoginController.Register(user);
+
+            switch (response)
+            {
+                case LoginResponse.Success:
+                    ShoppingListModelManager.GetShoppingListModelsAsync();
+                    break;
+                case LoginResponse.InvalidCredentials:
+                case LoginResponse.NoResponse:
+                    break;
+            }
+
+            return response;
         }
 
     }

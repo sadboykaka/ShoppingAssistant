@@ -7,13 +7,13 @@ using SQLite;
 
 namespace ShoppingAssistant.Models
 {
-    public class UserModel
+    public class UserModel : Model
     {
         [JsonProperty("name")]
         public string Name { get; set; }
 
         [JsonProperty("email")]
-        [PrimaryKey]
+        //[Unique]
         public string Email { get; set; }
 
         [JsonProperty("password")]

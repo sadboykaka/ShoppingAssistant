@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ShoppingAssistant.Models;
@@ -26,7 +27,8 @@ namespace ShoppingAssistant.DatabaseClasses
             DatabaseAsyncConnection = new SQLiteAsyncConnection(dbPath);
 
             // Create the user table (if it does not already exist)
-            DatabaseAsyncConnection.CreateTableAsync<UserModel>(CreateFlags.ImplicitPK).Wait();
+            //DatabaseAsyncConnection.DropTableAsync<UserModel>();
+            DatabaseAsyncConnection.CreateTableAsync<UserModel>(CreateFlags.ImplicitPK | CreateFlags.AutoIncPK).Wait();
         }
 
         /// <summary>
@@ -47,15 +49,42 @@ namespace ShoppingAssistant.DatabaseClasses
         /// <typeparam name="T"></typeparam>
         /// <param name="item"></param>
         /// <returns></returns>
-        public Task<int> SaveItemsAsync<T>(T item) where T : Model, new()
+        public async Task SaveItemsAsync<T>(T item) where T : Model, new()
         {
+            //var val = DatabaseAsyncConnection.InsertOrReplaceAsync(item);
+
+            //string sql = @"select last_insert_rowid()";
+            //int lastId = await DatabaseAsyncConnection.ExecuteAsync(sql);
+            //item.LocalDbId = lastId;
+
+            //return lastId;
+
+            Task<int> val;
+
             if (item.LocalDbId != null)
             {
-                return DatabaseAsyncConnection.UpdateAsync(item);
+                val = DatabaseAsyncConnection.UpdateAsync(item);
+            }
+            else
+            {
+                val = DatabaseAsyncConnection.InsertAsync(item);
             }
 
-            return DatabaseAsyncConnection.InsertAsync(item);
+            try
+            {
+                var a = await DatabaseAsyncConnection.GetAsync<T>(dbitem => dbitem.LastUpdated == item.LastUpdated);
+                var b = DatabaseAsyncConnection.GetConnection().ExecuteScalar<int>("select last_insert_rowid();");
+                item.LocalDbId = a.LocalDbId;
+            }
+            catch (Exception e)
+            {
+
+                App.Log.Error("SaveItemsAsync", e.Message + e.StackTrace);
+            }
+            
         }
+
+
 
         /// <summary>
         /// Method to save a given user to the database
@@ -63,15 +92,21 @@ namespace ShoppingAssistant.DatabaseClasses
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public Task<int> SaveItemsAsync(UserModel user)
+        public async Task SaveItemsAsync(UserModel user)
         {
             var check = GetItemsAsync<UserModel>().Result.Any(dbUser => dbUser.Email == user.Email);
             if (check)
             {
-                return DatabaseAsyncConnection.UpdateAsync(user);
+                await DatabaseAsyncConnection.UpdateAsync(user);
+            }
+            else
+            {
+                await DatabaseAsyncConnection.InsertAsync(user);
             }
 
-            return DatabaseAsyncConnection.InsertAsync(user);
+            
+            var newUser = await DatabaseAsyncConnection.GetAsync<UserModel>(dbUser => dbUser.Email == user.Email);
+            user.LocalDbId = newUser.LocalDbId;
         }
 
         /// <summary>
