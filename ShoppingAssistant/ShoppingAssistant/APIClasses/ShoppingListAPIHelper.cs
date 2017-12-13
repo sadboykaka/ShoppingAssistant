@@ -7,12 +7,15 @@ using Xamarin.Forms.Internals;
 
 namespace ShoppingAssistant.APIClasses
 {
-    class ShoppingAssistantAPIHelper
+    /// <summary>
+    /// ShoppingList specific helper class for the API
+    /// </summary>
+    class ShoppingListApiHelper
     {
+
         private readonly LoginAPIHelper helper;
         
-
-        public ShoppingAssistantAPIHelper(LoginAPIHelper helper)
+        public ShoppingListApiHelper(LoginAPIHelper helper)
         {
             this.helper = helper;
         }
@@ -22,7 +25,6 @@ namespace ShoppingAssistant.APIClasses
             List<ShoppingListModel> lists = await helper.RefreshDataAsync<ShoppingListModel>(helper.BaseUrl + ShoppingListModel.UrlSuffix);
 
             lists.ForEach(GetItemQuantityPairModelsAsync);
-            //lists.ForEach(list => list.AddItems(GetItemQuantityPairModelsAsync(list).Result));
 
             return lists;
         }
@@ -35,8 +37,6 @@ namespace ShoppingAssistant.APIClasses
             var items = await helper.RefreshDataAsync<ItemQuantityPairModel>(url);
 
             list.AddItems(items);
-            return;
-            //return await helper.RefreshDataAsync<ItemQuantityPairModel>(url);
         }
 
         public async void SaveShoppingListModelAsync(ShoppingListModel list)
@@ -53,6 +53,21 @@ namespace ShoppingAssistant.APIClasses
         public async Task<bool> DeleteShoppingListModelAsync<T>(T item) where T : Model
         {
             return await helper.DeleteItemAsync<T>(helper.BaseUrl + "/" + item.UrlSuffixProperty + "/" + item.RemoteDbId);
+        }
+
+        /// <summary>
+        /// Method to add a new owner with the given email to the given shopping list on the API
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<bool> AddShoppingListModelOwnerAsync(ShoppingListModel list, string email)
+        {
+            var url = helper.BaseUrl + ShoppingListModel.UrlSuffix + "/" + list.RemoteDbId;
+            return await helper.PutItemAsync(url, new List<KeyValuePair<string, string>>(1)
+            {
+                new KeyValuePair<string, string>("email", email)
+            });
         }
     }
 }

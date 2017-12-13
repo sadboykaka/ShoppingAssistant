@@ -8,6 +8,6 @@ namespace ShoppingAssistant.Models
     {
         public int ShoppingListModelId { get; set; }
 
-        public int UserModelId { get; set; } 
+        public string UserEmail { get; set; } 
     }
 }

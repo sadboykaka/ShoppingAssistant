@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ShoppingAssistant.APIClasses;
 using ShoppingAssistant.Controllers;
 using Xamarin.Forms;
@@ -12,8 +9,8 @@ namespace ShoppingAssistant.Models
     {
         private readonly LoginAPIHelper helper;
 
-        private readonly ShoppingListModelManager shoppingListModelManager;
-        public ShoppingListModelManager ShoppingListModelManager { get { return shoppingListModelManager; } }
+        private readonly ShoppingListController shoppingListController;
+        public ShoppingListController ShoppingListController { get { return shoppingListController; } }
 
         private readonly LocationModelManager locationModelManager;
 
@@ -32,7 +29,7 @@ namespace ShoppingAssistant.Models
         {
             helper = new LoginAPIHelper(BaseApiUrl);
 
-            this.shoppingListModelManager = new ShoppingListModelManager(localDatabaseName, helper);
+            this.shoppingListController = new ShoppingListController(localDatabaseName, helper);
             this.locationModelManager = new LocationModelManager(localDatabaseName, helper);
             this.LoginController = new LoginController(localDatabaseName, helper);
         }
@@ -44,7 +41,7 @@ namespace ShoppingAssistant.Models
             switch (response)
             {
                 case LoginResponse.Success:
-                    ShoppingListModelManager.GetShoppingListModelsAsync();
+                    ShoppingListController.GetShoppingListModelsAsync();
                     break;
                 case LoginResponse.InvalidCredentials:
                 case LoginResponse.NoResponse:
@@ -61,7 +58,7 @@ namespace ShoppingAssistant.Models
             switch (response)
             {
                 case LoginResponse.Success:
-                    ShoppingListModelManager.GetShoppingListModelsAsync();
+                    ShoppingListController.GetShoppingListModelsAsync();
                     break;
                 case LoginResponse.InvalidCredentials:
                 case LoginResponse.NoResponse:
@@ -69,6 +66,12 @@ namespace ShoppingAssistant.Models
             }
 
             return response;
+        }
+
+        public void Logout()
+        {
+            this.ShoppingListController.ShoppingListModels.Clear();
+            this.LocationModelManager.LocationModels.Clear();
         }
 
     }

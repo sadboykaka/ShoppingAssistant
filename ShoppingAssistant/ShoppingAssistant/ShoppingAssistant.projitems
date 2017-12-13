@@ -13,8 +13,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\LocationModelAPIHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\LoginAPIHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\RubyDateParser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)APIClasses\ShoppingAssistantAPIHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)APIClasses\ShoppingListAPIHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\LoginController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\ShoppingListController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CustomEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\DatabaseHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\IFileHelper.cs" />
@@ -36,7 +37,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ItemQuantityPairArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ModelManager.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\ShoppingListModelManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ShoppingListModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\AddItemPriceLocationView.xaml.cs">

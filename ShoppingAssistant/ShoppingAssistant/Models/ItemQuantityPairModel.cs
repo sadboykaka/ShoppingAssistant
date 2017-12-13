@@ -14,7 +14,7 @@ namespace ShoppingAssistant.Models
         [JsonProperty("item")]
         public string Name { get; set; }
         [JsonProperty("slist_id")]
-        public int RemoteDbShoppingListId { get; set; }
+        public int LocalDbShoppingListId { get; set; }
         [JsonProperty("quantity")]
         public int Quantity { get; set; }
     }

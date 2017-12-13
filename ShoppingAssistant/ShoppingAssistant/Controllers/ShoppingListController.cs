@@ -6,15 +6,25 @@ using System.Text;
 using System.Threading.Tasks;
 using ShoppingAssistant.APIClasses;
 using ShoppingAssistant.DatabaseClasses;
+using ShoppingAssistant.Models;
 using Xamarin.Forms;
 
-namespace ShoppingAssistant.Models
+namespace ShoppingAssistant.Controllers
 {
-    public class ShoppingListModelManager
+    /// <summary>
+    /// ShoppingList Controller class
+    /// </summary>
+    public class ShoppingListController
     {
+        /// <summary>
+        /// Static reference to ShoppingList specific database helper class
+        /// </summary>
         private static ShoppingAssistantDatabaseHelper databaseHelper;
 
-        private static ShoppingAssistantAPIHelper apiHelper;
+        /// <summary>
+        /// Static reference to ShoppingList specific api helper class
+        /// </summary>
+        private static ShoppingListApiHelper apiHelper;
 
         public ObservableCollection<ShoppingListModel> ShoppingListModels { get; }
         
@@ -22,13 +32,13 @@ namespace ShoppingAssistant.Models
 
         private string baseApiUrl;
 
-        public ShoppingListModelManager(string localDatabaseName, LoginAPIHelper helper)
+        public ShoppingListController(string localDatabaseName, LoginAPIHelper helper)
         {
             this.localDatabaseName = localDatabaseName;
             this.baseApiUrl = baseApiUrl;
 
             databaseHelper = new ShoppingAssistantDatabaseHelper(this.localDatabaseName, true);
-            apiHelper = new ShoppingAssistantAPIHelper(helper);
+            apiHelper = new ShoppingListApiHelper(helper);
 
             this.ShoppingListModels = new ObservableCollection<ShoppingListModel>();
         }
@@ -65,7 +75,7 @@ namespace ShoppingAssistant.Models
                 this.AddShoppingLists(databaseHelper.GetShoppingLists());
 
                 var apiShoppingListModels = await apiHelper.GetShoppingListModelsAsync();
-                apiShoppingListModels.ForEach(SaveShoppingListModelsToDatabase);
+                apiShoppingListModels.ForEach(SaveShoppingListToDatabase);
 
                 this.AddShoppingLists(apiShoppingListModels);
             }
@@ -104,18 +114,39 @@ namespace ShoppingAssistant.Models
 
         public void SaveShoppingListModel(ShoppingListModel list)
         {
-            SaveShoppingListModelsToDatabase(list);
+            SaveShoppingListToDatabase(list);
             apiHelper.SaveShoppingListModelAsync(list);
         }
 
-        private void SaveShoppingListModelsToDatabase(ShoppingListModel list)
+        /// <summary>
+        /// Method to save a ShoppingList to the database
+        /// </summary>
+        /// <param name="list"></param>
+        private void SaveShoppingListToDatabase(ShoppingListModel list)
         {
             databaseHelper.SaveShoppingListAsync(list);
         }
 
-        public void AddOwner(ShoppingListModel list)
+        /// <summary>
+        /// Method to add a new owner to the given ShoppingList
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="newUserEmail"></param>
+        public async Task<bool> AddOwnerAsync(ShoppingListModel list, string newUserEmail)
         {
-            
+            var apiResponse = await apiHelper.AddShoppingListModelOwnerAsync(list, newUserEmail);
+
+            // Create a ListOwnerModel in the local database if the api responds with success
+            if (apiResponse)
+            {
+                databaseHelper.SaveItemsAsync<ListOwnerModel>(new ListOwnerModel()
+                {
+                    ShoppingListModelId = list.LocalDbId.Value,
+                    UserEmail = newUserEmail
+                });   
+            }
+
+            return apiResponse;
         }
     }
 }

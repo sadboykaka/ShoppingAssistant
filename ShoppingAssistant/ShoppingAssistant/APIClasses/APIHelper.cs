@@ -39,6 +39,43 @@ namespace ShoppingAssistant.APIClasses
             return await this.RefreshDataAsync<T>(baseurl + "/" + model.UrlSuffixProperty + "/" + model.RemoteDbId);
         }
 
+        /// <summary>
+        /// Method to perform a PUT request at the given url with the given url parameters
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="urlparams"></param>
+        /// <returns></returns>
+        public async Task<bool> PutItemAsync(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
+        {
+            UriBuilder builder = new UriBuilder(url);
+
+            // Create query string using urlparams
+            StringBuilder sb = new StringBuilder();
+            foreach (var param in urlparams)
+            {
+                sb.Append(param.Key + "=" + param.Value + "&");
+            }
+
+            // Remove the last ampersand
+            sb.Remove(sb.Length - 1, 1);
+
+            builder.Query = sb.ToString();
+
+            // Get response
+            // Null content as we only want to send the email parameter, not an entire object
+            try
+            {
+                var response = await client.PutAsync(builder.Uri, new StringContent(JsonConvert.Null, Encoding.UTF8, "application/json"));
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception e)
+            {
+                App.Log.Error("PutItemAsync", "Uri = " + builder.Uri + "\n" + e.Message + "\n" + e.StackTrace);
+                return false;
+            }
+        }
+
         protected async Task<List<T>> RefreshDataAsync<T>(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
         {
             UriBuilder builder = new UriBuilder(url);
@@ -50,6 +87,7 @@ namespace ShoppingAssistant.APIClasses
                 sb.Append(param.Key + "=" + param.Value + "&");
             }
 
+            // Remove the last ampersand
             sb.Remove(sb.Length - 1, 1);
 
             builder.Query = sb.ToString();
@@ -213,7 +251,8 @@ namespace ShoppingAssistant.APIClasses
                     // Convert json in http response to a List of T items
                     var authToken = await response.Content.ReadAsStringAsync();
                     authToken = authToken.Substring(15);
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", authToken);
+                    client.DefaultRequestHeaders.Authorization =
+                        new AuthenticationHeaderValue("Authorization", authToken);
                     return LoginResponse.Success;
                 }
                 else if (response.StatusCode == HttpStatusCode.ServiceUnavailable)

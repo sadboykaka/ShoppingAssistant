@@ -38,7 +38,7 @@ namespace ShoppingAssistant.Views
 				DateCreated = DateTime.Now.ToString()
 			};
 
-			App.ModelManager.ShoppingListModelManager.SaveShoppingListModel(newShoppingListModel);
+			App.ModelManager.ShoppingListController.SaveShoppingListModel(newShoppingListModel);
 
 			callback?.Invoke(this, new ShoppingListEventArgs(newShoppingListModel));
 		}

@@ -12,40 +12,71 @@ using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant
 {
+    /// <summary>
+    /// View for single shopping list
+    /// </summary>
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ShoppingListView : ContentPage
     {
-        // Object representing the currently selected item in the ListView
-        private object selectedItem = null;
+        /// <summary>
+        /// Currently selected item in the ItemQuantityPair list view
+        /// </summary>
+        private object selectedItem;
 
+        /// <summary>
+        /// Raised when a new ItemQuantityPair is to be added to the ShoppingList
+        /// </summary>
         public event ItemQuantityPairEventHandler ItemQuantityPairEvent;
 
-        private ShoppingListModel shoppingList;
+        /// <summary>
+        /// The currently represented ShoppingList
+        /// </summary>
+        private readonly ShoppingListModel shoppingList;
 
+        /// <summary>
+        /// Does the ShoppingList need to be updated in the DB/API
+        /// </summary>
         private bool requiresUpdate = false;
-        
-        // ObservableCollection getter for the ListView items with property for data binding
-        public ObservableCollection<ItemQuantityPairModel > Items { get { return this.shoppingList.Items; } }
 
-        // Constructor
+        /// <summary>
+        /// Binding property
+        /// </summary>
+        public string Email { get; set; }
+        
+        /// <summary>
+        /// Bindable property to access ItemQuantityPairs
+        /// </summary>
+        public ObservableCollection<ItemQuantityPairModel > Items => this.shoppingList.Items;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="list"></param>
         public ShoppingListView(ShoppingListModel list)
         {
             InitializeComponent();
 
             this.shoppingList = list;
 
+            // Set event delegates
             this.ItemQuantityPairEvent += AddItemEvent;
-
-            Button btnAddItem = this.FindByName<Button>("btnAddItem");
             btnAddItem.Clicked += delegate { OnAddItemClick(); };
+            btnShare.Clicked += delegate { OnShareClick(); };
 
             BindingContext = this;            
         }
 
-        async private void AddItemEvent(object sender, ItemQuantityPairArgs args)
+        /// <summary>
+        /// New ItemQuantityiPair event handler method
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private async void AddItemEvent(object sender, ItemQuantityPairArgs args)
         {
             this.requiresUpdate = true;
             this.shoppingList.Items.Add(args.ItemQuantityPairModel);
+            App.ModelManager.ShoppingListController.SaveShoppingListModel(this.shoppingList);
+
             await Navigation.PopAsync();
         }
 
@@ -76,12 +107,15 @@ namespace ShoppingAssistant
             this.requiresUpdate = true;
         }
 
-        // Method to remove the delete button from the toolbar
+        /// <summary>
+        /// Method to remove the delete button from the toolbar
+        /// </summary>
         private void RemoveToolbarItems()
         {
             ToolbarItems.Clear();
         }
         
+        /// <inheritdoc />
         /// <summary>
         /// Called when this page is removed from the NavigationStack
         /// </summary>
@@ -89,48 +123,29 @@ namespace ShoppingAssistant
         {
             // Save the shopping list in the local database
             if (this.requiresUpdate)
-                App.ModelManager.ShoppingListModelManager.SaveShoppingListModel(this.shoppingList);
+                App.ModelManager.ShoppingListController.SaveShoppingListModel(this.shoppingList);
             base.OnDisappearing();
         }
 
-        async void OnAddItemClick()
+        /// <summary>
+        /// Method called when AddItem button is clicked
+        /// </summary>
+        private async void OnAddItemClick()
         {
             // Display the new window
             await Navigation.PushAsync(new AddItemView(AddItemEvent));
         }
-
-        // Method to handle the clicking of items in the ListView
-        void Handle_ItemTapped(object sender, SelectedItemChangedEventArgs e)
+        
+        /// <summary>
+        /// Method called when Share button is clicked
+        /// </summary>
+        private async void OnShareClick()
         {
-            // Error handling
-            if (e.SelectedItem == null)
-            {
-                return;
-            }
+            var response = await App.ModelManager.ShoppingListController.AddOwnerAsync(shoppingList, Email);
 
-            if (selectedItem == null)
-            {
-                // Select the item if previously selected is null
-                selectedItem = ((ListView)sender).SelectedItem;
-                AddToolbarItems();
-            }
-            else
-            {
-                // Deselect the item if the same item is tapped
-                if (selectedItem == ((ListView)sender).SelectedItem)
-                {
-                    //Deselect Item
-                    ((ListView)sender).SelectedItem = null;
-
-                    selectedItem = null;
-                    RemoveToolbarItems();
-                }
-                else
-                {
-                    // Update the stored selected item
-                    selectedItem = ((ListView)sender).SelectedItem;
-                }
-            }
+            this.lblShareResult.IsVisible = true;
+            this.lblShareResult.Text = response ? "Shared with user" : "Could not share with user";
+            this.lblShareResult.TextColor = response ? Color.Green : Color.Red;
         }
     }
 }

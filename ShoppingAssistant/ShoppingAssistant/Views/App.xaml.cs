@@ -1,39 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ShoppingAssistant.DatabaseClasses;
-using ShoppingAssistant.Logging;
+﻿using ShoppingAssistant.Logging;
 using ShoppingAssistant.Models;
 using ShoppingAssistant.Views;
 using Xamarin.Forms;
 
 namespace ShoppingAssistant
 {
-	public partial class App : Application
+	/// <inheritdoc />
+	/// <summary>
+	/// Main class
+	/// </summary>
+	public partial class App
 	{
-	    public static ModelManager ModelManager;
-	    public static ILog Log;
+		/// <summary>
+		/// Logger reference
+		/// </summary>
+		public static ILog Log;
 
-	    public static GeolocationController GeolocationController;
-        
-        public static MDP MD { get; set; }
+		/// <summary>
+		/// ModelManager reference
+		/// </summary>
+		public static ModelManager ModelManager;
+		
+		/// <summary>
+		/// GeolocationController reference
+		/// </summary>
+		public static GeolocationController GeolocationController;
+		
+		/// <summary>
+		/// MasterDetailPage reference
+		/// </summary>
+		public static MDP Md { get; set; }
 
-        public App ()
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public App ()
 		{
 			InitializeComponent();
-		    Log = DependencyService.Get<ILog>();
-		    GeolocationController = new GeolocationController();
-            ModelManager = new ModelManager();
 
-		    
+			// Create logger
+			Log = DependencyService.Get<ILog>();
 
+			// Geolocation controller
+			// Not user specific and takes some time so created early
+			GeolocationController = new GeolocationController();
+			
+			// Create master controller
+			ModelManager = new ModelManager();
+			
+			// Open Login View
+			MainPage = new NavigationPage(new LoginView());
+		}
 
-		    //MD = new MDP();
-
-		    //Application.Current.MainPage = MD;
-
-		    MainPage = new NavigationPage(new LoginView());
+		/// <summary>
+		/// Method to log the user out
+		/// Required at the application level as the root page needs to be changed
+		/// </summary>
+		public static void Logout()
+		{
+			ModelManager.Logout();
+			Current.MainPage = new NavigationPage(new LoginView());
 		}
 
 		protected override void OnStart ()

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ShoppingAssistant.APIClasses;
 using ShoppingAssistant.Models;
 using Xamarin.Forms;
@@ -10,97 +6,137 @@ using Xamarin.Forms.Xaml;
 
 namespace ShoppingAssistant.Views
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Register View
+    /// </summary>
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class RegisterView : ContentPage
+    public partial class RegisterView
     {
+        /// <summary>
+        /// Binding Property
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Binding Property
+        /// </summary>
         public string Email { get; set; }
 
+        /// <summary>
+        /// Binding Property
+        /// </summary>
         public string Password { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public RegisterView()
         {
             Title = "Shopping Assistant - Register";
             BindingContext = this;
             InitializeComponent();
 
-            this.BtnRegister.Clicked += this.Register;
-        }
-        private void DisableUI()
-        {
-            this.BtnRegister.IsEnabled = false;
-            this.EntryEmail.IsEnabled = false;
-            this.EntryPassword.IsEnabled = false;
-            this.EntryName.IsEnabled = false;
+            // Set event handler
+            BtnRegister.Clicked += Register;
         }
 
-        private void EnableUI()
+        /// <summary>
+        /// Method to disable the interactive UI elements (while processing is being done)
+        /// </summary>
+        private void DisableUi()
         {
-            this.BtnRegister.IsEnabled = true;
-            this.EntryEmail.IsEnabled = true;
-            this.EntryPassword.IsEnabled = true;
-            this.EntryName.IsEnabled = true;
+            BtnRegister.IsEnabled = false;
+            EntryEmail.IsEnabled = false;
+            EntryPassword.IsEnabled = false;
+            EntryName.IsEnabled = false;
         }
 
+        /// <summary>
+        /// Method to enable the interactive UI elements (after processing has finished)
+        /// </summary>
+        private void EnableUi()
+        {
+            BtnRegister.IsEnabled = true;
+            EntryEmail.IsEnabled = true;
+            EntryPassword.IsEnabled = true;
+            EntryName.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Method to check the user input
+        /// </summary>
+        /// <returns>True if valid, false if not</returns>
         private bool CheckInput()
         {
-            if (string.IsNullOrEmpty(this.Name))
+            if (string.IsNullOrEmpty(Name))
             {
-                this.LabelError.Text = "Name cannot be blank";
+                LabelError.Text = "Name cannot be blank";
                 return false;
             }
 
-            if (string.IsNullOrEmpty(this.Email))
+            if (string.IsNullOrEmpty(Email))
             {
-                this.LabelError.Text = "Email cannot be blank";
+                LabelError.Text = "Email cannot be blank";
                 return false;
             }
 
-            if (string.IsNullOrEmpty(this.Password))
+            if (string.IsNullOrEmpty(Password))
             {
-                this.LabelError.Text = "Password cannot be blank";
+                LabelError.Text = "Password cannot be blank";
                 return false;
             }
 
-            this.LabelError.Text = "";
+            LabelError.Text = "";
             return true;
         }
 
+        /// <summary>
+        /// Method to register a user
+        /// Asynchronous
+        /// Disables UI while running
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private async void Register(object sender, EventArgs args)
         {
-            if (!this.CheckInput())
+            // Return if input invalid
+            if (!CheckInput())
             {
                 return;
             }
 
-            this.DisableUI();
+            // Disable UI
+            DisableUi();
 
+            // Get response from the main controller
             var response = await App.ModelManager.Register(new UserModel
             {
-                Name = this.Name,
-                Email = this.Email.Replace(" ", string.Empty),
-                Password = this.Password
+                Name = Name,
+                // Replace any spaces in the email (auto correct options typically add one at the end)
+                Email = Email.Replace(" ", string.Empty),
+                Password = Password
             });
 
             switch (response)
             {
                 case LoginResponse.InvalidCredentials:
-                    this.LabelError.Text = "User already registered with this email";
+                    LabelError.Text = "User already registered with this email";
                     break;
                 case LoginResponse.NoResponse:
-                    this.LabelError.Text = "Cannot connect to server";
+                    LabelError.Text = "Cannot connect to server";
                     break;
                 case LoginResponse.Success:
-                    this.LabelError.Text = "";
+                    LabelError.Text = "";
 
-                    App.MD = new MDP();
-                    Application.Current.MainPage = App.MD;
-
+                    // Open the main page
+                    App.Md = new MDP();
+                    Application.Current.MainPage = App.Md;
                     break;
             }
 
-            this.EnableUI();
+            // Enable the UI
+            EnableUi();
         }
     }
 }

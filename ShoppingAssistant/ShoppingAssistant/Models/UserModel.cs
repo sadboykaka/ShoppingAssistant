@@ -13,7 +13,7 @@ namespace ShoppingAssistant.Models
         public string Name { get; set; }
 
         [JsonProperty("email")]
-        //[Unique]
+        [Unique]
         public string Email { get; set; }
 
         [JsonProperty("password")]

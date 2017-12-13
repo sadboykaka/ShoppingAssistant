@@ -16,7 +16,7 @@ namespace ShoppingAssistant.Views
 	{
 		public NavigationPage navPage = new NavigationPage();
 
-		private ObservableCollection<ShoppingListModel> shoppingLists = App.ModelManager.ShoppingListModelManager.ShoppingListModels;
+		private ObservableCollection<ShoppingListModel> shoppingLists = App.ModelManager.ShoppingListController.ShoppingListModels;
 		public ObservableCollection<ShoppingListModel> ShoppingLists { get { return shoppingLists; } }
 
 		public ShoppingListsView()
@@ -50,7 +50,7 @@ namespace ShoppingAssistant.Views
 			//listView.SelectedItem = null;
 			var model = (ShoppingListModel)mi.CommandParameter;
 
-			App.ModelManager.ShoppingListModelManager.DeleteShoppingListAsync(model);
+			App.ModelManager.ShoppingListController.DeleteShoppingListAsync(model);
 
 			this.shoppingLists.Remove((ShoppingListModel)mi.CommandParameter);
 		}
