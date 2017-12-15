@@ -7,7 +7,7 @@ namespace ShoppingAssistant.Models
 {
     public class ModelManager
     {
-        private readonly LoginAPIHelper helper;
+        private readonly LoginApiHelper helper;
 
         private readonly ShoppingListController shoppingListController;
         public ShoppingListController ShoppingListController { get { return shoppingListController; } }
@@ -27,7 +27,7 @@ namespace ShoppingAssistant.Models
 
         public ModelManager()
         {
-            helper = new LoginAPIHelper(BaseApiUrl);
+            helper = new LoginApiHelper(BaseApiUrl);
 
             this.shoppingListController = new ShoppingListController(localDatabaseName, helper);
             this.locationModelManager = new LocationModelManager(localDatabaseName, helper);

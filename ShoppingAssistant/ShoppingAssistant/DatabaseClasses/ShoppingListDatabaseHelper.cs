@@ -8,25 +8,40 @@ using Xamarin.Forms.Internals;
 
 namespace ShoppingAssistant.DatabaseClasses
 {
-    class ShoppingAssistantDatabaseHelper : DatabaseHelper
+    /// <inheritdoc />
+    /// <summary>
+    /// Local database helper class for ShopingListModels
+    /// </summary>
+    internal class ShoppingListDatabaseHelper : DatabaseHelper
     {
+        /// <summary>
+        /// ListOwner collection giving users access to certain shopping lists
+        /// </summary>
         private List<ListOwnerModel> listOwners;
 
-        public ShoppingAssistantDatabaseHelper(string dbPath, bool createTables) : base(dbPath)
+        /// <inheritdoc />
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dbPath">Local database path</param>
+        /// <param name="createTables">Should the tables be constructed?</param>
+        public ShoppingListDatabaseHelper(string dbPath, bool createTables) : base(dbPath)
         {
             if (createTables)
             {
-                this.CreateDatabases();
+                CreateDatabases();
             }
         }
 
+        /// <summary>
+        /// Method to create the required database tables
+        /// </summary>
         private void CreateDatabases()
         {
             //DatabaseAsyncConnection.DropTableAsync<ShoppingListModel>();
             //DatabaseAsyncConnection.DropTableAsync<ItemQuantityPairModel>();
             //DatabaseAsyncConnection.DropTableAsync<ListOwnerModel>();
-
-
+            
             DatabaseAsyncConnection.CreateTableAsync<LocationModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
             DatabaseAsyncConnection.CreateTableAsync<ShoppingListModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
             DatabaseAsyncConnection.CreateTableAsync<ItemQuantityPairModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
@@ -34,12 +49,29 @@ namespace ShoppingAssistant.DatabaseClasses
                 .CreateTableAsync<ListOwnerModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
         }
 
+        /// <summary>
+        /// Method to delete the ShoppingListModel from the local database
+        /// Deletes all the associated ItemQuantityPairModels
+        /// Deletes all the associated ListOwnerModels
+        /// </summary>
+        /// <param name="list"></param>
         public void DeleteShoppingListAsync(ShoppingListModel list)
         {
             try
             {
+                // Delete all the item quantity pairs
                 list.Items.ForEach(item => DeleteItemAsync(item));
 
+                // Delete all the list owners associated with this list from the database
+                foreach (var lo in listOwners.Where(lo => lo.ShoppingListModelId == list.LocalDbId))
+                {
+                    DeleteItemAsync(lo);
+                }
+
+                // Remove all the listowners associated with this list from the member variable
+                listOwners.RemoveAll(lo => lo.ShoppingListModelId == list.LocalDbId);
+
+                // Finally delete the item itself
                 DeleteItemAsync(list);
             }
             catch (Exception e)
@@ -76,7 +108,11 @@ namespace ShoppingAssistant.DatabaseClasses
             return lists;
         }
 
-
+        /// <summary>
+        /// Method to save a shopping list to the local database asynchronously
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public async Task SaveShoppingListAsync(ShoppingListModel list)
         {
             var user = App.ModelManager.LoginController.CurrentUser;
@@ -98,6 +134,7 @@ namespace ShoppingAssistant.DatabaseClasses
                 UserEmail = user.Email
             };
 
+            // Save the ListOwnerModel if it is unique
             if (!listOwners.Any(lo =>
                 lo.UserEmail == listOwnerModel.UserEmail &&
                 lo.ShoppingListModelId == listOwnerModel.ShoppingListModelId))

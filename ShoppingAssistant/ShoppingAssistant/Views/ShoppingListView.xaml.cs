@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using ShoppingAssistant.APIClasses;
-using ShoppingAssistant.DatabaseClasses;
+﻿using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ShoppingAssistant.EventClasses;
@@ -35,8 +29,9 @@ namespace ShoppingAssistant
 
         /// <summary>
         /// Does the ShoppingList need to be updated in the DB/API
+        /// Default false
         /// </summary>
-        private bool requiresUpdate = false;
+        private bool requiresUpdate;
 
         /// <summary>
         /// Binding property
@@ -46,7 +41,7 @@ namespace ShoppingAssistant
         /// <summary>
         /// Bindable property to access ItemQuantityPairs
         /// </summary>
-        public ObservableCollection<ItemQuantityPairModel > Items => this.shoppingList.Items;
+        public ObservableCollection<ItemQuantityPairModel> Items => shoppingList.Items;
 
         /// <summary>
         /// Constructor
@@ -56,10 +51,10 @@ namespace ShoppingAssistant
         {
             InitializeComponent();
 
-            this.shoppingList = list;
+            shoppingList = list;
 
             // Set event delegates
-            this.ItemQuantityPairEvent += AddItemEvent;
+            ItemQuantityPairEvent += AddItemEvent;
             btnAddItem.Clicked += delegate { OnAddItemClick(); };
             btnShare.Clicked += delegate { OnShareClick(); };
 
@@ -73,9 +68,9 @@ namespace ShoppingAssistant
         /// <param name="args"></param>
         private async void AddItemEvent(object sender, ItemQuantityPairArgs args)
         {
-            this.requiresUpdate = true;
-            this.shoppingList.Items.Add(args.ItemQuantityPairModel);
-            App.ModelManager.ShoppingListController.SaveShoppingListModel(this.shoppingList);
+            requiresUpdate = true;
+            shoppingList.Items.Add(args.ItemQuantityPairModel);
+            App.ModelManager.ShoppingListController.SaveShoppingListModel(shoppingList);
 
             await Navigation.PopAsync();
         }
@@ -98,13 +93,13 @@ namespace ShoppingAssistant
 
             // Deselect the selected item and change the stored value
             listView.SelectedItem = null;
-            this.selectedItem = null;
+            selectedItem = null;
 
             // Remove the item from the list and the delete button from the toolbar
-            this.shoppingList.Items.Remove(iqp);
-            this.RemoveToolbarItems();
+            shoppingList.Items.Remove(iqp);
+            RemoveToolbarItems();
 
-            this.requiresUpdate = true;
+            requiresUpdate = true;
         }
 
         /// <summary>
@@ -122,8 +117,8 @@ namespace ShoppingAssistant
         protected override void OnDisappearing()
         {
             // Save the shopping list in the local database
-            if (this.requiresUpdate)
-                App.ModelManager.ShoppingListController.SaveShoppingListModel(this.shoppingList);
+            if (requiresUpdate)
+                App.ModelManager.ShoppingListController.SaveShoppingListModel(shoppingList);
             base.OnDisappearing();
         }
 
@@ -143,9 +138,9 @@ namespace ShoppingAssistant
         {
             var response = await App.ModelManager.ShoppingListController.AddOwnerAsync(shoppingList, Email);
 
-            this.lblShareResult.IsVisible = true;
-            this.lblShareResult.Text = response ? "Shared with user" : "Could not share with user";
-            this.lblShareResult.TextColor = response ? Color.Green : Color.Red;
+            lblShareResult.IsVisible = true;
+            lblShareResult.Text = response ? "Shared with user" : "Could not share with user";
+            lblShareResult.TextColor = response ? Color.Green : Color.Red;
         }
     }
 }

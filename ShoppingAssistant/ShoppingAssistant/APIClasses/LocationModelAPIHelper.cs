@@ -10,10 +10,10 @@ namespace ShoppingAssistant.APIClasses
 {
     public class LocationModelAPIHelper
     {
-        private readonly LoginAPIHelper helper;
+        private readonly LoginApiHelper helper;
         private readonly string baseUrl;
 
-        public LocationModelAPIHelper(LoginAPIHelper helper)
+        public LocationModelAPIHelper(LoginApiHelper helper)
         {
             this.helper = helper;
             this.baseUrl = baseUrl;
@@ -58,7 +58,7 @@ namespace ShoppingAssistant.APIClasses
 
         public async Task<bool> DeleteLocationModelAsync(LocationModel location)
         {
-            return await helper.DeleteItemAsync<LocationModel>(baseUrl + "/" + location.UrlSuffixProperty + "/" + location.RemoteDbId);
+            return await helper.DeleteItemAsync(baseUrl + "/" + location.UrlSuffixProperty + "/" + location.RemoteDbId);
         }
     }
 }

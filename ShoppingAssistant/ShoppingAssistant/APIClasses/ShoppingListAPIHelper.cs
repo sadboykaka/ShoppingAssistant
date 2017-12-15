@@ -13,9 +13,9 @@ namespace ShoppingAssistant.APIClasses
     class ShoppingListApiHelper
     {
 
-        private readonly LoginAPIHelper helper;
+        private readonly LoginApiHelper helper;
         
-        public ShoppingListApiHelper(LoginAPIHelper helper)
+        public ShoppingListApiHelper(LoginApiHelper helper)
         {
             this.helper = helper;
         }
@@ -52,7 +52,7 @@ namespace ShoppingAssistant.APIClasses
 
         public async Task<bool> DeleteShoppingListModelAsync<T>(T item) where T : Model
         {
-            return await helper.DeleteItemAsync<T>(helper.BaseUrl + "/" + item.UrlSuffixProperty + "/" + item.RemoteDbId);
+            return await helper.DeleteItemAsync(helper.BaseUrl + "/" + item.UrlSuffixProperty + "/" + item.RemoteDbId);
         }
 
         /// <summary>

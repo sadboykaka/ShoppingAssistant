@@ -14,7 +14,7 @@ namespace ShoppingAssistant.Controllers
         /// <summary>
         /// API helper
         /// </summary>
-        private readonly LoginAPIHelper apiHelper;
+        private readonly LoginApiHelper apiHelper;
 
         /// <summary>
         /// Database helper
@@ -32,7 +32,7 @@ namespace ShoppingAssistant.Controllers
         /// </summary>
         /// <param name="dbName"></param>
         /// <param name="apiHelper"></param>
-        public LoginController(string dbName, LoginAPIHelper apiHelper)
+        public LoginController(string dbName, LoginApiHelper apiHelper)
         {
             this.apiHelper = apiHelper;
             dbHelper = new DatabaseHelper(dbName);

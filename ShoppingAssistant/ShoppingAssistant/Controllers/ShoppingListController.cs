@@ -19,7 +19,7 @@ namespace ShoppingAssistant.Controllers
         /// <summary>
         /// Static reference to ShoppingList specific database helper class
         /// </summary>
-        private static ShoppingAssistantDatabaseHelper databaseHelper;
+        private static ShoppingListDatabaseHelper databaseHelper;
 
         /// <summary>
         /// Static reference to ShoppingList specific api helper class
@@ -32,12 +32,12 @@ namespace ShoppingAssistant.Controllers
 
         private string baseApiUrl;
 
-        public ShoppingListController(string localDatabaseName, LoginAPIHelper helper)
+        public ShoppingListController(string localDatabaseName, LoginApiHelper helper)
         {
             this.localDatabaseName = localDatabaseName;
             this.baseApiUrl = baseApiUrl;
 
-            databaseHelper = new ShoppingAssistantDatabaseHelper(this.localDatabaseName, true);
+            databaseHelper = new ShoppingListDatabaseHelper(this.localDatabaseName, true);
             apiHelper = new ShoppingListApiHelper(helper);
 
             this.ShoppingListModels = new ObservableCollection<ShoppingListModel>();

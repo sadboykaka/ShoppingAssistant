@@ -21,7 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\IFileHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\LocationModelDatabaseHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Crypt\Crypt.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\ShoppingAssistantDatabaseHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\ShoppingListDatabaseHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\IIdentifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ItemPriceLocationArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ShoppingListEventArgs.cs" />

@@ -1,74 +1,145 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant.APIClasses
 {
-    public class LoginAPIHelper : APIHelper
+    /// <inheritdoc />
+    /// <summary>
+    /// Helper class that deals with logging in a user before performing other actions
+    /// </summary>
+    public class LoginApiHelper : ApiHelper
     {
-        public readonly string BaseUrl;
-        private bool loggedIn = false;
+        /// <summary>
+        /// Is the user logged in
+        /// </summary>
+        private bool loggedIn;
 
-        public LoginAPIHelper(string baseUrl) : base()
-        {
-            this.BaseUrl = baseUrl;
-        }
-
-        public async Task<LoginResponse> Login(UserModel user)
-        {
-            var response = await Login(user, BaseUrl + "auth/login");
-            if (response == LoginResponse.Success)
-            {
-                loggedIn = true;
-            }
-
-            return response;
-        }
-
-        public async Task<LoginResponse> Register(UserModel user)
-        {
-            var response = await Register(user, BaseUrl + "signup");
-            if (response == LoginResponse.Success)
-            {
-                loggedIn = true;
-            }
-
-            return response;
-        }
-
+        /// <summary>
+        /// User model for the user that should be logged in
+        /// </summary>
+        private UserModel user;
         
+        /// <summary>
+        /// Base api url
+        /// </summary>
+        public readonly string BaseUrl;
 
-        public new async Task<List<T>> RefreshDataAsync<T>(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
+        /// <inheritdoc />
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        public LoginApiHelper(string baseUrl)
         {
-            while(!loggedIn)
+            BaseUrl = baseUrl;
+        }
+
+        /// <summary>
+        /// TODO Convert to queue?
+        /// Method to 
+        /// </summary>
+        private async void AwaitLogin()
+        {
+            while (!loggedIn)
             {
+                await Login(user);
                 await Task.Delay(2000);
             }
+        }
 
+        /// <summary>
+        /// Method to log the given user in 
+        /// </summary>
+        /// <param name="userParam"></param>
+        /// <returns></returns>
+        public async Task<LoginResponse> Login(UserModel userParam)
+        {
+            var response = await Login(userParam, BaseUrl + "auth/login");
+            user = userParam;
+            if (response == LoginResponse.Success)
+            {
+                loggedIn = true;
+            }
+
+            return response;
+        }
+
+        /// <summary>
+        /// Method to register the given user
+        /// </summary>
+        /// <param name="userParam"></param>
+        /// <returns></returns>
+        public async Task<LoginResponse> Register(UserModel userParam)
+        {
+            var response = await Register(userParam, BaseUrl + "signup");
+            if (response == LoginResponse.Success)
+            {
+                loggedIn = true;
+            }
+
+            return response;
+        }
+        
+        /// <summary>
+        /// Overrides the RefreshDataAsync method in the base class
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="urlparams"></param>
+        /// <returns></returns>
+        public new async Task<List<T>> RefreshDataAsync<T>(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
+        {
+            AwaitLogin();
             return await base.RefreshDataAsync<T>(url, urlparams);
         }
 
+        /// <summary>
+        /// Overrides the RefreshDataAsync method in the base class
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public new async Task<List<T>> RefreshDataAsync<T>(string url)
         {
-            while (!loggedIn)
-            {
-                await Task.Delay(2000);
-            }
-            
+            AwaitLogin();
             return await base.RefreshDataAsync<T>(url);
         }
 
-        public new async Task<bool> DeleteItemAsync<T>(string url) where T : Model
+        /// <summary>
+        /// Overrides the DeleteItemAsync method in the base class
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public new async Task<bool> DeleteItemAsync(string url)
         {
-            while (!loggedIn)
-            {
-                await Task.Delay(2000);
-            }
+            AwaitLogin();
+            return await base.DeleteItemAsync(url);
+        }
 
-            return await base.DeleteItemAsync<T>(url);
+        /// <summary>
+        /// Overrides the PutItemAsync method in the base class
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="urlparams"></param>
+        /// <returns></returns>
+        public new async Task<bool> PutItemAsync(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
+        {
+            AwaitLogin();
+            return await base.PutItemAsync(url, urlparams);
+        }
+
+        /// <summary>
+        /// Overrides the SaveItemAsync method in the base class
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public new async Task SaveItemAsync<T>(T item, string url) where T : Model
+        {
+            AwaitLogin();
+            await base.SaveItemAsync(item, url);
         }
     }
 }

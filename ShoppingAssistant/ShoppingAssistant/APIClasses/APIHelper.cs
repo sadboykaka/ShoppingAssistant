@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Collections.Generic;
@@ -8,11 +7,13 @@ using System.Net.Http.Headers;
 using System.Text;
 using ModernHttpClient;
 using Newtonsoft.Json;
-using ShoppingAssistant.DatabaseClasses;
 using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant.APIClasses
 {
+    /// <summary>
+    /// Login Response enumeration
+    /// </summary>
     public enum LoginResponse
     {
         Success,
@@ -20,27 +21,191 @@ namespace ShoppingAssistant.APIClasses
         NoResponse
     }
     
-    public class APIHelper
+    /// <summary>
+    ///  ApiHelper class
+    /// </summary>
+    public class ApiHelper
     {
-        public static APIHelper Helper = new APIHelper();
+        /// <summary>
+        /// HttpClient object
+        /// Stores Authorization headers
+        /// </summary>
+        private readonly HttpClient client;
 
-        protected HttpClient client;
-
+        /// <summary>
+        /// Settings for the JsonSerializer
+        /// Stops null values from being sent to the API
+        /// </summary>
         private readonly JsonSerializerSettings serializerSettings = new JsonSerializerSettings()
             {NullValueHandling = NullValueHandling.Ignore};
 
-        public APIHelper()
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public ApiHelper()
         {
             client = new HttpClient(new NativeMessageHandler());
         }
 
-        public async Task<List<T>> RefreshDataAsync<T>(T model, string baseurl) where T : Model
+        /// <summary>
+        /// Protected method to register a user on the API at the given url with a given UserModel
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        protected async Task<LoginResponse> Register(UserModel login, string url)
         {
-            return await this.RefreshDataAsync<T>(baseurl + "/" + model.UrlSuffixProperty + "/" + model.RemoteDbId);
+            try
+            {
+                // Post new user info
+                var uri = new Uri(url);
+                var payload = JsonConvert.SerializeObject(login, serializerSettings);
+                var content = new StringContent(payload, Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(uri, content);
+
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        App.Log.Info("Register", "Successfully registered account for " + login.Email);
+
+                        // Convert json in http response to a string auth token
+                        var stringResponse = await response.Content.ReadAsStringAsync();
+                        var authToken = stringResponse.Remove(0, 56);
+                        authToken = authToken.Replace("\"", string.Empty);
+                        authToken = authToken.Replace("}", string.Empty);
+
+                        // Set the HTTPClient headers
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", authToken);
+
+                        // Return success
+                        return LoginResponse.Success;
+                    case HttpStatusCode.ServiceUnavailable:
+                        App.Log.Info("Register", "Could not connect to API server");
+
+                        // Return no response
+                        return LoginResponse.NoResponse;
+                    default:
+                        App.Log.Info("Register", "Could not register user " + login.Email);
+
+                        // Return invalid credentials (already registered)
+                        return LoginResponse.InvalidCredentials;
+                }
+            }
+            catch (Exception e)
+            {
+                App.Log.Error("Register", e.Message + " " + e.GetBaseException().Message);
+                return LoginResponse.NoResponse;
+            }
         }
 
         /// <summary>
-        /// Method to perform a PUT request at the given url with the given url parameters
+        /// Protected method to log a user in to the API at the given url with the given UserModel
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        protected async Task<LoginResponse> Login(UserModel login, string url)
+        {
+            try
+            {
+                // Post login info
+                var uri = new Uri(url);
+                var json = JsonConvert.SerializeObject(login, serializerSettings);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(uri, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Logging
+                    App.Log.Info("Login", "Successfully logged in user " + login.Email);
+
+                    // Convert json in http response to an authorization token
+                    var authToken = await response.Content.ReadAsStringAsync();
+                    authToken = authToken.Substring(15);
+
+                    // Set the HTTPClient headers
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", authToken);
+                    return LoginResponse.Success;
+                }
+                else if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
+                {
+                    App.Log.Info("Login", "Could not connect to API server");
+                    return LoginResponse.NoResponse;
+                }
+                else
+                {
+                    // Logging
+                    App.Log.Info("Login", "Could not log in user " + login.Email + ". Invalid credentials");
+                    return LoginResponse.InvalidCredentials;
+                }
+            }
+            catch (Exception e)
+            {
+                App.Log.Error("Login", e.Message + " " + e.GetBaseException().Message);
+                return LoginResponse.NoResponse;
+            }
+        }
+
+        /// <summary>
+        /// Method to get json data asynchronously for a given type from the given url with the given url parameters
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="urlparams"></param>
+        /// <returns></returns>
+        public async Task<List<T>> RefreshDataAsync<T>(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
+        {
+            UriBuilder builder = new UriBuilder(url);
+
+            // Create query string using urlparams
+            StringBuilder sb = new StringBuilder();
+            foreach (var param in urlparams)
+            {
+                sb.Append(param.Key + "=" + param.Value + "&");
+            }
+
+            // Remove the last ampersand
+            sb.Remove(sb.Length - 1, 1);
+
+            builder.Query = sb.ToString();
+
+            // Get response
+            var response = await client.GetAsync(builder.Uri);
+
+            // Return null if not successful
+            if (!response.IsSuccessStatusCode) return null;
+
+            // Convert json in http response to a List of T items
+            var content = await response.Content.ReadAsStringAsync();
+            var items = JsonConvert.DeserializeObject<List<T>>(content);
+            return items;
+        }
+
+        /// <summary>
+        /// Method to get json data asynchronously for a given type from the given url
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        protected async Task<List<T>> RefreshDataAsync<T>(string url)
+        {
+            // Get http response
+            var uri = new Uri(url);
+            var response = await client.GetAsync(uri);
+
+
+            // Return null if not successful
+            if (!response.IsSuccessStatusCode) return null;
+
+            // Convert json in http response to a List of T items
+            var content = await response.Content.ReadAsStringAsync();
+            var items = JsonConvert.DeserializeObject<List<T>>(content);
+            return items;
+        }
+
+        /// <summary>
+        /// Method to perform a PUT request with empty content at the given url with the given url parameters
+        /// Returns boolean indicating success
         /// </summary>
         /// <param name="url"></param>
         /// <param name="urlparams"></param>
@@ -76,62 +241,20 @@ namespace ShoppingAssistant.APIClasses
             }
         }
 
-        protected async Task<List<T>> RefreshDataAsync<T>(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
-        {
-            UriBuilder builder = new UriBuilder(url);
-
-            // Create query string using urlparams
-            StringBuilder sb = new StringBuilder();
-            foreach (var param in urlparams)
-            {
-                sb.Append(param.Key + "=" + param.Value + "&");
-            }
-
-            // Remove the last ampersand
-            sb.Remove(sb.Length - 1, 1);
-
-            builder.Query = sb.ToString();
-            
-            // Get response
-            var response = await client.GetAsync(builder.Uri);
-            
-            // Return null if not successful
-            if (!response.IsSuccessStatusCode) return null;
-
-            // Convert json in http response to a List of T items
-            var content = await response.Content.ReadAsStringAsync();
-            var items = JsonConvert.DeserializeObject<List<T>>(content);
-            return items;   
-        }
-
-        protected async Task<List<T>> RefreshDataAsync<T>(string url)
-        {
-            // Get http response
-            var uri = new Uri(url);
-            var response = await client.GetAsync(uri);
-            
-
-            // Return null if not successful
-            if (!response.IsSuccessStatusCode) return null;
-
-            // Convert json in http response to a List of T items
-            var content = await response.Content.ReadAsStringAsync();
-            var items = JsonConvert.DeserializeObject<List<T>>(content);
-            return items;
-        }
-
-        public async Task<bool> DeleteItemAsync<T>(T model, string baseUrl) where T : Model
-        {
-            return await DeleteItemAsync<T>(baseUrl + "/" + model.UrlSuffixProperty + "/" + model.RemoteDbId);
-        }
-
-        public async Task<bool> DeleteItemAsync<T>(string url) where T : Model
+        /// <summary>
+        /// Method to delete an item asynchronously at the given url
+        /// Returns boolean indicating success
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteItemAsync(string url)
         {
             try
             {
                 var uri = new Uri(url);
                 var response = await client.DeleteAsync(uri);
                 
+                // Return true if the item was deleted, or if it could not be found (indicating that it has already been deleted)
                 return response.StatusCode == HttpStatusCode.NoContent || response.StatusCode == HttpStatusCode.NotFound;
             }
             catch (Exception e)
@@ -141,11 +264,17 @@ namespace ShoppingAssistant.APIClasses
             }
         }
 
+        /// <summary>
+        /// Method to post/put an item of the given type asynchronously to the given url
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public async Task SaveItemAsync<T>(T item, string url) where T : Model
         {
             try
             {
-                // TODO logging
                 if (item.RemoteDbId == null)
                 {
                     // Post a new item
@@ -162,6 +291,7 @@ namespace ShoppingAssistant.APIClasses
                     else
                     {
                         // Logging
+                        App.Log.Info("SaveItemAsync<T>", "Could not post item with id " + item.RemoteDbId + " on url " + url + "\n" + "Returned status code " + response.StatusCode);
                     }
                 }
                 else
@@ -176,101 +306,18 @@ namespace ShoppingAssistant.APIClasses
                     if (response.IsSuccessStatusCode)
                     {
                         // Logging
-                        App.Log.Info("SaveItemAsync<T>", "Successfully patched item with id " + item.RemoteDbId + " on url " + url);
+                        App.Log.Info("SaveItemAsync<T>", "Successfully put item with id " + item.RemoteDbId + " on url " + url);
                     }
                     else
                     {
                         // Logging
+                        App.Log.Info("SaveItemAsync<T>", "Could not put item with id " + item.RemoteDbId + " on url " + url + "\n" + "Returned status code " + response.StatusCode);
                     }
                 }
-
             }
             catch (Exception e)
             {
                 App.Log.Error("SaveItemAsync<T>", e.Message + " " + e.GetBaseException().Message);
-            }
-        }
-
-        protected async Task<LoginResponse> Register(UserModel login, string url)
-        {
-            try
-            {
-                // Post new user info
-                var uri = new Uri(url);
-                var payload = JsonConvert.SerializeObject(login, serializerSettings);
-                var content = new StringContent(payload, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync(uri, content);
-
-                if (response.StatusCode == HttpStatusCode.Created)
-                {
-                    App.Log.Info("Register", "Successfully registered account for " + login.Email);
-
-                    // Convert json in http response to an auth token
-                    var stringResponse = await response.Content.ReadAsStringAsync();
-                    var authToken = stringResponse.Remove(0, 56);
-                    authToken = authToken.Replace("\"", string.Empty);
-                    authToken = authToken.Replace("}", string.Empty);
-                    client.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Authorization", authToken);
-
-                    return LoginResponse.Success;
-                }
-                else if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
-                {
-                    App.Log.Info("Register", "Could not connect to API server");
-                    return LoginResponse.NoResponse;
-                }
-                else
-                {
-                    App.Log.Info("Register", "Could not register user " + login.Email);
-                    return LoginResponse.InvalidCredentials;
-                }
-            }
-            catch (Exception e)
-            {
-                App.Log.Error("Register", e.Message + " " + e.GetBaseException().Message);
-                return LoginResponse.NoResponse;
-            }
-        }
-
-        protected async Task<LoginResponse> Login(UserModel login, string url)
-        {
-            try
-            {
-                // Post login info
-                var uri = new Uri(url);
-                var json = JsonConvert.SerializeObject(login, serializerSettings);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync(uri, content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    // Logging
-                    App.Log.Info("Login", "Successfully logged in user " + login.Email);
-
-                    // Convert json in http response to a List of T items
-                    var authToken = await response.Content.ReadAsStringAsync();
-                    authToken = authToken.Substring(15);
-                    client.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue("Authorization", authToken);
-                    return LoginResponse.Success;
-                }
-                else if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
-                {
-                    App.Log.Info("Login", "Could not connect to API server");
-                    return LoginResponse.NoResponse;
-                }
-                else
-                {
-                    // Logging
-                    App.Log.Info("Login", "Could not log in user " + login.Email + ". Invalid credentials");
-                    return LoginResponse.InvalidCredentials;
-                }
-            }
-            catch (Exception e)
-            {
-                App.Log.Error("Login", e.Message + " " + e.GetBaseException().Message);
-                return LoginResponse.NoResponse;
             }
         }
     }
