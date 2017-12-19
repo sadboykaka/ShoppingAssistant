@@ -1,21 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:custom="clr-namespace:ShoppingAssistant"
              x:Class="ShoppingAssistant.ShoppingListView">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="0"
+                           x:Name="ShareRow"/>
             <RowDefinition Height="7*"/>
             <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
-        <StackLayout Grid.Row="0">
+        <StackLayout Grid.Row="0"
+                     Margin="10,10,10,0"
+                     IsVisible="False"
+                     x:Name="ShareLayout">
             <Label Text="Shared with user"
                    TextColor="Green"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
                    IsVisible="False"
-                   x:Name="lblShareResult"/>
+                   x:Name="LblShareResult"/>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Share With User:"
                        VerticalOptions="Center"/>
@@ -24,13 +27,14 @@
                        HorizontalOptions="FillAndExpand"/>
             </StackLayout>
             <Button Text="Share"
-                    x:Name="btnShare"/>
+                    x:Name="BtnShare"/>
         </StackLayout>
-        
         <ListView ItemsSource="{Binding Items}"
             CachingStrategy="RecycleElement"
-            x:Name="ShoppingListListView"
-            Grid.Row="1">
+            x:Name="ItemsListView"
+            Grid.Row="1"
+            Margin="10,10,10,0"
+            ItemTapped="Handle_ItemTapped">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
@@ -47,7 +51,12 @@
             </ListView.ItemTemplate>
         </ListView>
         <Button Text="Add Item"
-                x:Name="btnAddItem"
-                Grid.Row="2"/>
+                x:Name="BtnAddItem"
+                Grid.Row="2"
+                Margin="10,10,10,5"/>
+        <Button Text="Compare Prices"
+                x:Name="BtnComparePrices"
+                Grid.Row="2"
+                Margin="10,10,10,5"/>
     </Grid>
 </ContentPage>

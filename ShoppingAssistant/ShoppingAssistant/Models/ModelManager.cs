@@ -30,7 +30,7 @@ namespace ShoppingAssistant.Models
             helper = new LoginApiHelper(BaseApiUrl);
 
             this.shoppingListController = new ShoppingListController(localDatabaseName, helper);
-            this.locationModelManager = new LocationModelManager(localDatabaseName, helper);
+            this.locationModelManager = new LocationModelManager(localDatabaseName, BaseApiUrl, helper);
             this.LoginController = new LoginController(localDatabaseName, helper);
         }
 

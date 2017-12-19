@@ -43,13 +43,13 @@ namespace ShoppingAssistant.Models
 
         private string baseApiUrl;
 
-        public LocationModelManager(string localDatabaseName, LoginApiHelper loginApiHelper)
+        public LocationModelManager(string localDatabaseName, string baseApiUrl, ApiHelper apiHelperParam)
         {
             this.localDatabaseName = localDatabaseName;
             this.baseApiUrl = baseApiUrl;
 
             databaseHelper = new LocationModelDatabaseHelper(this.localDatabaseName, true);
-            apiHelper = new LocationModelAPIHelper(loginApiHelper);
+            apiHelper = new LocationModelAPIHelper(baseApiUrl, apiHelperParam);
 
             this.LocationModels = new ObservableCollection<LocationModel>();
 
@@ -77,7 +77,7 @@ namespace ShoppingAssistant.Models
             }
             catch (Exception ex)
             {
-                App.Log.Debug("NewPositionEventHandler", ex.Message + "\n" + ex.GetBaseException().StackTrace);
+                App.Log.Error("NewPositionEventHandler", ex.Message + "\n" + ex.GetBaseException().StackTrace);
             }
         }
 

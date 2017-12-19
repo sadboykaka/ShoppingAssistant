@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ShoppingAssistant.EventClasses;
 using ShoppingAssistant.Models;
+using ShoppingAssistant.Views;
 
 namespace ShoppingAssistant
 {
@@ -55,10 +58,26 @@ namespace ShoppingAssistant
 
             // Set event delegates
             ItemQuantityPairEvent += AddItemEvent;
-            btnAddItem.Clicked += delegate { OnAddItemClick(); };
-            btnShare.Clicked += delegate { OnShareClick(); };
+            BtnAddItem.Clicked += delegate { OnAddItemClick(); };
+            BtnShare.Clicked += delegate { OnShareClick(); };
+            BtnComparePrices.Clicked += delegate { OnCompareClick(); };
+
+            // Set title
+            Title = shoppingList.Name;
+
+            // Add toolbar menu item
+            ToolbarItems.Add(new ToolbarItem("Share", null, async () => ToggleShareingUi()));
 
             BindingContext = this;            
+        }
+
+        /// <summary>
+        /// Method to toggle the sharing user interface elements
+        /// </summary>
+        private void ToggleShareingUi()
+        {
+            ShareRow.Height = ShareRow.Height.Value == 0 ? new GridLength(2, GridUnitType.Star) : new GridLength(0, GridUnitType.Absolute);
+            ShareLayout.IsVisible = !ShareLayout.IsVisible;
         }
 
         /// <summary>
@@ -75,11 +94,38 @@ namespace ShoppingAssistant
             await Navigation.PopAsync();
         }
 
-        // Method to add the delete button to the toolbar
-        private void AddToolbarItems()
+        /// <summary>
+        /// ItemListView ItemTapped event handler
+        /// Method to add the delete button to the toolbar (if it should be)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        private void Handle_ItemTapped(object sender, EventArgs args)
         {
-            // TODO filter.png??
-            ToolbarItems.Add(new ToolbarItem("Delete", "filter.png", async () => { var page = new ContentPage(); DeleteSelectedItem(); }));
+            // Remove the toolbar item if nothing is selected
+            if (ItemsListView.SelectedItem == null)
+            {
+                ToolbarItems.Remove(ToolbarItems.First(t => t.Text == "Delete"));
+            }
+            else
+            {
+                // Remove the selection if the user selects it again and return
+                if (selectedItem == ItemsListView.SelectedItem)
+                {
+                    ItemsListView.SelectedItem = null;
+                    ToolbarItems.Remove(ToolbarItems.First(t => t.Text == "Delete"));
+                    selectedItem = ItemsListView.SelectedItem;
+                    return;
+                }
+
+                // Set the selected item and add the toolbar item if it has not already been
+                selectedItem = ItemsListView.SelectedItem;
+                if (ToolbarItems.All(t => t.Text != "Delete"))
+                {
+                    ToolbarItems.Add(new ToolbarItem("Delete", "filter.png", async () => { var page = new ContentPage(); DeleteSelectedItem(); }));
+
+                }
+            }
         }
 
         /// <summary>
@@ -110,18 +156,6 @@ namespace ShoppingAssistant
             ToolbarItems.Clear();
         }
         
-        /// <inheritdoc />
-        /// <summary>
-        /// Called when this page is removed from the NavigationStack
-        /// </summary>
-        protected override void OnDisappearing()
-        {
-            // Save the shopping list in the local database
-            if (requiresUpdate)
-                App.ModelManager.ShoppingListController.SaveShoppingListModel(shoppingList);
-            base.OnDisappearing();
-        }
-
         /// <summary>
         /// Method called when AddItem button is clicked
         /// </summary>
@@ -129,6 +163,15 @@ namespace ShoppingAssistant
         {
             // Display the new window
             await Navigation.PushAsync(new AddItemView(AddItemEvent));
+        }
+
+        /// <summary>
+        /// Method called when ComparePrices button is clicked
+        /// </summary>
+        private async void OnCompareClick()
+        {
+            // Display the new window
+            await Navigation.PushAsync(new CompareShopsView(shoppingList));
         }
         
         /// <summary>
@@ -138,9 +181,22 @@ namespace ShoppingAssistant
         {
             var response = await App.ModelManager.ShoppingListController.AddOwnerAsync(shoppingList, Email);
 
-            lblShareResult.IsVisible = true;
-            lblShareResult.Text = response ? "Shared with user" : "Could not share with user";
-            lblShareResult.TextColor = response ? Color.Green : Color.Red;
+            LblShareResult.IsVisible = true;
+            LblShareResult.Text = response ? "Shared with user" : "Could not share with user";
+            LblShareResult.TextColor = response ? Color.Green : Color.Red;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Overriden OnDisappearing
+        /// Called when this page is removed from the NavigationStack
+        /// </summary>
+        protected override void OnDisappearing()
+        {
+            // Save the shopping list in the local database
+            if (requiresUpdate)
+                App.ModelManager.ShoppingListController.SaveShoppingListModel(shoppingList);
+            base.OnDisappearing();
         }
     }
 }

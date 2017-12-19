@@ -24,7 +24,7 @@ namespace ShoppingAssistant.Views
 			InitializeComponent();
 
 			//System.Net.ServicePointManager.ServerCertificateValidationCallback += CertificateValidationCallBack;
-
+		    Title = "Shopping Lists";
 			// Set the button event listeners
 			this.SetBtnListeners();
 

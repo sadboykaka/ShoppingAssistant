@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShoppingAssistant.Views.CompareShopsView">
+    <ContentPage.Content>
+        <StackLayout>
+            <ListView ItemsSource="{Binding LocationPriceModels}"
+                  CachingStrategy="RecycleElement"
+                  Margin="10,10,10,0"
+                  RowHeight="60">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Vertical"
+                                         VerticalOptions="FillAndExpand">
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="{Binding Name}" 
+                                           Style="{DynamicResource ListItemTextStyle}"
+                                           HorizontalOptions="StartAndExpand"/>
+                                    <Label Text="{Binding Path=Price, StringFormat='Total: £{0}'}" 
+                                           Style="{DynamicResource ListItemDetailTextStyle}"
+                                           HorizontalOptions="End"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal"
+                                             MinimumHeightRequest="100">
+                                    <Label Text="{Binding Path=NumberOfItemsMatched, StringFormat='Number of items matched: {0}'}"
+                                           Style="{DynamicResource ListItemDetailTextStyle}"
+                                           HorizontalOptions="StartAndExpand"/>
+                                    <Label Text="{Binding Path=Distance, StringFormat='Distance: {0}'}"
+                                           Style="{DynamicResource ListItemDetailTextStyle}"
+                                           HorizontalOptions="End"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

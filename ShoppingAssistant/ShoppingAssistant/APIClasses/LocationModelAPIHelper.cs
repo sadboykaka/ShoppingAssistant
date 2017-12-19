@@ -10,10 +10,10 @@ namespace ShoppingAssistant.APIClasses
 {
     public class LocationModelAPIHelper
     {
-        private readonly LoginApiHelper helper;
+        private readonly ApiHelper helper;
         private readonly string baseUrl;
 
-        public LocationModelAPIHelper(LoginApiHelper helper)
+        public LocationModelAPIHelper(string baseUrl, ApiHelper helper)
         {
             this.helper = helper;
             this.baseUrl = baseUrl;

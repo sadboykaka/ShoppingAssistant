@@ -11,7 +11,7 @@ namespace ShoppingAssistant.Models
     {
         public const string UrlSuffix = "ipls";
 
-        [JsonProperty("item")]
+        [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("location_id")]
         public int RemoteDbLocationId { get; set; }

@@ -187,7 +187,7 @@ namespace ShoppingAssistant.APIClasses
         /// <typeparam name="T"></typeparam>
         /// <param name="url"></param>
         /// <returns></returns>
-        protected async Task<List<T>> RefreshDataAsync<T>(string url)
+        public async Task<List<T>> RefreshDataAsync<T>(string url)
         {
             // Get http response
             var uri = new Uri(url);
