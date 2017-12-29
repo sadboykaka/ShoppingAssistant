@@ -25,14 +25,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\IIdentifier.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ItemPriceLocationArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ShoppingListEventArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GeolocationController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\GeolocationController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\ILog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemIdModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemPriceLocationModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemQuantityPairModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ListOwnerModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\LocationModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\LocationModelManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\LocationController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Model.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ItemQuantityPairArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemModel.cs" />

@@ -4,15 +4,17 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using ShoppingAssistant.APIClasses;
 using ShoppingAssistant.DatabaseClasses;
+using ShoppingAssistant.Models;
+using XLabs;
 using XLabs.Platform.Services.Geolocation;
 
-namespace ShoppingAssistant.Models
+namespace ShoppingAssistant.Controllers
 {
     /// <summary>
-    /// Manager class for the LocationModels
+    /// Controller class for the LocationModels
     /// Gets LocationMOdels from the local database and API
     /// </summary>
-    public class LocationModelManager
+    public class LocationController
     {
         /// <summary>
         /// Static reference to database helper class
@@ -39,7 +41,7 @@ namespace ShoppingAssistant.Models
 
         private string baseApiUrl;
 
-        public LocationModelManager(string localDatabaseName, string baseApiUrl, ApiHelper apiHelperParam)
+        public LocationController(string localDatabaseName, string baseApiUrl, ApiHelper apiHelperParam)
         {
             this.localDatabaseName = localDatabaseName;
             this.baseApiUrl = baseApiUrl;
@@ -67,7 +69,7 @@ namespace ShoppingAssistant.Models
             {
                 // Get the location models for the current location
                 this.AddLocationModels(databaseHelper.GetLocationModels());
-                this.AddLocationModels(await apiHelper.GetLocationModelsAsync(
+                this.SaveAndAddLocationModels(await apiHelper.GetLocationModelsAsync(
                     this.geolocationController.Position.Latitude,
                     this.geolocationController.Position.Longitude));
             }
@@ -77,6 +79,13 @@ namespace ShoppingAssistant.Models
             }
         }
 
+        private void SaveAndAddLocationModels(IEnumerable<LocationModel> models)
+        {
+            models.ForEach(databaseHelper.SaveLocationModelAsync);
+
+            AddLocationModels(models);
+        }
+
         /// <summary>
         /// Method to delete the given LocationModel from each database
         /// </summary>
@@ -84,7 +93,7 @@ namespace ShoppingAssistant.Models
         private async void DeleteModelAsync(LocationModel model)
         {
             // Remove from the ObservableCollection
-            this.LocationModels.Remove(model);
+            LocationModels.Remove(model);
 
             // Set the delete flag
             model.Deleted = true;

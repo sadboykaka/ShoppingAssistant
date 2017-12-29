@@ -14,71 +14,71 @@ namespace ShoppingAssistant.Views
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class LocationView : ContentPage
 	{
-	    private object selectedItem = null;
-	    private LocationModel locationModel;
-	    private bool requiresUpdate = false;
+		private object selectedItem = null;
+		private LocationModel locationModel;
+		private bool requiresUpdate = false;
 
-	    public event ItemPriceLocationEventHandler IplEvent;
+		public event ItemPriceLocationEventHandler IplEvent;
 
-	    private ObservableCollection<ItemPriceLocationModel> iplsMaster;
+		private ObservableCollection<ItemPriceLocationModel> iplsMaster;
 
-        private ObservableCollection<ItemPriceLocationModel> iplsMutable;
+		private ObservableCollection<ItemPriceLocationModel> iplsMutable;
 
-        public ObservableCollection<ItemPriceLocationModel> Ipls { get { return this.iplsMutable; } }
+		public ObservableCollection<ItemPriceLocationModel> Ipls { get { return iplsMutable; } }
 
-	    public string ItemFilterText { get; set; }
+		public string ItemFilterText { get; set; }
 	
 
 		public LocationView (LocationModel location)
 		{
 			InitializeComponent ();
-            
-            this.locationModel = location;
-		    this.iplsMaster = this.locationModel.ItemPriceLocations;
-            this.iplsMutable = new ObservableCollection<ItemPriceLocationModel>(this.iplsMaster);
+			
+			locationModel = location;
+			iplsMaster = locationModel.ItemPriceLocations;
+			iplsMutable = new ObservableCollection<ItemPriceLocationModel>(iplsMaster);
 
 
 
-		    this.ItemFilterTextEntry.TextChanged += OnFilterTextChanged;
+			ItemFilterTextEntry.TextChanged += OnFilterTextChanged;
 
-		    btnAddpl.Clicked += delegate { OnAddItemClick(); };
+			btnAddpl.Clicked += delegate { OnAddItemClick(); };
 
-            BindingContext = this;
+			BindingContext = this;
 		}
 
-	    private async void OnAddItemClick()
-	    {
-	        await Navigation.PushAsync(new AddItemPriceLocationView(AddIplEvent));
-	    }
+		private async void OnAddItemClick()
+		{
+			await Navigation.PushAsync(new AddItemPriceLocationView(AddIplEvent));
+		}
 
-	    private async void AddIplEvent(object sender, ItemPriceLocationEventArgs args)
-	    {
-	        this.requiresUpdate = true;
-	        args.ItemPriceLocationModel.LocalDbLocationId = locationModel.LocalDbId ?? 0;
-	        this.locationModel.ItemPriceLocations.Add(args.ItemPriceLocationModel);
-	        this.iplsMutable.Add(args.ItemPriceLocationModel);
+		private async void AddIplEvent(object sender, ItemPriceLocationEventArgs args)
+		{
+			requiresUpdate = true;
+			args.ItemPriceLocationModel.LocalDbLocationId = locationModel.LocalDbId ?? 0;
+			locationModel.ItemPriceLocations.Add(args.ItemPriceLocationModel);
+			iplsMutable.Add(args.ItemPriceLocationModel);
 
-            await Navigation.PopAsync();
-        }
+			await Navigation.PopAsync();
+		}
 
-        protected override void OnDisappearing()
-	    {
-	        if (this.requiresUpdate)
-	        {
-	            App.ModelManager.LocationModelManager.SaveLocationModel(this.locationModel);
-	        }
-            base.OnDisappearing();
-	    }
+		protected override void OnDisappearing()
+		{
+			if (requiresUpdate)
+			{
+				App.ModelManager.LocationController.SaveLocationModel(locationModel);
+			}
+			base.OnDisappearing();
+		}
 
-	    public void OnFilterTextChanged(object sender, EventArgs args)
-	    {
-	        // Create temp collection for the given filter text
-	        var temp = this.iplsMaster.Where(location =>
-	            location.Name.ToLower().Contains(this.ItemFilterText.ToLower())).ToList();
+		public void OnFilterTextChanged(object sender, EventArgs args)
+		{
+			// Create temp collection for the given filter text
+			var temp = iplsMaster.Where(location =>
+				location.Name.ToLower().Contains(ItemFilterText.ToLower())).ToList();
 
-	        // Clear mutable collection and populate with new items
-	        this.iplsMutable.Clear();
-	        temp.ForEach(location => this.iplsMutable.Add(location));
-        }
+			// Clear mutable collection and populate with new items
+			iplsMutable.Clear();
+			temp.ForEach(location => iplsMutable.Add(location));
+		}
 	}
 }

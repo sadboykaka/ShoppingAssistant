@@ -60,13 +60,13 @@ namespace ShoppingAssistant
             ItemQuantityPairEvent += AddItemEvent;
             BtnAddItem.Clicked += delegate { OnAddItemClick(); };
             BtnShare.Clicked += delegate { OnShareClick(); };
-            BtnComparePrices.Clicked += delegate { OnCompareClick(); };
 
             // Set title
             Title = shoppingList.Name;
 
             // Add toolbar menu item
             ToolbarItems.Add(new ToolbarItem("Share", null, async () => ToggleShareingUi()));
+            ToolbarItems.Add(new ToolbarItem("Compare", null, async () => OnCompareClick()));
 
             BindingContext = this;            
         }

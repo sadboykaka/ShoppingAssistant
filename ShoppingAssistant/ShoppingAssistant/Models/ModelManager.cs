@@ -12,9 +12,9 @@ namespace ShoppingAssistant.Models
         private readonly ShoppingListController shoppingListController;
         public ShoppingListController ShoppingListController { get { return shoppingListController; } }
 
-        private readonly LocationModelManager locationModelManager;
+        private readonly LocationController locationController;
 
-        public LocationModelManager LocationModelManager { get { return locationModelManager; } }
+        public LocationController LocationController { get { return locationController; } }
 
         public LoginController LoginController { get; }
 
@@ -30,7 +30,7 @@ namespace ShoppingAssistant.Models
             helper = new LoginApiHelper(BaseApiUrl);
 
             this.shoppingListController = new ShoppingListController(localDatabaseName, helper);
-            this.locationModelManager = new LocationModelManager(localDatabaseName, BaseApiUrl, helper);
+            this.locationController = new LocationController(localDatabaseName, BaseApiUrl, helper);
             this.LoginController = new LoginController(localDatabaseName, helper);
         }
 
@@ -71,7 +71,7 @@ namespace ShoppingAssistant.Models
         public void Logout()
         {
             this.ShoppingListController.ShoppingListModels.Clear();
-            this.LocationModelManager.LocationModels.Clear();
+            this.LocationController.LocationModels.Clear();
         }
 
     }

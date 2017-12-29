@@ -1,4 +1,5 @@
-﻿using ShoppingAssistant.Logging;
+﻿using ShoppingAssistant.Controllers;
+using ShoppingAssistant.Logging;
 using ShoppingAssistant.Models;
 using ShoppingAssistant.Views;
 using Xamarin.Forms;

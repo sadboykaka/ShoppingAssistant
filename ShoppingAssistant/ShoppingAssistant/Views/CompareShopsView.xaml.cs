@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using ShoppingAssistant.Models;
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace ShoppingAssistant.Views
@@ -82,7 +81,7 @@ namespace ShoppingAssistant.Views
 		private void CompareShopPrices()
 		{
 			// Get the nearby locations
-			var locations = App.ModelManager.LocationModelManager.LocationModels;
+			var locations = App.ModelManager.LocationController.LocationModels;
 			foreach (var location in locations)
 			{
 				// Calculate a price for this location

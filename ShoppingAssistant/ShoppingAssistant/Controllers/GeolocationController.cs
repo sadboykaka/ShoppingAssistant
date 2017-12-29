@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using ShoppingAssistant.Models;
 using Xamarin.Forms;
 using XLabs.Platform.Services.Geolocation;
 
-namespace ShoppingAssistant
+namespace ShoppingAssistant.Controllers
 {
     /// <summary>
     /// PositionEvent delegate
@@ -25,7 +20,7 @@ namespace ShoppingAssistant
         /// <summary>
         /// IGeolocator - device specific implementation
         /// </summary>
-        private IGeolocator geolocator;
+        private readonly IGeolocator geolocator;
 
         /// <summary>
         /// Last known position property
@@ -42,7 +37,7 @@ namespace ShoppingAssistant
         /// </summary>
         public GeolocationController()
         {
-            this.geolocator = DependencyService.Get<IGeolocator>();
+            geolocator = DependencyService.Get<IGeolocator>();
         }
         
         /// <summary>
@@ -53,19 +48,19 @@ namespace ShoppingAssistant
         {
             try
             {
-                if (this.geolocator == null)
+                if (geolocator == null)
                 {
                     App.Log.Debug("GetNearbyLocations", "Geolocation null, check application has platform specific dependency injection and permissions");
                     return;
                 }
 
-                if (!this.geolocator.IsGeolocationAvailable)
+                if (!geolocator.IsGeolocationAvailable)
                 {
                     App.Log.Debug("GetNearbyLocations", "Geolocation not available");
                     return;
                 }
 
-                if (!this.geolocator.IsGeolocationEnabled)
+                if (!geolocator.IsGeolocationEnabled)
                 {
                     App.Log.Debug("GetNearbyLocations", "Geolocation not enabled");
                     return;
@@ -74,14 +69,14 @@ namespace ShoppingAssistant
                 App.Log.Debug("GetNearbyLocations", "Geolocation is available, getting location");
 
                 // Get position
-                this.Position = await this.geolocator.GetPositionAsync(10000);
+                Position = await geolocator.GetPositionAsync(10000);
 
                 // Logging
-                App.Log.Debug("GetNearbyLocations", "Lat = " + this.Position.Latitude);
-                App.Log.Debug("GetNearbyLocations", "Loc = " + this.Position.Longitude);
+                App.Log.Debug("GetNearbyLocations", "Lat = " + Position.Latitude);
+                App.Log.Debug("GetNearbyLocations", "Loc = " + Position.Longitude);
 
                 // Raise new position event
-                this.NewPositionEvent?.Invoke(this, new PositionEventArgs(this.Position));
+                NewPositionEvent?.Invoke(this, new PositionEventArgs(Position));
             }
             catch (Exception e)
             {
