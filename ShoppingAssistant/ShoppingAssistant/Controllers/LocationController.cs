@@ -33,7 +33,6 @@ namespace ShoppingAssistant.Controllers
 
         /// <summary>
         /// Collection of LocationModels
-        
         /// </summary>
         public ObservableCollection<LocationModel> LocationModels { get; private set; }
 
@@ -140,6 +139,9 @@ namespace ShoppingAssistant.Controllers
                 {
                     // Insert the list as no list with the same RemoteDbId could be found
                     this.LocationModels.Add(model);
+
+                    // Add all the items to the Items collection
+                    model.ItemPriceLocations.Select(i => i.Name).ForEach(App.ModelManager.AddItem);
                 }
                 else if (RubyDateParser.Compare(oldList.LastUpdated, model.LastUpdated) < 0)
                 {

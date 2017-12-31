@@ -3,84 +3,51 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:XLabs.Forms.Controls;assembly=XLabs.Forms"
              x:Class="ShoppingAssistant.AddItemView">
-  <!--ContentPage.Content>
-      <StackLayout>
-            <Entry Placeholder="Item"
-                   Text="{Binding Name}"/>
-            <Entry Placeholder="Quantity"
-                   Text="{Binding Quantity}"/>
-            <Button Text="Add"
-                    x:Name="btnAddItem"/>
-        </StackLayout>
-    </>
-</ContentPage-->
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <!--  this isn't working yet  -->
-            <DataTemplate x:Key="SugestionItemTemplate">
-                <ViewCell Height="60">
-                    <ViewCell.View>
-                        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                            <Label HorizontalOptions="Start"
-                                   Text="{Binding Name}"
-                                   VerticalOptions="Center" />
-                            <Label HorizontalOptions="Start"
-                                   Text="{Binding Quantity}"
-                                   VerticalOptions="Center" />
-                        </StackLayout>
-                    </ViewCell.View>
-                </ViewCell>
-            </DataTemplate>
-        </ResourceDictionary>
-    </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid>
+        <Grid Margin="10,10,10,10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <StackLayout Orientation="Horizontal"
-                         Grid.Row="0"
-                         Padding="15,0,0,0">
-                <Label Text="Store: "
+                         Grid.Row="0">
+                <Label Text="Item: "
                            VerticalOptions="Center"/>
                 <Entry Placeholder="Search"
-                           x:Name="LocationFilterTextEntry"
-                           Text="{Binding ItemFilterText}"
+                           x:Name="ItemFilterTextEntry"
+                           Text="{Binding ItemFilterText, Mode=TwoWay}"
                            HorizontalOptions="FillAndExpand"/>
             </StackLayout>
             <ListView
-                    ItemsSource="{Binding Locations}"
+                    ItemsSource="{Binding Items}"
                     ItemTapped="Handle_ItemTapped"
                     CachingStrategy="RecycleElement"
-                    x:Name="LocationsListView"
-                    Grid.Row="1"
-                    RowHeight="60">
+                    x:Name="ItemsListView"
+                    Grid.Row="1">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Vertical">
-                                <StackLayout Orientation="Horizontal"
-                                             Padding="15,10,10,0">
-                                    <Label Text="{Binding Name}" 
-                                           Style="{DynamicResource ListItemTextStyle}"
-                                           HorizontalOptions="StartAndExpand"/>
-                                    <Label Text="{Binding Distance}"
-                                           Style="{DynamicResource ListItemTextStyle}"
-                                           HorizontalOptions="End"/>
-                                </StackLayout>
-                                <StackLayout Padding="15,0,0,0">
-                                    <Label Text="{Binding Vicinity}"
-                                           Style="{DynamicResource ListItemDetailTextStyle}"
-                                           VerticalOptions="FillAndExpand"/>
-                                </StackLayout>
-                            </StackLayout>
+                            <Label Text="{Binding Path=.}"
+                                   Style="{DynamicResource ListItemDetailTextStyle}"
+                                   VerticalOptions="FillAndExpand"/>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <StackLayout Orientation="Horizontal"
+                         Grid.Row="2"
+                         Padding="0,0,5,0">
+                <Label Text="Quantity: "
+                       VerticalOptions="Center"/>
+                <Entry Placeholder=""
+                       Text="{Binding Quantity}"
+                       HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+            <Button Text="Add"
+                    Grid.Row="3"
+                    x:Name="BtnAddItem"/>
         </Grid>
-        </StackLayout>
-        
     </ContentPage.Content>
-    </ContentPage>
+</ContentPage>

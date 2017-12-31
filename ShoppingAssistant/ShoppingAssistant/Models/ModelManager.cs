@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using ShoppingAssistant.APIClasses;
 using ShoppingAssistant.Controllers;
 using Xamarin.Forms;
@@ -18,6 +19,11 @@ namespace ShoppingAssistant.Models
 
         public LoginController LoginController { get; }
 
+        /// <summary>
+        /// Distinct collection of items (names)
+        /// </summary>
+        public SortedSet<string> Items { get; private set; }
+
         private const string BaseApiUrl = "https://rails-tutorial-benhudds.c9users.io/";
 
         private const string LocalDatabaseBaseName = "TodoSQLite1.db3";
@@ -29,9 +35,21 @@ namespace ShoppingAssistant.Models
         {
             helper = new LoginApiHelper(BaseApiUrl);
 
+            this.Items = new SortedSet<string>();
+
             this.shoppingListController = new ShoppingListController(localDatabaseName, helper);
             this.locationController = new LocationController(localDatabaseName, BaseApiUrl, helper);
             this.LoginController = new LoginController(localDatabaseName, helper);
+        }
+
+        /// <summary>
+        /// Method to add an item to the Items collection
+        /// </summary>
+        /// <param name="item"></param>
+        public void AddItem(string item)
+        {
+            Items.Add(item);
+            //if (!Items.Contains(item)) Items.Add(item);
         }
 
         public async Task<LoginResponse> Login(UserModel user)

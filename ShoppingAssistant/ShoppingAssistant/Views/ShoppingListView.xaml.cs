@@ -164,7 +164,7 @@ namespace ShoppingAssistant
             // Display the new window
             try
             {
-                await Navigation.PushAsync(new AddItemView(AddItemEvent));
+                await Navigation.PushAsync(new AddItemView(AddItemEvent, App.ModelManager.Items));
             }
             catch (Exception e)
             {

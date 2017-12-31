@@ -8,6 +8,7 @@ using ShoppingAssistant.APIClasses;
 using ShoppingAssistant.DatabaseClasses;
 using ShoppingAssistant.Models;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace ShoppingAssistant.Controllers
 {
@@ -102,6 +103,9 @@ namespace ShoppingAssistant.Controllers
                     {
                         // Insert the list as no list with the same RemoteDbId could be found
                         this.ShoppingListModels.Add(list);
+
+                        // Add all the items to the Items collection
+                        list.Items.Select(i => i.Name).ForEach(App.ModelManager.AddItem);
                     }
                     else if (RubyDateParser.Compare(oldList.LastUpdated, list.LastUpdated) < 0)
                     {
