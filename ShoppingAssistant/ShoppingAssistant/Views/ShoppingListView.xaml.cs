@@ -162,7 +162,14 @@ namespace ShoppingAssistant
         private async void OnAddItemClick()
         {
             // Display the new window
-            await Navigation.PushAsync(new AddItemView(AddItemEvent));
+            try
+            {
+                await Navigation.PushAsync(new AddItemView(AddItemEvent));
+            }
+            catch (Exception e)
+            {
+                App.Log.Error("OnAddItem", e.GetBaseException() + e.StackTrace);
+            }
         }
 
         /// <summary>

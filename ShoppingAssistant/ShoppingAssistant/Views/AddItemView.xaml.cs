@@ -1,48 +1,63 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ShoppingAssistant.DatabaseClasses;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ShoppingAssistant.EventClasses;
 using ShoppingAssistant.Models;
+using XLabs.Forms.Mvvm;
 
 namespace ShoppingAssistant
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AddItemView : ContentPage
+	public partial class AddItemView
 	{
 		private ItemQuantityPairEventHandler callBack;
 		public string Name { get; set; }
 		public string Quantity { get; set; }
 
-		public AddItemView (ItemQuantityPairEventHandler callBack)
+		public readonly ObservableCollection<string> ItemsCollection = new ObservableCollection<string>();
+	    public ObservableCollection<string> Items;
+
+        public AddItemView (ItemQuantityPairEventHandler callBack, ObservableCollection<string> itemsCollection)
 		{
-			BindingContext = this;
 			InitializeComponent ();
 			this.callBack = callBack;
+		    this.ItemsCollection = itemsCollection;
+            
+            Items = new ObservableCollection<string>();
+
+		    AutoCompleteView.TextChanged += TextChanged;
 
 
-			Button btnAddItem = this.FindByName<Button>("btnAddItem");
-			btnAddItem.Clicked += delegate { RaiseNewItemQuantityPairEvent(); };
-		}
+		    BindingContext = this;
+
+            //Button btnAddItem = this.FindByName<Button>("btnAddItem");
+            //btnAddItem.Clicked += delegate { RaiseNewItemQuantityPairEvent(); };
+        }
+
 
 		private void OnAddItemClick()
 		{
 			this.RaiseNewItemQuantityPairEvent();
 		}
 
+	    private void TextChanged(object sender, EventArgs args)
+	    {
+            Items = new ObservableCollection<string>(ItemsCollection.Where(item => item.Contains(AutoCompleteView.Text)));
+	    }
+
 		private void RaiseNewItemQuantityPairEvent()
 		{
-			var iqp = new ItemQuantityPairModel()
-				{
-					Name = this.Name,
-					Quantity = Int32.Parse(this.Quantity)
-				};
-			
-			callBack?.Invoke((object)this, new ItemQuantityPairArgs(iqp));
-		}
+            ItemsCollection.Add(AutoCompleteView.Text);
+
+            var iqp = new ItemQuantityPairModel()
+            {
+                Name = this.Name,
+                Quantity = Int32.Parse(this.Quantity)
+            };
+
+            callBack?.Invoke((object)this, new ItemQuantityPairArgs(iqp));
+        }
 	}
 }
