@@ -141,7 +141,7 @@ namespace ShoppingAssistant.Controllers
                     this.LocationModels.Add(model);
 
                     // Add all the items to the Items collection
-                    model.ItemPriceLocations.Select(i => i.Name).ForEach(App.ModelManager.AddItem);
+                    model.ItemPriceLocations.Select(i => i.Name).ForEach(App.MasterController.AddItem);
                 }
                 else if (RubyDateParser.Compare(oldList.LastUpdated, model.LastUpdated) < 0)
                 {

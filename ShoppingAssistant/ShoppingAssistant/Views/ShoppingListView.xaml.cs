@@ -88,8 +88,8 @@ namespace ShoppingAssistant
         private async void AddItemEvent(object sender, ItemQuantityPairArgs args)
         {
             requiresUpdate = true;
-            shoppingList.Items.Add(args.ItemQuantityPairModel);
-            App.ModelManager.ShoppingListController.SaveShoppingListModel(shoppingList);
+            args.ItemQuantityPairModels.ForEach(shoppingList.Items.Add);
+            App.MasterController.ShoppingListController.SaveShoppingListModel(shoppingList);
 
             await Navigation.PopAsync();
         }
@@ -164,7 +164,7 @@ namespace ShoppingAssistant
             // Display the new window
             try
             {
-                await Navigation.PushAsync(new AddItemView(AddItemEvent, App.ModelManager.Items));
+                await Navigation.PushAsync(new AddItemView(AddItemEvent, App.MasterController.Items));
             }
             catch (Exception e)
             {
@@ -186,7 +186,7 @@ namespace ShoppingAssistant
         /// </summary>
         private async void OnShareClick()
         {
-            var response = await App.ModelManager.ShoppingListController.AddOwnerAsync(shoppingList, Email);
+            var response = await App.MasterController.ShoppingListController.AddOwnerAsync(shoppingList, Email);
 
             LblShareResult.IsVisible = true;
             LblShareResult.Text = response ? "Shared with user" : "Could not share with user";
@@ -202,7 +202,7 @@ namespace ShoppingAssistant
         {
             // Save the shopping list in the local database
             if (requiresUpdate)
-                App.ModelManager.ShoppingListController.SaveShoppingListModel(shoppingList);
+                App.MasterController.ShoppingListController.SaveShoppingListModel(shoppingList);
             base.OnDisappearing();
         }
     }

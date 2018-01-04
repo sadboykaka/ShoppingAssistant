@@ -7,7 +7,7 @@
             <RowDefinition Height="0"
                            x:Name="ShareRow"/>
             <RowDefinition Height="7*"/>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
         <StackLayout Grid.Row="0"
                      Margin="10,10,10,0"
@@ -33,18 +33,19 @@
             CachingStrategy="RecycleElement"
             x:Name="ItemsListView"
             Grid.Row="1"
-            Margin="10,10,10,0"
+            Margin="10,10,10,10"
             ItemTapped="Handle_ItemTapped">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal">
+                        <StackLayout Orientation="Horizontal"
+                                     VerticalOptions="Center">
                             <Label Text="{Binding Name}" 
-                               Style="{DynamicResource ListItemTextStyle}"
-                               HorizontalOptions="StartAndExpand"/>
-                            <Label Text="{Binding Quantity}" 
-                               Style="{DynamicResource ListItemDetailTextStyle}"
-                               HorizontalOptions="End"/>
+                                       Style="{DynamicResource ListItemTextStyle}"
+                                       HorizontalOptions="StartAndExpand"/>
+                            <Label Text="{Binding QuantityMeasure}" 
+                                       Style="{DynamicResource ListItemDetailTextStyle}"
+                                       HorizontalOptions="End"/>
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>
@@ -53,6 +54,6 @@
         <Button Text="Add Item"
                 x:Name="BtnAddItem"
                 Grid.Row="2"
-                Margin="10,10,10,5"/>
+                Style="{StaticResource buttonGreen}"/>
     </Grid>
 </ContentPage>

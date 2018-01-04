@@ -6,7 +6,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
         <ListView ItemsSource="{Binding ShoppingLists}"
                   ItemTapped="Handle_ItemTapped"
@@ -36,7 +36,8 @@
         </ListView>
         <Button Text="New Shopping List"
                 x:Name="BtnNewShoppingList"
-                Grid.Row="1"/>
+                Grid.Row="1"
+                Style="{StaticResource buttonGreen}"/>
     </Grid>
 
 </ContentPage>

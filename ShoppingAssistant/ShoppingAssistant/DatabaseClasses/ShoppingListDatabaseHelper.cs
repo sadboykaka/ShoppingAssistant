@@ -92,7 +92,7 @@ namespace ShoppingAssistant.DatabaseClasses
 
             // Select the ListOwnerModels relevant to the current user
             listOwners = listOwners.Where(listowner =>
-                listowner.UserEmail == App.ModelManager.LoginController.CurrentUser.Email).ToList();
+                listowner.UserEmail == App.MasterController.LoginController.CurrentUser.Email).ToList();
 
             // Select the lists that belong to the current owner
             lists = lists.Where(slist => listOwners.Any(listowner => listowner.ShoppingListModelId == slist.LocalDbId))
@@ -115,7 +115,7 @@ namespace ShoppingAssistant.DatabaseClasses
         /// <returns></returns>
         public async Task SaveShoppingListAsync(ShoppingListModel list)
         {
-            var user = App.ModelManager.LoginController.CurrentUser;
+            var user = App.MasterController.LoginController.CurrentUser;
 
             // Return and save the shopping list model object
             await SaveItemsAsync(list);

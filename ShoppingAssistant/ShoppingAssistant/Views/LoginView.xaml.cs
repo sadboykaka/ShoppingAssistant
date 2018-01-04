@@ -100,10 +100,9 @@ namespace ShoppingAssistant.Views
 			DisableUi();
 
 			// Get response from the main controller
-			var response = await App.ModelManager.Login(new UserModel
+			var response = await App.MasterController.Login(new UserModel
 			{
-				// Replace any spaces in the email (auto correct options typically add one at the end)
-				Email = Email.Replace(" ", string.Empty),
+				Email = Email.Trim(),
 				Password = Password
 			});
 			

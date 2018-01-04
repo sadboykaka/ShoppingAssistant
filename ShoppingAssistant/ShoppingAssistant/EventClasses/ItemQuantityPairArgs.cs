@@ -1,5 +1,5 @@
 ﻿using System;
-using ShoppingAssistant.DatabaseClasses;
+using System.Collections.Generic;
 using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant.EventClasses
@@ -8,11 +8,11 @@ namespace ShoppingAssistant.EventClasses
 
     public class ItemQuantityPairArgs : EventArgs
     {
-        public ItemQuantityPairModel  ItemQuantityPairModel { get; set; }
+        public List<ItemQuantityPairModel>  ItemQuantityPairModels { get; set; }
 
-        public ItemQuantityPairArgs(ItemQuantityPairModel  iqp)
+        public ItemQuantityPairArgs(List<ItemQuantityPairModel>  iqps)
         {
-            this.ItemQuantityPairModel = iqp;
+            ItemQuantityPairModels = iqps;
         }
     }
 }

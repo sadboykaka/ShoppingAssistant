@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Java.Util.Concurrent;
 using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant.APIClasses
@@ -19,6 +20,11 @@ namespace ShoppingAssistant.APIClasses
         /// User model for the user that should be logged in
         /// </summary>
         private UserModel user;
+
+        /// <summary>
+        /// Mutex semaphore to ensureonly one thread attempts to log in at a time
+        /// </summary>
+        private Semaphore mutex;
         
         /// <summary>
         /// Base api url
@@ -33,6 +39,7 @@ namespace ShoppingAssistant.APIClasses
         public LoginApiHelper(string baseUrl)
         {
             BaseUrl = baseUrl;
+            mutex = new Semaphore(1);
         }
 
         /// <summary>
@@ -41,11 +48,16 @@ namespace ShoppingAssistant.APIClasses
         /// </summary>
         private async void AwaitLogin()
         {
+
+            mutex.Acquire();
+
             while (!loggedIn)
             {
                 await Login(user);
                 await Task.Delay(2000);
             }
+
+            mutex.Release();
         }
 
         /// <summary>
@@ -136,10 +148,10 @@ namespace ShoppingAssistant.APIClasses
         /// <param name="item"></param>
         /// <param name="url"></param>
         /// <returns></returns>
-        public new async Task SaveItemAsync<T>(T item, string url) where T : Model
+        public new async Task<T> SaveItemAsync<T>(T item, string url) where T : Model
         {
             AwaitLogin();
-            await base.SaveItemAsync(item, url);
+            return await base.SaveItemAsync(item, url);
         }
     }
 }

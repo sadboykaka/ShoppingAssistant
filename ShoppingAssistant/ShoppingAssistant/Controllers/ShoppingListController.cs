@@ -59,7 +59,10 @@ namespace ShoppingAssistant.Controllers
 
             bool deleted = await apiHelper.DeleteShoppingListModelAsync(list);
 
-            if (deleted) databaseHelper.DeleteShoppingListAsync(list);
+            if (deleted)
+            {
+                databaseHelper.DeleteShoppingListAsync(list);
+            }
         }
 
         public void DeleteShoppingListAsync(int index)
@@ -105,7 +108,7 @@ namespace ShoppingAssistant.Controllers
                         this.ShoppingListModels.Add(list);
 
                         // Add all the items to the Items collection
-                        list.Items.Select(i => i.Name).ForEach(App.ModelManager.AddItem);
+                        list.Items.Select(i => i.Name).ForEach(App.MasterController.AddItem);
                     }
                     else if (RubyDateParser.Compare(oldList.LastUpdated, list.LastUpdated) < 0)
                     {

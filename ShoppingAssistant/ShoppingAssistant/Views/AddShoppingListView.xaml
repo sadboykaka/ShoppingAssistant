@@ -5,19 +5,22 @@
              x:Class="ShoppingAssistant.Views.AddShoppingListView">
     <ContentPage.Content>
         <StackLayout>
-            <StackLayout Orientation="Horizontal">
+            <StackLayout Orientation="Horizontal"
+                         Margin="20,20,20,20">
                 <Label Text="Name: " 
                        Style="{DynamicResource ListItemTextStyle}"
                        HorizontalOptions="Start"
                        VerticalOptions="CenterAndExpand"
-                       WidthRequest="100"/>
+                       WidthRequest="80"/>
                 <controls:CustomEntry Placeholder="Name"
                        Text="{Binding NameField}"
                        HorizontalOptions="FillAndExpand"
                        x:Name="EntryName"/>
             </StackLayout>
             <Button Text="Add"
-                    x:Name="BtnAddList"/>
+                    x:Name="BtnAddList"
+                    Style="{StaticResource buttonGreen}"
+                    Margin="20,0,20,20"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

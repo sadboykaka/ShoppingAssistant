@@ -43,16 +43,26 @@ namespace ShoppingAssistant.APIClasses
         {
             var url = helper.BaseUrl + ShoppingListModel.UrlSuffix;
 
-            await helper.SaveItemAsync(list, url);
+            var slistResponse = await helper.SaveItemAsync(list, url);
+
+            list.RemoteDbId = list.RemoteDbId?? slistResponse?.RemoteDbId;
 
             url += "/" + list.RemoteDbId + "/" + ItemQuantityPairModel.UrlSuffix;
 
-            list.Items.ForEach(item => helper.SaveItemAsync(item, url));
+            foreach (var iqp in list.Items)
+            {
+                var iqpResponse = await helper.SaveItemAsync(iqp, url);
+                if (iqp.RemoteDbId == null)
+                {
+                    iqp.RemoteDbId = iqpResponse?.RemoteDbId;
+                }
+            }
         }
 
         public async Task<bool> DeleteShoppingListModelAsync<T>(T item) where T : Model
         {
-            return await helper.DeleteItemAsync(helper.BaseUrl + "/" + item.UrlSuffixProperty + "/" + item.RemoteDbId);
+            if (item.RemoteDbId == null) return false;
+            return await helper.DeleteItemAsync(helper.BaseUrl + item.UrlSuffixProperty + "/" + item.RemoteDbId);
         }
 
         /// <summary>

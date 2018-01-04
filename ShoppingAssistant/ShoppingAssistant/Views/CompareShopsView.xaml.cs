@@ -24,7 +24,7 @@ namespace ShoppingAssistant.Views
 			/// <summary>
 			/// The price for an slist at the given location
 			/// </summary>
-			public float Price { get; set; }
+			public double Price { get; set; }
 
 			/// <summary>
 			/// The number of items matched to give the price for the slist and location pair
@@ -81,11 +81,11 @@ namespace ShoppingAssistant.Views
 		private void CompareShopPrices()
 		{
 			// Get the nearby locations
-			var locations = App.ModelManager.LocationController.LocationModels;
+			var locations = App.MasterController.LocationController.LocationModels;
 			foreach (var location in locations)
 			{
 				// Calculate a price for this location
-				float total = 0;
+				double total = 0;
 				var numberOfItems = 0;
 
 				foreach (var ipl in location.ItemPriceLocations)

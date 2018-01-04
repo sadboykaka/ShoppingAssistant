@@ -146,6 +146,18 @@ namespace ShoppingAssistant.APIClasses
             }
         }
 
+        public async Task<string> GetStringResponse(string url)
+        {
+            var uri = new Uri(url);
+            var response = await client.GetAsync(uri);
+
+            // Return null if not successful
+            if (!response.IsSuccessStatusCode) return null;
+
+            // Convert json in http response to a List of T items
+            return await response.Content.ReadAsStringAsync();
+        }
+
         /// <summary>
         /// Method to get json data asynchronously for a given type from the given url with the given url parameters
         /// </summary>
@@ -271,7 +283,7 @@ namespace ShoppingAssistant.APIClasses
         /// <param name="item"></param>
         /// <param name="url"></param>
         /// <returns></returns>
-        public async Task SaveItemAsync<T>(T item, string url) where T : Model
+        public async Task<T> SaveItemAsync<T>(T item, string url) where T : Model
         {
             try
             {
@@ -282,7 +294,8 @@ namespace ShoppingAssistant.APIClasses
                     var json = JsonConvert.SerializeObject(item, serializerSettings);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
                     var response = await client.PostAsync(uri, content);
-                
+                    var responseContent = await response.Content.ReadAsStringAsync();
+
                     if (response.IsSuccessStatusCode)
                     {
                         // Logging
@@ -293,6 +306,8 @@ namespace ShoppingAssistant.APIClasses
                         // Logging
                         App.Log.Info("SaveItemAsync<T>", "Could not post item with id " + item.RemoteDbId + " on url " + url + "\n" + "Returned status code " + response.StatusCode);
                     }
+
+                    return JsonConvert.DeserializeObject<T>(responseContent);
                 }
                 else
                 {
@@ -302,6 +317,7 @@ namespace ShoppingAssistant.APIClasses
                     var json = JsonConvert.SerializeObject(item, serializerSettings);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
                     var response = await client.PutAsync(uri, content);
+                    var responseContent = await response.Content.ReadAsStringAsync();
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -313,12 +329,16 @@ namespace ShoppingAssistant.APIClasses
                         // Logging
                         App.Log.Info("SaveItemAsync<T>", "Could not put item with id " + item.RemoteDbId + " on url " + url + "\n" + "Returned status code " + response.StatusCode);
                     }
+
+                    return JsonConvert.DeserializeObject<T>(responseContent);
                 }
             }
             catch (Exception e)
             {
                 App.Log.Error("SaveItemAsync<T>", e.Message + " " + e.GetBaseException().Message);
             }
+
+            return null;
         }
     }
 }

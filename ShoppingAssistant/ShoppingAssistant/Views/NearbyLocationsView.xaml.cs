@@ -48,7 +48,7 @@ namespace ShoppingAssistant.Views
 			LocationFilterTextEntry.TextChanged += OnFilterTextChanged;
 
 			// Set references
-			locationModelManager = App.ModelManager.LocationController;
+			locationModelManager = App.MasterController.LocationController;
 			locationsMaster = locationModelManager.LocationModels;
 			
 			// Add collection changed event

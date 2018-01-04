@@ -65,7 +65,7 @@ namespace ShoppingAssistant.Views
 		{
 			if (requiresUpdate)
 			{
-				App.ModelManager.LocationController.SaveLocationModel(locationModel);
+				App.MasterController.LocationController.SaveLocationModel(locationModel);
 			}
 			base.OnDisappearing();
 		}

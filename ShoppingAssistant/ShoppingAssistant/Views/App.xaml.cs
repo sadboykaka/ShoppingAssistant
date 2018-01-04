@@ -18,9 +18,9 @@ namespace ShoppingAssistant
 		public static ILog Log;
 
 		/// <summary>
-		/// ModelManager reference
+		/// MasterController reference
 		/// </summary>
-		public static ModelManager ModelManager;
+		public static MasterController MasterController;
 		
 		/// <summary>
 		/// GeolocationController reference
@@ -47,7 +47,7 @@ namespace ShoppingAssistant
 			GeolocationController = new GeolocationController();
 			
 			// Create master controller
-			ModelManager = new ModelManager();
+			MasterController = new MasterController();
 			
 			// Open Login View
 			MainPage = new NavigationPage(new LoginView());
@@ -59,7 +59,7 @@ namespace ShoppingAssistant
 		/// </summary>
 		public static void Logout()
 		{
-			ModelManager.Logout();
+			MasterController.Logout();
 			Current.MainPage = new NavigationPage(new LoginView());
 		}
 

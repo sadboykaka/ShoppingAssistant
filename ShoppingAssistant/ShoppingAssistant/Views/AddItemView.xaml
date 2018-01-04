@@ -1,31 +1,56 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:controls="clr-namespace:XLabs.Forms.Controls;assembly=XLabs.Forms"
              x:Class="ShoppingAssistant.AddItemView">
     <ContentPage.Content>
         <Grid Margin="10,10,10,10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"
+                               x:Name="RowItemSearch"/>
+                <RowDefinition Height="0"
+                               x:Name="RowRecipeSearch"/>
+                <RowDefinition Height="Auto"
+                               x:Name="RowListView"/>
+                <RowDefinition Height="50"
+                               x:Name="RowQuantity"/>
+                <RowDefinition Height="0"
+                               x:Name="RowEdamam"/>
+                <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
             <StackLayout Orientation="Horizontal"
-                         Grid.Row="0">
+                         Grid.Row="0"
+                         x:Name="StackLayoutItemSearch">
                 <Label Text="Item: "
                            VerticalOptions="Center"/>
-                <Entry Placeholder="Search"
-                           x:Name="ItemFilterTextEntry"
+                <Entry Placeholder="eg. bread"
+                           x:Name="EntryItemFilterText"
                            Text="{Binding ItemFilterText, Mode=TwoWay}"
                            HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+            <StackLayout Orientation="Vertical"
+                         Grid.Row="1"
+                         x:Name="StackLayoutRecipeSearch">
+                <StackLayout Orientation="Horizontal">
+                    <!--<Label Text="Recipe: "
+                           VerticalOptions="Center"/>-->
+                    <Entry Placeholder="Recipe"
+                           x:Name="EntryRecipeFilterText"
+                           Text="{Binding RecipeFilterText, Mode=TwoWay}"
+                           HorizontalOptions="FillAndExpand"/>
+                    <Button Text="Search"
+                            HorizontalOptions="End"
+                            x:Name="ButtonRecipeSearch"
+                            Style="{StaticResource buttonGreen}"
+                            Margin="0,0,0,0"
+                            WidthRequest="120"/>
+                </StackLayout>
             </StackLayout>
             <ListView
                     ItemsSource="{Binding Items}"
                     ItemTapped="Handle_ItemTapped"
                     CachingStrategy="RecycleElement"
                     x:Name="ItemsListView"
-                    Grid.Row="1">
+                    Grid.Row="2">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -36,18 +61,75 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <ListView ItemsSource="{Binding Recipes}"
+                      ItemTapped="HandleRecipeTapped"
+                      CachingStrategy="RecycleElement"
+                      x:Name="RecipeListView"
+                      RowHeight="80"
+                      Grid.Row="2"
+                      IsVisible="False">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Vertical"
+                                         Padding="0,5,0,5">
+                                <StackLayout Orientation="Horizontal"
+                                         HorizontalOptions="FillAndExpand"
+                                         VerticalOptions="FillAndExpand">
+                                    <Image Source="{Binding Image}"/>
+                                    <StackLayout Orientation="Vertical">
+                                        <Label Text="{Binding Label}" 
+                                           Style="{DynamicResource ListItemTextStyle}"
+                                           HorizontalOptions="Start"/>
+                                        <Label Text="{Binding Path=Yield, StringFormat='Serves: {0}'}"
+                                           Style="{DynamicResource ListItemTextStyle}"
+                                           HorizontalOptions="Start"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
             <StackLayout Orientation="Horizontal"
-                         Grid.Row="2"
+                         Grid.Row="3"
                          Padding="0,0,5,0">
                 <Label Text="Quantity: "
                        VerticalOptions="Center"/>
-                <Entry Placeholder=""
+                <Entry Placeholder="eg. 12"
                        Text="{Binding Quantity}"
                        HorizontalOptions="FillAndExpand"/>
+                <Label Text="Measurement: "
+                       VerticalOptions="Center"/>
+                <Entry Placeholder="eg. grams/pcs"
+                       Text="{Binding Measure}"
+                       HorizontalOptions="FillAndExpand"></Entry>
             </StackLayout>
-            <Button Text="Add"
-                    Grid.Row="3"
-                    x:Name="BtnAddItem"/>
+            <StackLayout Grid.Row="4"
+                         Padding="0,0,5,0"
+                         VerticalOptions="EndAndExpand"
+                         HorizontalOptions="End">
+                <Image Source="https://developer.edamam.com/images/transparent.png"></Image>
+            </StackLayout>
+            <Grid HorizontalOptions="Fill"
+                      Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0"
+                                          x:Name="ColumnFindMore"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Text="Find More"
+                            x:Name="ButtonFindMore"
+                            IsVisible="False"
+                            HorizontalOptions="Fill"
+                            Style="{StaticResource buttonBlue}"
+                            Grid.Column="0"/>
+                <Button Text="Add"
+                            x:Name="ButtonAddItem"
+                            HorizontalOptions="Fill"
+                            Style="{StaticResource buttonGreen}"
+                            Grid.Column="1"/>
+            </Grid>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
