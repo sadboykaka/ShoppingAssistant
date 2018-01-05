@@ -76,16 +76,69 @@ namespace ShoppingAssistant.Controllers
             try
             {
 
-                this.AddShoppingLists(databaseHelper.GetShoppingLists());
+                OnDatabaseRetrieval(databaseHelper.GetShoppingLists());
 
-                var apiShoppingListModels = await apiHelper.GetShoppingListModelsAsync();
-                apiShoppingListModels.ForEach(SaveShoppingListToDatabase);
-
-                this.AddShoppingLists(apiShoppingListModels);
+                OnApiRetrieval(await apiHelper.GetShoppingListModelsAsync()); 
             }
             catch (Exception e)
             {
                 App.Log.Error("GetShoppingListModels()", "Message - " + e.Message + " " + "Source - " + e.Source + e.GetBaseException().Message);
+            }
+        }
+
+        private async void OnApiRetrieval(IEnumerable<ShoppingListModel> lists)
+        {
+            foreach (var list in lists)
+            {
+                var oldList = this.ShoppingListModels.FirstOrDefault(l => l.RemoteDbId == list.RemoteDbId);
+
+                if (oldList == null)
+                {
+                    // Add the list to the list view
+                    this.ShoppingListModels.Add(list);
+
+                    // Save the list to the database
+                    await databaseHelper.SaveShoppingListAsync(list);
+                }
+                else if (RubyDateParser.Compare(oldList.LastUpdated, list.LastUpdated) < 0)
+                {
+                    // Replace the old list with the stored list
+                    var index = ShoppingListModels.IndexOf(oldList);
+                    ShoppingListModels[index] = list;
+
+                    databaseHelper.DeleteShoppingListAsync(oldList);
+                    databaseHelper.SaveShoppingListAsync(list);
+                }
+
+                list.Items.Select(item => item.Name).ForEach(App.MasterController.AddItem);
+            }
+        }
+
+        private void OnDatabaseRetrieval(IEnumerable<ShoppingListModel> lists)
+        {
+            foreach (var list in lists)
+            {
+                if (list.Deleted)
+                {
+                    DeleteShoppingListAsync(list);
+                }
+
+                var oldList = this.ShoppingListModels.FirstOrDefault(l => l.LocalDbId == list.LocalDbId);
+
+                if (oldList == null)
+                {
+                    // Insert the new list
+                    ShoppingListModels.Add(list);
+                    list.Items.Select(item => item.Name).ForEach(App.MasterController.AddItem);
+                }
+                else if (RubyDateParser.Compare(oldList.LastUpdated, list.LastUpdated) < 0)
+                {
+                    // Replace the old list with the stored list    
+                    var index = ShoppingListModels.IndexOf(oldList);
+                    ShoppingListModels[index] = list;
+                }
+
+                list.Items.Select(item => item.Name).ForEach(App.MasterController.AddItem);
             }
         }
         

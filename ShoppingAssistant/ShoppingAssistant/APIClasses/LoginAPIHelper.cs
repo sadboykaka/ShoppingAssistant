@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using Java.Util.Concurrent;
 using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant.APIClasses
@@ -24,7 +24,7 @@ namespace ShoppingAssistant.APIClasses
         /// <summary>
         /// Mutex semaphore to ensureonly one thread attempts to log in at a time
         /// </summary>
-        private Semaphore mutex;
+        private SemaphoreSlim mutex;
         
         /// <summary>
         /// Base api url
@@ -39,7 +39,7 @@ namespace ShoppingAssistant.APIClasses
         public LoginApiHelper(string baseUrl)
         {
             BaseUrl = baseUrl;
-            mutex = new Semaphore(1);
+            mutex = new SemaphoreSlim(1);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace ShoppingAssistant.APIClasses
         private async void AwaitLogin()
         {
 
-            mutex.Acquire();
+            mutex.Wait();
 
             while (!loggedIn)
             {

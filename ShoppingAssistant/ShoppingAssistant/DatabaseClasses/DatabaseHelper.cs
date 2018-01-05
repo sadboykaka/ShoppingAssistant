@@ -53,11 +53,11 @@ namespace ShoppingAssistant.DatabaseClasses
         {
             if (item.LocalDbId != null)
             {
-                DatabaseAsyncConnection.UpdateAsync(item);
+                await DatabaseAsyncConnection.UpdateAsync(item);
             }
             else
             {
-                DatabaseAsyncConnection.InsertAsync(item);
+                await DatabaseAsyncConnection.InsertAsync(item);
             }
         }
         
