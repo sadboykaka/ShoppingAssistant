@@ -24,7 +24,8 @@
                    x:Name="EntryName"/>
                 <Entry Placeholder="Email"
                    Text="{Binding Email}"
-                   x:Name="EntryEmail"/>
+                   x:Name="EntryEmail"
+                   Keyboard="Email"/>
                 <Entry Placeholder="Password"
                    Text="{Binding Password}"
                    IsPassword="True"

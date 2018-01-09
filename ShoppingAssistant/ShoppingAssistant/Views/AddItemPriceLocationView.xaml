@@ -9,7 +9,8 @@
             <Entry Placeholder="Price"
                    Text="{Binding Price}"/>
             <Button Text="Add"
-                    x:Name="btnAddIpl"/>
+                    x:Name="BtnAddIpl"
+                    Style="{StaticResource buttonGreen}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

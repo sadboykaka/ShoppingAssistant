@@ -100,9 +100,7 @@ namespace ShoppingAssistant.Controllers
                 case LoginResponse.NoResponse:
                     break;
             }
-
-            EdamamApiHelper.Query("bolognese");
-
+            
             return response;
         }
 

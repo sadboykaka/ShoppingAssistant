@@ -98,7 +98,8 @@
                        VerticalOptions="Center"/>
                 <Entry Placeholder="eg. 12"
                        Text="{Binding Quantity}"
-                       HorizontalOptions="FillAndExpand"/>
+                       HorizontalOptions="FillAndExpand"
+                       Keyboard="Numeric"/>
                 <Label Text="Measurement: "
                        VerticalOptions="Center"/>
                 <Entry Placeholder="eg. grams/pcs"

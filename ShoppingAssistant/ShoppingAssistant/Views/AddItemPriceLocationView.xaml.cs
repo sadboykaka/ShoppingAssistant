@@ -38,7 +38,7 @@ namespace ShoppingAssistant.Views
 
 			this.callBack = callBack;
 
-			this.btnAddIpl.Clicked += delegate { RaiseNewItemPriceLocationEvent(); };
+			this.BtnAddIpl.Clicked += delegate { RaiseNewItemPriceLocationEvent(); };
 		}
 
 		/// <summary>

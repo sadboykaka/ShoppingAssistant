@@ -39,8 +39,9 @@
                 </ListView.ItemTemplate>
             </ListView>
             <Button Text="Add Item Price Info"
-                    x:Name="btnAddpl"
-                    Grid.Row="2"/>
+                    x:Name="BtnAddIpl"
+                    Grid.Row="2"
+                    Style="{StaticResource buttonGreen}"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

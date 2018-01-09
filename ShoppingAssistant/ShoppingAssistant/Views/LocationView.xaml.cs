@@ -41,7 +41,7 @@ namespace ShoppingAssistant.Views
 
 			ItemFilterTextEntry.TextChanged += OnFilterTextChanged;
 
-			btnAddpl.Clicked += delegate { OnAddItemClick(); };
+			BtnAddIpl.Clicked += delegate { OnAddItemClick(); };
 
 			BindingContext = this;
 		}

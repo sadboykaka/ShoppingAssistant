@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using SQLite;
-using XLabs;
 
 namespace ShoppingAssistant.Models
 {
@@ -62,22 +58,42 @@ namespace ShoppingAssistant.Models
         [JsonProperty("googleid")]
         public string GoogleId { get; set; }
 
+        /// <summary>
+        /// Distance value show on user interface
+        /// Ignored by local DB and API serializers
+        /// </summary>
         [Ignore]
         public double Distance { get; set; }
 
-
+        /// <summary>
+        /// Collection of associated ItemPriceLocationModels
+        /// </summary>
         private ObservableCollection<ItemPriceLocationModel> ipls = new ObservableCollection<ItemPriceLocationModel>();
 
+        /// <summary>
+        /// Getter for collection of associated ItemPriceLocationModels
+        /// </summary>
         public ObservableCollection<ItemPriceLocationModel> ItemPriceLocations => ipls;
 
+        /// <summary>
+        /// Method to add an ItemPriceLocationModel to this location
+        /// </summary>
+        /// <param name="newIpl"></param>
         public void AddItem(ItemPriceLocationModel newIpl)
         {
-            this.ipls.Add(newIpl);
+            ipls.Add(newIpl);
         }
 
+        /// <summary>
+        /// Method to add a collection of ItemPriceLocationModels to this location
+        /// </summary>
+        /// <param name="newIpls"></param>
         public void AddItems(IEnumerable<ItemPriceLocationModel> newIpls)
         {
-            newIpls.ForEach(newItem => this.ipls.Add(newItem));
+            foreach (var ipl in newIpls)
+            {
+                AddItem(ipl);
+            }
         }
     }
 }

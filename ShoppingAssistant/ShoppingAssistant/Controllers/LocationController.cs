@@ -165,7 +165,7 @@ namespace ShoppingAssistant.Controllers
         /// <param name="lat2"></param>
         /// <param name="lng2"></param>
         /// <returns></returns>
-        public static double CalculateDistance(double lat1, double lng1, double lat2, double lng2)
+        private static double CalculateDistance(double lat1, double lng1, double lat2, double lng2)
         {
             /*
                 x = Δλ ⋅ cos φm
@@ -184,8 +184,11 @@ namespace ShoppingAssistant.Controllers
             // Longitude - could be negative but is squared later so does not matter
             var x = (lng1 - lng2) * Math.Cos((lng1 + lng2) / 2);
 
+            // Get the distance in metres
+            var distance = Math.Round(R * Math.Sqrt((x * x) + (y * y)), 0);
 
-            return Math.Round(R * Math.Sqrt((x * x) + (y * y)), 0);
+            // Return the distance in kilometres
+            return distance / 100;
         }
     }
 }

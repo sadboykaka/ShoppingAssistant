@@ -34,9 +34,12 @@
                                     <Label Text="{Binding Name}" 
                                            Style="{DynamicResource ListItemTextStyle}"
                                            HorizontalOptions="StartAndExpand"/>
-                                    <Label Text="{Binding Distance}"
+                                    <Label Text="{Binding Path=Distance, StringFormat='{0}km'}"
                                            Style="{DynamicResource ListItemTextStyle}"
                                            HorizontalOptions="End"/>
+                                    <!--<Label Text="{Binding Distance}"
+                                           Style="{DynamicResource ListItemTextStyle}"
+                                           HorizontalOptions="End"/>-->
                                 </StackLayout>
                                 <StackLayout Padding="15,0,0,0">
                                     <Label Text="{Binding Vicinity}"

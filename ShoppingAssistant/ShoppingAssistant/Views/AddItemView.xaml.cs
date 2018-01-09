@@ -108,12 +108,14 @@ namespace ShoppingAssistant
         /// </summary>
 	    private async void SearchForMoreRecipesAsync()
 	    {
+            // Show refreshing symbol
 	        RecipeListView.IsRefreshing = true;
 
-	        var result = await App.MasterController.EdamamApiHelper.Query(RecipeFilterText.Trim(), edamamResponse.From + 10, edamamResponse.To + 10);
+            // Get the data
+	        var result = await App.MasterController.EdamamApiHelper.QueryAsync(RecipeFilterText.Trim(), edamamResponse.From + 10, edamamResponse.To + 10);
 	        edamamResponse = result;
 
-            
+            // Populate the list view
 	        RecipeListView.IsRefreshing = false;
             result.Hits.ForEach(hit => Recipes.Add(hit.Recipe));
 	    }
@@ -128,7 +130,7 @@ namespace ShoppingAssistant
             RecipeListView.IsRefreshing = true;
 
             // Get the data
-			var result= await App.MasterController.EdamamApiHelper.Query(RecipeFilterText.Trim());
+			var result= await App.MasterController.EdamamApiHelper.QueryAsync(RecipeFilterText.Trim());
             edamamResponse = result;
 
             // Populate the list view
@@ -230,8 +232,14 @@ namespace ShoppingAssistant
         /// </summary>
 	    private void OpenInBrowser()
 	    {
+            // Remove the toolbar button
+            ToolbarItems.Remove(ToolbarItems.First(item => item.Text == "Open in Browser"));
+
+            // Deselect the item
 	        var recipe = (Recipe) RecipeListView.SelectedItem;
 	        RecipeListView.SelectedItem = null;
+
+            // Open the recipe in the browser
 	        Device.OpenUri(new Uri(recipe.Url));
 	    }
 
@@ -248,9 +256,14 @@ namespace ShoppingAssistant
 		        return;
 		    }
 
-			var temp = itemsCollection.Where(item => item.Contains(ItemFilterText)).OrderBy(item => item);
-			Items.Clear();
-			temp.ForEach(Items.Add);
+            // Get the collection of items to be displayed
+		    IEnumerable<string> temp = ItemFilterText == string.Empty ? null : itemsCollection.Where(item => item.Contains(ItemFilterText)).OrderBy(item => item);
+
+            // Clear the view
+		    Items.Clear();
+
+            // Add items if there are any
+			temp?.ForEach(Items.Add);
 		    ItemsListView.HeightRequest = Items.Count * 40;
 		}
 
@@ -288,8 +301,6 @@ namespace ShoppingAssistant
 
             // Invoke the event
 			callBack?.Invoke(this, new ItemQuantityPairArgs(models));
-		}
-
-        
+		}      
 	}
 }
