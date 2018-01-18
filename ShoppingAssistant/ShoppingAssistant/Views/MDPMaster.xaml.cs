@@ -38,14 +38,14 @@ namespace ShoppingAssistant.Views
             masterPageItems.Add(new MDPMenuItem
             {
                 Title = "Shopping Lists",
-                IconSource = "Icon.png",
+                IconSource = "shopping_list.png",
                 TargetType = typeof(ShoppingListsView)
             });
 
             masterPageItems.Add(new MDPMenuItem
             {
-                Title="Add Item Price Info",
-                IconSource = "contacts.png",
+                Title="Nearby Locations",
+                IconSource = "cart.png",
                 TargetType = typeof(NearbyLocationsView)
             });
 

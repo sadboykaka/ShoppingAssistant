@@ -151,6 +151,10 @@ namespace ShoppingAssistant.Controllers
             }
         }
 
+        /// <summary>
+        /// Method to save the local model to both api and local database
+        /// </summary>
+        /// <param name="location"></param>
         public void SaveLocationModel(LocationModel location)
         {
             databaseHelper.SaveLocationModelAsync(location);

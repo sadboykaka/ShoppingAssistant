@@ -27,7 +27,8 @@
                        HorizontalOptions="FillAndExpand"/>
             </StackLayout>
             <Button Text="Share"
-                    x:Name="BtnShare"/>
+                    x:Name="BtnShare"
+                    Style="{StaticResource buttonGreen}"/>
         </StackLayout>
         <ListView ItemsSource="{Binding Items}"
             CachingStrategy="RecycleElement"

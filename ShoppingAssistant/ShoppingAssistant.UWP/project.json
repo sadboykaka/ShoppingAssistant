@@ -10,7 +10,9 @@
     "SQLite.Net.Async-PCL": "3.1.1",
     "SQLite.Net.Cipher-PCL": "2.0.0",
     "Xamarin.Forms": "2.4.0.280",
-    "XLabs.Forms": "2.0.5782"
+    "XLabs.Forms": "2.0.5782",
+    "ZXing.Net.Mobile": "2.3.2",
+    "ZXing.Net.Mobile.Forms": "2.3.2"
   },
   "frameworks": {
     "uap10.0.10586": {}

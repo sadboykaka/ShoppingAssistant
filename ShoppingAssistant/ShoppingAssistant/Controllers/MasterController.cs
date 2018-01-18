@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ShoppingAssistant.APIClasses;
 using ShoppingAssistant.Models;
@@ -67,14 +68,21 @@ namespace ShoppingAssistant.Controllers
         /// </summary>
         public MasterController()
         {
-            helper = new LoginApiHelper(BaseApiUrl);
+            try
+            {
+                helper = new LoginApiHelper(BaseApiUrl);
 
-            Items = new SortedSet<string>();
+                Items = new SortedSet<string>();
 
-            ShoppingListController = new ShoppingListController(localDatabasePath, helper);
-            LocationController = new LocationController(localDatabasePath, BaseApiUrl, helper);
-            LoginController = new LoginController(localDatabasePath, helper);
-            EdamamApiHelper = new EdamamApiHelper(BaseEdamamApiUrl);
+                ShoppingListController = new ShoppingListController(localDatabasePath, helper);
+                LocationController = new LocationController(localDatabasePath, BaseApiUrl, helper);
+                LoginController = new LoginController(localDatabasePath, helper);
+                EdamamApiHelper = new EdamamApiHelper(BaseEdamamApiUrl);
+            }
+            catch (Exception e)
+            {
+                App.Log.Error("Constructor", e.StackTrace);
+            }
         }
 
         /// <summary>
@@ -83,8 +91,10 @@ namespace ShoppingAssistant.Controllers
         /// <param name="item"></param>
         public void AddItem(string item)
         {
-            Items.Add(item);
-            //if (!Items.Contains(item)) Items.Add(item);
+            if (item != null)
+            {
+                Items.Add(item);
+            }
         }
 
         public async Task<LoginResponse> Login(UserModel user)

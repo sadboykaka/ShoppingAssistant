@@ -5,9 +5,10 @@
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="1*"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="6*"/>
+                <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
             <StackLayout Grid.Row="1"
                          Margin="20,20,20,0">

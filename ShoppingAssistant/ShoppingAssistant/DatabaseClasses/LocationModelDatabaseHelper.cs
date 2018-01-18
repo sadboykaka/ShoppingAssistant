@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq; 
-using System.Threading.Tasks;
 using ShoppingAssistant.Models;
 using Xamarin.Forms.Internals;
 
@@ -27,6 +26,9 @@ namespace ShoppingAssistant.DatabaseClasses
         /// </summary>
         private void CreateDatabases()
         {
+            //DatabaseAsyncConnection.DropTableAsync<LocationModel>();
+            //DatabaseAsyncConnection.DropTableAsync<ItemPriceLocationModel>();
+
             DatabaseAsyncConnection.CreateTableAsync<LocationModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
             DatabaseAsyncConnection.CreateTableAsync<ItemPriceLocationModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
         }

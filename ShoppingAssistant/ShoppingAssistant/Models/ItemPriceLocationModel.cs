@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
-using SQLite;
+﻿using Newtonsoft.Json;
 
 namespace ShoppingAssistant.Models
 {
@@ -11,7 +7,7 @@ namespace ShoppingAssistant.Models
     {
         public const string UrlSuffix = "ipls";
 
-        [JsonProperty("name")]
+        [JsonProperty("item")]
         public string Name { get; set; }
         [JsonProperty("location_id")]
         public int RemoteDbLocationId { get; set; }

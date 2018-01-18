@@ -31,12 +31,19 @@ namespace ShoppingAssistant.APIClasses
 
         public async void GetItemQuantityPairModelsAsync(ShoppingListModel list)
         {
-            var url = helper.BaseUrl + ShoppingListModel.UrlSuffix + "/" + list.RemoteDbId + "/" +
-                      ItemQuantityPairModel.UrlSuffix;
+            try
+            {
+                var url = helper.BaseUrl + ShoppingListModel.UrlSuffix + "/" + list.RemoteDbId + "/" +
+                          ItemQuantityPairModel.UrlSuffix;
 
-            var items = await helper.RefreshDataAsync<ItemQuantityPairModel>(url);
+                var items = await helper.RefreshDataAsync<ItemQuantityPairModel>(url);
 
-            list.AddItems(items);
+                list.AddItems(items);
+            }
+            catch (Exception e)
+            {
+                App.Log.Error("GetItemQuantityPairModelsAsync", e.StackTrace);
+            }
         }
 
         public async void SaveShoppingListModelAsync(ShoppingListModel list)

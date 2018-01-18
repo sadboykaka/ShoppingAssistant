@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ShoppingAssistant.EventClasses;
+﻿using ShoppingAssistant.EventClasses;
 using ShoppingAssistant.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -15,7 +10,7 @@ namespace ShoppingAssistant.Views
 	{
 		/// <summary>
 		/// ItemPriceLocationEventHandler on which we callback with new ItemPriceLocationModel
-		/// </summary>
+		/// </summary>1
 		private ItemPriceLocationEventHandler callBack;
 
 		/// <summary>
@@ -38,7 +33,7 @@ namespace ShoppingAssistant.Views
 
 			this.callBack = callBack;
 
-			this.BtnAddIpl.Clicked += delegate { RaiseNewItemPriceLocationEvent(); };
+			BtnAddIpl.Clicked += delegate { RaiseNewItemPriceLocationEvent(); };
 		}
 
 		/// <summary>

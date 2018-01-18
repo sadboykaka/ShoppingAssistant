@@ -95,17 +95,32 @@ namespace ShoppingAssistant.DatabaseClasses
                 listowner.UserEmail == App.MasterController.LoginController.CurrentUser.Email).ToList();
 
             // Select the lists that belong to the current owner
-            lists = lists.Where(slist => listOwners.Any(listowner => listowner.ShoppingListModelId == slist.LocalDbId))
+            lists = lists.Where(slist =>
+                    listOwners.Any(listowner => listowner.ShoppingListModelId == slist.LocalDbId))
                 .ToList();
 
             // Get the ItemQuantityPairModels
             var items = GetItemsAsync<ItemQuantityPairModel>().Result;
-            
+
+            // Remove any useless null items
+            if (items != null && items.Any())
+            {
+                foreach (var item in items)
+                {
+                    if (item.Name == null && item.Measure == null)
+                    {
+                        DeleteItemAsync(item);
+                    }
+                }
+            }
+
+            items.RemoveAll(item => item.Name == null && item.Measure == null);
+
             // Select the ItemQuantityPairModels and attach them to the relevant ShoppingListModels
             items.ForEach(i => lists.FirstOrDefault(l => l.LocalDbId == i.LocalDbShoppingListId)?.Items.Add(i));
-            
+
             // Return the ShoppingListModels
-            return lists;
+            return lists;   
         }
 
         /// <summary>

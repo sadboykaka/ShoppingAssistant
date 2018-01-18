@@ -5,9 +5,9 @@
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="80"/>
+                <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
             <StackLayout Orientation="Horizontal"
                          Grid.Row="0"
@@ -22,11 +22,13 @@
             <ListView ItemsSource="{Binding Ipls}"
                       CachingStrategy="RecycleElement"
                       x:Name="IplsListView"
-                      Grid.Row="1">
+                      Grid.Row="1"
+                      Margin="10,10,10,0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Horizontal">
+                            <StackLayout Orientation="Horizontal"
+                                         VerticalOptions="Center">
                                 <Label Text="{Binding Name}" 
                                        Style="{DynamicResource ListItemTextStyle}"
                                        HorizontalOptions="StartAndExpand"/>
