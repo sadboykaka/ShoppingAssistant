@@ -58,6 +58,7 @@
     <Reference Include="FormsViewGroup, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xamarin.Forms.2.4.0.280\lib\MonoAndroid10\FormsViewGroup.dll</HintPath>
     </Reference>
+    <Reference Include="Java.Interop" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="ModernHttpClient, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Ideine.ModernHttpClient.3.0.2\lib\MonoAndroid\ModernHttpClient.dll</HintPath>
@@ -205,10 +206,12 @@
     <Compile Include="Dependencies\FileHelper.cs" />
     <Compile Include="Dependencies\Identifier.cs" />
     <Compile Include="Dependencies\Logger.cs" />
+    <Compile Include="Dependencies\NotificationHelper.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Controls\CustomEntryRenderer.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BackgroundReceiver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

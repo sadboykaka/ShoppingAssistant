@@ -48,17 +48,20 @@ namespace ShoppingAssistant.Controllers
             databaseHelper = new LocationModelDatabaseHelper(this.localDatabaseName, true);
             apiHelper = new LocationModelAPIHelper(baseApiUrl, apiHelperParam);
 
-            this.LocationModels = new ObservableCollection<LocationModel>();
+            LocationModels = new ObservableCollection<LocationModel>();
 
-            this.geolocationController.NewPositionEvent += NewPositionEventHandler;
-            this.geolocationController.GetCurrentLocation();
+            geolocationController.NewPositionEvent += NewPositionEventHandler;
+            geolocationController.GetCurrentLocation();
             
         }
         
-        public void GetLocationModelsAsync()
+        /// <summary>
+        /// Method to get the nearby locations
+        /// </summary>
+        public void GetNearbyLocations()
         {
             // Get the current position
-            this.geolocationController.GetCurrentLocation();
+            geolocationController.GetCurrentLocation();
             
         }
 
@@ -67,10 +70,10 @@ namespace ShoppingAssistant.Controllers
             try
             {
                 // Get the location models for the current location
-                this.AddLocationModels(databaseHelper.GetLocationModels());
-                this.SaveAndAddLocationModels(await apiHelper.GetLocationModelsAsync(
-                    this.geolocationController.Position.Latitude,
-                    this.geolocationController.Position.Longitude));
+                AddLocationModels(databaseHelper.GetLocationModels());
+                SaveAndAddLocationModels(await apiHelper.GetLocationModelsAsync(
+                geolocationController.Position.Latitude,
+                geolocationController.Position.Longitude));
             }
             catch (Exception ex)
             {

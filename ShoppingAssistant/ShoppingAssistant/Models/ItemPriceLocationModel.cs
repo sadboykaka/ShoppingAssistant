@@ -13,7 +13,16 @@ namespace ShoppingAssistant.Models
         public int RemoteDbLocationId { get; set; }
         [JsonProperty("price")]
         public float Price { get; set; }
-        
+       
+        /// <summary>
+        /// Quantity attribute
+        /// </summary>
+        [JsonProperty("quantity")]
+        public double Quantity { get; set; }
+
+        [JsonProperty("measure")]
+        public string Measure { get; set; }
+            
         public int LocalDbLocationId { get; set; }
     }
 }

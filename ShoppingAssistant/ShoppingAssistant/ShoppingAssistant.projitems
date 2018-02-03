@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\RubyDateParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\ShoppingListAPIHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\LoginController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\NotificationController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\ShoppingListController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CustomEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\DatabaseHelper.cs" />
@@ -24,6 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Crypt\Crypt.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\ShoppingListDatabaseHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\IIdentifier.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\INotificationHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ItemPriceLocationArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ShoppingListEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\GeolocationController.cs" />
@@ -41,12 +43,18 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\MasterController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ShoppingListModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ItemMatchViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LocationPriceViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Views\AddItemPriceLocationView.xaml.cs">
       <DependentUpon>AddItemPriceLocationView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\CompareShopsView.xaml.cs">
       <DependentUpon>CompareShopsView.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Views\LocationPriceModelView.xaml.cs">
+      <DependentUpon>LocationPriceModelView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Views\LocationView.xaml.cs">
@@ -173,6 +181,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\CompareShopsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Views\LocationPriceModelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

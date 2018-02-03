@@ -4,10 +4,25 @@
              x:Class="ShoppingAssistant.Views.CompareShopsView">
     <ContentPage.Content>
         <StackLayout>
+            <StackLayout Orientation="Horizontal"
+                         Margin="20,0,20,0">
+                <Label Text="Order by:"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Start"/>
+                <Picker 
+                    ItemsSource="{Binding PickerTextCollection}"
+                    SelectedIndexChanged="Handle_PickerChanged"
+                    x:Name="PickerOrderBy"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="Center"/>
+                        
+            </StackLayout>
             <ListView ItemsSource="{Binding LocationPriceModels}"
+                  ItemTapped="Handle_ItemTapped"
                   CachingStrategy="RecycleElement"
                   Margin="10,10,10,0"
-                  RowHeight="60">
+                  RowHeight="75"
+                  x:Name="ShoppingListsView">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -17,18 +32,19 @@
                                     <Label Text="{Binding Name}" 
                                            Style="{DynamicResource ListItemTextStyle}"
                                            HorizontalOptions="StartAndExpand"/>
-                                    <Label Text="{Binding Path=Price, StringFormat='Total: £{0}'}" 
+                                    <Label Text="{Binding Path=Price, StringFormat='Total: £{0:0.00}'}" 
                                            Style="{DynamicResource ListItemDetailTextStyle}"
                                            HorizontalOptions="End"/>
                                 </StackLayout>
+                                <Label Text="{Binding Vicinity}"/>
                                 <StackLayout Orientation="Horizontal"
-                                             MinimumHeightRequest="100">
-                                    <Label Text="{Binding Path=NumberOfItemsMatched, StringFormat='Number of items matched: {0}'}"
-                                           Style="{DynamicResource ListItemDetailTextStyle}"
-                                           HorizontalOptions="StartAndExpand"/>
-                                    <Label Text="{Binding Path=Distance, StringFormat='Distance: {0}'}"
-                                           Style="{DynamicResource ListItemDetailTextStyle}"
-                                           HorizontalOptions="End"/>
+                                            MinimumHeightRequest="100">
+                                <Label Text="{Binding Path=NumberOfItemsMatched, StringFormat='Number of items matched: {0}'}"
+                                        Style="{DynamicResource ListItemDetailTextStyle}"
+                                        HorizontalOptions="StartAndExpand"/>
+                                <Label Text="{Binding Path=Distance, StringFormat='Distance: {0}km'}"
+                                        Style="{DynamicResource ListItemDetailTextStyle}"
+                                        HorizontalOptions="End"/>
                                 </StackLayout>
                             </StackLayout>
                         </ViewCell>

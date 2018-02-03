@@ -275,6 +275,7 @@ namespace ShoppingAssistant
             // Create return list
 		    var models = new List<ItemQuantityPairModel>();
 
+            // Check which mode this is running in
             if (RowRecipeSearch.Height.Value == 0)
 		    {
 		        // Add the new item to the collection
@@ -294,8 +295,21 @@ namespace ShoppingAssistant
                 // Add the recipe ingredients to the collection
                 var recipe = (Recipe) RecipeListView.SelectedItem;
 
-                recipe.Ingredients.ForEach(ingredient =>
-                    models.Add(new ItemQuantityPairModel {Name = ingredient.Food, Quantity = ingredient.Quantity, Measure = ingredient.Measure}));
+                foreach (var ingredient in recipe.Ingredients)
+                {
+                    if (ingredient.Food != null && ingredient.Measure != null)
+                    {
+                        models.Add(new ItemQuantityPairModel
+                        {
+                            Name = ingredient.Food,
+                            Quantity = ingredient.Quantity,
+                            Measure = ingredient.Measure
+                        });
+                    }
+                }
+
+                //recipe.Ingredients.ForEach(ingredient =>
+                    //models.Add(new ItemQuantityPairModel {Name = ingredient.Food, Quantity = ingredient.Quantity, Measure = ingredient.Measure}));
             }
             
 

@@ -19,17 +19,20 @@ namespace ShoppingAssistant.APIClasses
         {
             this.helper = helper;
         }
-
+        
         public async Task<List<ShoppingListModel>> GetShoppingListModelsAsync()
         {
             List<ShoppingListModel> lists = await helper.RefreshDataAsync<ShoppingListModel>(helper.BaseUrl + ShoppingListModel.UrlSuffix);
 
-            lists.ForEach(GetItemQuantityPairModelsAsync);
+            foreach (var list in lists)
+            {
+                await GetItemQuantityPairModelsAsync(list);
+            }
 
             return lists;
         }
 
-        public async void GetItemQuantityPairModelsAsync(ShoppingListModel list)
+        public async Task GetItemQuantityPairModelsAsync(ShoppingListModel list)
         {
             try
             {
@@ -46,23 +49,30 @@ namespace ShoppingAssistant.APIClasses
             }
         }
 
-        public async void SaveShoppingListModelAsync(ShoppingListModel list)
+        public async Task SaveShoppingListModelAsync(ShoppingListModel list)
         {
-            var url = helper.BaseUrl + ShoppingListModel.UrlSuffix;
-
-            var slistResponse = await helper.SaveItemAsync(list, url);
-
-            list.RemoteDbId = list.RemoteDbId?? slistResponse?.RemoteDbId;
-
-            url += "/" + list.RemoteDbId + "/" + ItemQuantityPairModel.UrlSuffix;
-
-            foreach (var iqp in list.Items)
+            try
             {
-                var iqpResponse = await helper.SaveItemAsync(iqp, url);
-                if (iqp.RemoteDbId == null)
+                var url = helper.BaseUrl + ShoppingListModel.UrlSuffix;
+
+                var slistResponse = await helper.SaveItemAsync(list, url);
+
+                list.RemoteDbId = list.RemoteDbId ?? slistResponse?.RemoteDbId;
+
+                url += "/" + list.RemoteDbId + "/" + ItemQuantityPairModel.UrlSuffix;
+
+                foreach (var iqp in list.Items)
                 {
-                    iqp.RemoteDbId = iqpResponse?.RemoteDbId;
+                    var iqpResponse = await helper.SaveItemAsync(iqp, url);
+                    if (iqp.RemoteDbId == null)
+                    {
+                        iqp.RemoteDbId = iqpResponse?.RemoteDbId;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                App.Log.Error("SaveShoppingListModelAsync", ex.Message + "\n" + ex.StackTrace);
             }
         }
 

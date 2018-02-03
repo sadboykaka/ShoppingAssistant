@@ -69,7 +69,7 @@ namespace ShoppingAssistant.Controllers
                 App.Log.Debug("GetNearbyLocations", "Geolocation is available, getting location");
 
                 // Get position
-                Position = await geolocator.GetPositionAsync(10000);
+                Position = await geolocator.GetPositionAsync(60000);
 
                 // Logging
                 App.Log.Debug("GetNearbyLocations", "Lat = " + Position.Latitude);

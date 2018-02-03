@@ -1,24 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
+using Java.Security.Interfaces;
 using ShoppingAssistant.Models;
 using Xamarin.Forms.Internals;
 
 namespace ShoppingAssistant.APIClasses
 {
+    /// <summary>
+    /// API Helper class for LocationModel
+    /// </summary>
     public class LocationModelAPIHelper
     {
+        /// <summary>
+        /// Generic API Helper object
+        /// </summary>
         private readonly ApiHelper helper;
+
+        /// <summary>
+        /// Base API url
+        /// </summary>
         private readonly string baseUrl;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        /// <param name="helper"></param>
         public LocationModelAPIHelper(string baseUrl, ApiHelper helper)
         {
             this.helper = helper;
             this.baseUrl = baseUrl;
         }
 
+        /// <summary>
+        /// Method to get the LocationModels for a given latitude and longitude pair
+        /// </summary>
+        /// <param name="lat"></param>
+        /// <param name="lng"></param>
+        /// <returns></returns>
         public async Task<List<LocationModel>> GetLocationModelsAsync(double lat, double lng)
         {
             var locations = await helper.RefreshDataAsync<LocationModel>(
@@ -30,12 +49,20 @@ namespace ShoppingAssistant.APIClasses
                 }
             );
 
-            locations.ForEach(GetItemPriceLocationModelsAsync);
-
+            foreach (var location in locations)
+            {
+                await GetItemPriceLocationModelsAsync(location);
+            }
+            
             return locations;
         }
 
-        public async void GetItemPriceLocationModelsAsync(LocationModel location)
+        /// <summary>
+        /// Method to get the ItemPricePlocationModels for the given location
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
+        private async Task GetItemPriceLocationModelsAsync(LocationModel location)
         {
             var url = baseUrl + LocationModel.UrlSuffix + "/" + location.RemoteDbId + "/" +
                       ItemPriceLocationModel.UrlSuffix;
@@ -45,6 +72,10 @@ namespace ShoppingAssistant.APIClasses
             location.AddItems(ipls);
         }
 
+        /// <summary>
+        /// Method to save a LocationModel asynchronously
+        /// </summary>
+        /// <param name="location"></param>
         public async void SaveLocationModelAsync(LocationModel location)
         {
             var url = baseUrl + LocationModel.UrlSuffix;
@@ -56,6 +87,11 @@ namespace ShoppingAssistant.APIClasses
             location.ItemPriceLocations.ForEach(item => helper.SaveItemAsync(item, url));
         }
 
+        /// <summary>
+        /// Method to delete a LocationModel asynchronously
+        /// </summary>
+        /// <param name="location"></param>
+        /// <returns></returns>
         public async Task<bool> DeleteLocationModelAsync(LocationModel location)
         {
             return await helper.DeleteItemAsync(baseUrl + "/" + location.UrlSuffixProperty + "/" + location.RemoteDbId);

@@ -32,7 +32,7 @@
                                 <Label Text="{Binding Name}" 
                                        Style="{DynamicResource ListItemTextStyle}"
                                        HorizontalOptions="StartAndExpand"/>
-                                <Label Text="{Binding Price}" 
+                                <Label Text="{Binding Path=Price, StringFormat='£{0}'}"
                                        Style="{DynamicResource ListItemDetailTextStyle}"
                                        HorizontalOptions="End"/>
                             </StackLayout>

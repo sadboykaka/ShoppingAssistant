@@ -1,4 +1,5 @@
 ﻿using ShoppingAssistant.Controllers;
+using ShoppingAssistant.DependencyInterfaces;
 using ShoppingAssistant.Logging;
 using ShoppingAssistant.Models;
 using ShoppingAssistant.Views;
@@ -12,6 +13,11 @@ namespace ShoppingAssistant
 	/// </summary>
 	public partial class App
 	{
+        /// <summary>
+        /// Boolean indicating if the application is running in the foreground or background
+        /// </summary>
+	    public static bool Minimised = false;
+
 		/// <summary>
 		/// Logger reference
 		/// </summary>
@@ -32,6 +38,11 @@ namespace ShoppingAssistant
 		/// </summary>
 		public static MDP Md { get; set; }
 
+        /// <summary>
+        /// Notification helper object
+        /// </summary>
+	    public static INotificationHelper NotificationHelper;
+
 		/// <summary>
 		/// Constructor
 		/// </summary>
@@ -41,6 +52,9 @@ namespace ShoppingAssistant
 
 			// Create logger
 			Log = DependencyService.Get<ILog>();
+
+            // Create notification helper
+		    NotificationHelper = DependencyService.Get<INotificationHelper>();
 
 			// Geolocation controller
 			// Not user specific and takes some time so created early
@@ -66,16 +80,19 @@ namespace ShoppingAssistant
 		protected override void OnStart ()
 		{
 			// Handle when your app starts
+		    Minimised = false;
 		}
 
 		protected override void OnSleep ()
 		{
 			// Handle when your app sleeps
+		    Minimised = true;
 		}
 
 		protected override void OnResume ()
 		{
 			// Handle when your app resumes
+		    Minimised = false;
 		}
 	}
 }

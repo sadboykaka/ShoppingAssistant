@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ShoppingAssistant.Views.LocationPriceModelView">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical"
+                     HorizontalOptions="Fill">
+            <StackLayout Orientation="Vertical"
+                         Margin="10,10,0,0">
+                <StackLayout Orientation="Horizontal"
+                             HorizontalOptions="Fill">
+                    <Label Text="{Binding Path=Name, StringFormat='Location: {0}'}"
+                           Style="{DynamicResource ListItemDetailTextStyle}"
+                           VerticalOptions="Center"/>
+                    <Label Text="{Binding Path=Price, StringFormat='Total: £{0:0.00}'}"
+                           Style="{DynamicResource ListItemDetailTextStyle}"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center"/>
+                </StackLayout>
+                <Label Text="{Binding Path=Vicinity, StringFormat='Address: {0}'}" />
+                <StackLayout Orientation="Horizontal"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Fill">
+                    <Label Text="{Binding Path=NumberOfItemsMatched, StringFormat='Items matched: {0}'}"/>
+                    <Label Text="{Binding Path=Distance, StringFormat='Distance: {0}km'}"
+                           HorizontalOptions="End"/>
+                </StackLayout>
+            </StackLayout>
+            <ListView ItemsSource="{Binding ItemMatches}"
+                  ItemTapped="Handle_ItemTapped"
+                  CachingStrategy="RecycleElement"
+                  VerticalOptions="Fill"
+                  Margin="10,10,10,0"
+                  RowHeight="70">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Vertical"
+                                         VerticalOptions="FillAndExpand">
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="{Binding Path=Iqp.Name, StringFormat='Item: {0}'}" 
+                                           Style="{DynamicResource ListItemTextStyle}"
+                                           HorizontalOptions="StartAndExpand"/>
+                                    <Label Text="{Binding Path=Price, StringFormat='Price: £{0:0.00}'}" 
+                                           Style="{DynamicResource ListItemTextStyle}"
+                                           HorizontalOptions="End"/>
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal"
+                                            MinimumHeightRequest="100">
+                                    <Label Text="{Binding Path=MatchedTo, StringFormat='Matched to: {0}'}"
+                                        Style="{DynamicResource ListItemDetailTextStyle}"
+                                        HorizontalOptions="End"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
