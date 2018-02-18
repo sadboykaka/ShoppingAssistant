@@ -6,7 +6,8 @@
         <StackLayout Orientation="Vertical"
                      HorizontalOptions="Fill">
             <StackLayout Orientation="Vertical"
-                         Margin="10,10,0,0">
+                         Margin="10,10,0,0"
+                         HorizontalOptions="Fill">
                 <StackLayout Orientation="Horizontal"
                              HorizontalOptions="Fill">
                     <Label Text="{Binding Path=Name, StringFormat='Location: {0}'}"
@@ -35,6 +36,8 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <Image Source="{Binding ImageUrl}"/>
                             <StackLayout Orientation="Vertical"
                                          VerticalOptions="FillAndExpand">
                                 <StackLayout Orientation="Horizontal">
@@ -50,6 +53,7 @@
                                     <Label Text="{Binding Path=MatchedTo, StringFormat='Matched to: {0}'}"
                                         Style="{DynamicResource ListItemDetailTextStyle}"
                                         HorizontalOptions="End"/>
+                                </StackLayout>
                                 </StackLayout>
                             </StackLayout>
                         </ViewCell>

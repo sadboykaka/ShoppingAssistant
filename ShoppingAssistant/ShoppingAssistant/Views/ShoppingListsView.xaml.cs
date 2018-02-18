@@ -71,7 +71,7 @@ namespace ShoppingAssistant.Views
 			Navigation.PushAsync(new ShoppingListView(list));
 		}
 
-		async private void AddShoppingListEvent(object sender, ShoppingListEventArgs args)
+		private async void AddShoppingListEvent(object sender, ShoppingListEventArgs args)
 		{
 			this.shoppingLists.Add(args.ShoppingList);
 			await Navigation.PopAsync();

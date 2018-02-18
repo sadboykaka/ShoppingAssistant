@@ -185,7 +185,11 @@ namespace ShoppingAssistant.APIClasses
             var response = await client.GetAsync(builder.Uri);
 
             // Return null if not successful
-            if (!response.IsSuccessStatusCode) return null;
+            if (!response.IsSuccessStatusCode)
+            {
+                App.Log.Error("RefreshDataAsync", "Url = " + builder.Uri + "\nResponseStatus = " + response.StatusCode + "\nResponse = " + response);
+                return null;
+            }
 
             // Convert json in http response to a List of T items
             var content = await response.Content.ReadAsStringAsync();
@@ -216,13 +220,13 @@ namespace ShoppingAssistant.APIClasses
         }
 
         /// <summary>
-        /// Method to perform a PUT request with empty content at the given url with the given url parameters
+        /// Method to perform a POST request with empty content at the given url with the given url parameters
         /// Returns boolean indicating success
         /// </summary>
         /// <param name="url"></param>
         /// <param name="urlparams"></param>
         /// <returns></returns>
-        public async Task<bool> PutItemAsync(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
+        public async Task<bool> SaveItemAsync(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
         {
             UriBuilder builder = new UriBuilder(url);
 
@@ -242,7 +246,7 @@ namespace ShoppingAssistant.APIClasses
             // Null content as we only want to send the email parameter, not an entire object
             try
             {
-                var response = await client.PutAsync(builder.Uri, new StringContent(JsonConvert.Null, Encoding.UTF8, "application/json"));
+                var response = await client.PostAsync(builder.Uri, new StringContent(JsonConvert.Null, Encoding.UTF8, "application/json"));
 
                 return response.IsSuccessStatusCode;
             }

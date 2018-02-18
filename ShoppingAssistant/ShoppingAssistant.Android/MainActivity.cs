@@ -15,10 +15,13 @@ using TaskStackBuilder = Android.Support.V4.App.TaskStackBuilder;
 
 namespace ShoppingAssistant.Droid
 {
-	[Activity (Label = "ShoppingAssistant", Icon = "@drawable/icon", Theme="@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+	[Activity (Label = "ShoppingAssistant", Icon = "@drawable/icon", Theme="@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, INotificationHelper
 	{
+        /// <summary>
+        /// Method to register the BackgroundReceiver class with the Alarm Manager
+        /// </summary>
 	    public void RegisterAlarmManager()
 	    {
 	        // Start the alarm manager service
@@ -32,6 +35,11 @@ namespace ShoppingAssistant.Droid
 	        alarmManager.Set(AlarmType.ElapsedRealtime, SystemClock.ElapsedRealtime() + 300 * 1000, pending);
 	    }
 
+        /// <summary>
+        /// Method to create a notification, requires activity components to build
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="text"></param>
 	    public void CreateNotification(string title, string text)
 	    {
             // Return if the app is running in the foreground as we do not want to create a notification
@@ -74,6 +82,10 @@ namespace ShoppingAssistant.Droid
 
         }
 
+        /// <summary>
+        /// Overriden OnCreate - Android specific app startup
+        /// </summary>
+        /// <param name="bundle"></param>
         protected override void OnCreate (Bundle bundle)
 		{
             // Inject the geolocator dependency service

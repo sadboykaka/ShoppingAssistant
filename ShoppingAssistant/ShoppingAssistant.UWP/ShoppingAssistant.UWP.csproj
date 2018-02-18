@@ -96,10 +96,15 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dependencies\FileHelper.cs" />
+    <Compile Include="Dependencies\Identifier.cs" />
+    <Compile Include="Dependencies\Logger.cs" />
+    <Compile Include="Dependencies\NotificationHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BackgroundTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

@@ -73,6 +73,30 @@ namespace ShoppingAssistant.Controllers
         }
 
         /// <summary>
+        /// Method to delete an item from the given shopping list
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="iqp"></param>
+        public async void DeleteItem(ShoppingListModel list, ItemQuantityPairModel iqp)
+        {
+            list.Items.Remove(iqp);
+
+            iqp.Deleted = true;
+
+            // Save this item to the database as deleted so that it can be deleted if the api call fails
+            databaseHelper.SaveShoppingListAsync(list);
+
+            // Make the api call, store the return value (if it is deleted or not)
+            var deleted = await apiHelper.DeleteItemQuantityPairModelAsync(iqp);
+
+            // Delete from local db if it is deleted on the api
+            if (deleted)
+            {
+                databaseHelper.DeleteItemAsync(iqp);
+            }
+        }
+
+        /// <summary>
         /// Asynchronous method that deletes a shopping list
         /// Sets the deleted flag and saves the model locally
         /// Then attempts to delete the model on the API
@@ -203,6 +227,11 @@ namespace ShoppingAssistant.Controllers
             }
         }
         
+        /// <summary>
+        /// Method to save the given shopping list to the local database and api
+        /// Attempts to get the api remote database id to save into the local database
+        /// </summary>
+        /// <param name="list"></param>
         public async void SaveShoppingListModel(ShoppingListModel list)
         {
             SaveShoppingListToDatabase(list);
@@ -211,6 +240,9 @@ namespace ShoppingAssistant.Controllers
 
             // Resave with remote db id
             SaveShoppingListToDatabase(list);
+
+            // Refresh nearby location ipls
+            App.MasterController.LocationController.GetNearbyLocations();
         }
 
         /// <summary>

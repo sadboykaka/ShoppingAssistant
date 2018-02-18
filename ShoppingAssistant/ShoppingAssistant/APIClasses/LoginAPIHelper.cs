@@ -130,15 +130,15 @@ namespace ShoppingAssistant.APIClasses
         }
 
         /// <summary>
-        /// Overrides the PutItemAsync method in the base class
+        /// Overrides the SaveItemAsync method in the base class
         /// </summary>
         /// <param name="url"></param>
         /// <param name="urlparams"></param>
         /// <returns></returns>
-        public new async Task<bool> PutItemAsync(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
+        public new async Task<bool> SaveItemAsync(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
         {
             AwaitLogin();
-            return await base.PutItemAsync(url, urlparams);
+            return await base.SaveItemAsync(url, urlparams);
         }
 
         /// <summary>

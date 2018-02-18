@@ -31,12 +31,6 @@ namespace ShoppingAssistant
         private readonly ShoppingListModel shoppingList;
 
         /// <summary>
-        /// Does the ShoppingList need to be updated in the DB/API
-        /// Default false
-        /// </summary>
-        private bool requiresUpdate;
-
-        /// <summary>
         /// Binding property
         /// </summary>
         public string Email { get; set; }
@@ -87,7 +81,7 @@ namespace ShoppingAssistant
         /// <param name="args"></param>
         private async void AddItemEvent(object sender, ItemQuantityPairArgs args)
         {
-            requiresUpdate = true;
+            //App.MasterController.ShoppingListController.SaveShoppingListModel(shoppingList);
             args.ItemQuantityPairModels.ForEach(shoppingList.Items.Add);
             App.MasterController.ShoppingListController.SaveShoppingListModel(shoppingList);
 
@@ -134,7 +128,7 @@ namespace ShoppingAssistant
         private void DeleteSelectedItem()
         {
             // Find the selected item in the list view and get the associated ItemQuantityPair
-            var listView = this.FindByName<ListView>("ItemListView");
+            var listView = this.FindByName<ListView>("ItemsListView");
             var iqp = (ItemQuantityPairModel)listView.SelectedItem;
 
             // Deselect the selected item and change the stored value
@@ -143,9 +137,10 @@ namespace ShoppingAssistant
 
             // Remove the item from the list and the delete button from the toolbar
             shoppingList.Items.Remove(iqp);
-            RemoveToolbarItems();
+            ToolbarItems.Remove(ToolbarItems.First(t => t.Text == "Delete"));
 
-            requiresUpdate = true;
+            App.MasterController.ShoppingListController.DeleteItem(shoppingList, iqp);
+            //App.MasterController.ShoppingListController.SaveShoppingListModel(shoppingList);
         }
 
         /// <summary>
@@ -200,9 +195,6 @@ namespace ShoppingAssistant
         /// </summary>
         protected override void OnDisappearing()
         {
-            // Save the shopping list in the local database
-            if (requiresUpdate)
-                App.MasterController.ShoppingListController.SaveShoppingListModel(shoppingList);
             base.OnDisappearing();
         }
     }

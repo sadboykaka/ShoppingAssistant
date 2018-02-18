@@ -8,12 +8,19 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+
+using MetroLog;
+using MetroLog.Targets;
+using Xamarin.Forms;
+using XLabs.Platform.Services.Geolocation;
+using Application = Windows.UI.Xaml.Application;
+using Frame = Windows.UI.Xaml.Controls.Frame;
+
 
 namespace ShoppingAssistant.UWP
 {
@@ -30,6 +37,17 @@ namespace ShoppingAssistant.UWP
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+
+            #if DEBUG
+                LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new FileStreamingTarget());
+            #else
+                LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Error, LogLevel.Fatal, new FileStreamingTarget());
+            #endif
+
+            GlobalCrashHandler.Configure();
+
+            DependencyService.Register<Geolocator>();
         }
 
         /// <summary>

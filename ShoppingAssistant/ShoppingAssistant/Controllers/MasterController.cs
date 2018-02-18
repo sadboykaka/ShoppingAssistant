@@ -15,7 +15,10 @@ namespace ShoppingAssistant.Controllers
         /// <summary>
         /// Shopping Assistant API URL
         /// </summary>
-        private const string BaseApiUrl = "https://rails-tutorial-benhudds.c9users.io/";
+        // private const string BaseApiUrl = "https://rails-tutorial-benhudds.c9users.io/";
+        // private const string BaseApiUrl = "https://ancient-mountain-71816.herokuapp.com/";
+        private const string BaseApiUrl = "http://46.101.2.125:5468/";
+
 
         /// <summary>
         /// Edamam recipe API URL

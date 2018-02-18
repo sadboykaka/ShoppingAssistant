@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ShoppingAssistant.Models;
 using Xamarin.Forms.Internals;
+using Xamarin.Forms.Xaml;
 
 namespace ShoppingAssistant.APIClasses
 {
@@ -76,6 +77,13 @@ namespace ShoppingAssistant.APIClasses
             }
         }
 
+        public async Task<bool> DeleteItemQuantityPairModelAsync(ItemQuantityPairModel item)
+        {
+            if (item.RemoteDbId == null) return true;
+            return await helper.DeleteItemAsync(helper.BaseUrl + ShoppingListModel.UrlSuffix + "/" +
+                                                ItemQuantityPairModel.UrlSuffix + "/" + item.RemoteDbId);
+        }
+
         public async Task<bool> DeleteShoppingListModelAsync<T>(T item) where T : Model
         {
             if (item.RemoteDbId == null) return false;
@@ -90,11 +98,18 @@ namespace ShoppingAssistant.APIClasses
         /// <returns></returns>
         public async Task<bool> AddShoppingListModelOwnerAsync(ShoppingListModel list, string email)
         {
-            var url = helper.BaseUrl + ShoppingListModel.UrlSuffix + "/" + list.RemoteDbId;
-            return await helper.PutItemAsync(url, new List<KeyValuePair<string, string>>(1)
+            var url = helper.BaseUrl + ListOwnerModel.UrlSuffix;
+            return await helper.SaveItemAsync(url, new List<KeyValuePair<string, string>>(1)
             {
-                new KeyValuePair<string, string>("email", email)
+                new KeyValuePair<string, string>("email", email),
+                new KeyValuePair<string, string>("slist_id", list.RemoteDbId.ToString())
             });
+
+            //var url = helper.BaseUrl + ShoppingListModel.UrlSuffix + "/" + list.RemoteDbId;
+            //return await helper.PutItemAsync(url, new List<KeyValuePair<string, string>>(1)
+            //{
+            //    new KeyValuePair<string, string>("email", email)
+            //});
         }
     }
 }

@@ -111,6 +111,11 @@ namespace ShoppingAssistant.Views
                         // Get the best ipl match for the iqp
 	                    var ipl = GetBestMatch(item, location);
 
+	                    if (ipl == null)
+	                    {
+	                        break;
+	                    }
+
                         // Create an ItemMatch to be added to the LocationPriceViewModel
 	                    var itemMatch = new ItemMatchViewModel()
 	                    {
@@ -128,6 +133,7 @@ namespace ShoppingAssistant.Views
 	                        itemMatch.Matched = true;
 	                        itemMatch.Price = Math.Round(price, 2);
 	                        itemMatch.MatchedTo = ipl.Name;
+	                        itemMatch.ImageUrl = ipl.ImageUrl;
 	                    }
 
                         // Add the match item to the LocationPriceViewModel
@@ -137,11 +143,14 @@ namespace ShoppingAssistant.Views
                     // Round the price
 	                lpm.Price = Math.Round(lpm.Price, 2);
                     
-                    // Ass the LocationPriceViewModel to the collection
-                    locationPriceModels.Add(lpm);
+                    // Add the LocationPriceViewModel to the collection
+	                if (lpm.NumberOfItemsMatched != 0)
+	                {
+	                    locationPriceModels.Add(lpm);
+	                }
 
-                    // Remove the refreshing icon
-	                ShoppingListsView.IsRefreshing = false;
+	                // Remove the refreshing icon
+                    ShoppingListsView.IsRefreshing = false;
 	            }
 	            catch (Exception e)
 	            {
@@ -177,40 +186,61 @@ namespace ShoppingAssistant.Views
             // TODO if measure is not the same
 	        return ipl.Price;
 	    }
-        
-        /// <summary>
-        /// Method to get the best ipl match for the given iqp
-        /// </summary>
-        /// <param name="iqp"></param>
-        /// <param name="location"></param>
-        /// <returns></returns>
-        private ItemPriceLocationModel GetBestMatch(ItemQuantityPairModel iqp, LocationModel location)
+
+	    /// <summary>
+	    /// Method to get the best ipl match for the given iqp
+	    /// </summary>
+	    /// <param name="iqp"></param>
+	    /// <param name="location"></param>
+	    /// <returns></returns>
+	    private ItemPriceLocationModel GetBestMatch(ItemQuantityPairModel iqp, LocationModel location)
 	    {
-            // Split the iqp name into its contituent words
-            var split = iqp.Name.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            
-            // Make all the split substrings lower case
+	        // Split the iqp name into its contituent words
+	        var split = iqp.Name.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
+	        split = split.Distinct().ToArray();
+
+	        // Make all the split substrings lower case
 	        for (int i = 0; i < split.Length; i++)
 	        {
 	            split[i] = split[i].ToLower();
 	        }
-            
-            // Select a structure that contains the ipl and the number of  words in the ipl name that match words in the iqp name
+
+	        // Select a structure that contains the ipl and the number of words in the ipl name that match words in the iqp name
 	        var res = location.ItemPriceLocations.Select(ipl =>
 	            new
 	            {
 	                item = ipl,
-	                count = ipl.Name.Split(' ').Sum(p => split.Contains(p.ToLower()) ? 1 : 0)
+	                count = ipl.Name.Split(' ').Distinct().Sum(p => split.Contains(p.ToLower()) ? 1 : 0)
 	            });
 
-            // Return null if there is no match (all the counts are 0)
-	        if (res.OrderByDescending(p => p.count).First().count == 0)
+	        // Order by number of hits
+	        res = res.OrderByDescending(p => p.count);
+
+	        // Remove lower matches
+	        if (res.Any())
+	        {
+	            var count = res.First().count;
+	            res = res.Where(p => p.count == count);
+	        }
+
+	        var measureMatches = res.Where(p => p.item.Name.ToLower().Contains(iqp.Measure.ToLower()));
+
+	        if (measureMatches.Any())
+	        {
+	            return measureMatches.First().item;
+	        }
+
+            // Finally order by price
+	        res = res.OrderBy(p => p.item.Price);
+
+	        // Return null if there is no match (all the counts are 0)
+            if (!res.Any() || res.First().count == 0)
 	        {
 	            return null;
 	        }
-
+            
             // Return the ipl with the greatest count
-	        return res.OrderByDescending(p => p.count).First().item;    
+	        return res.First().item;    
 	    }
 
         /// <summary>
@@ -251,13 +281,13 @@ namespace ShoppingAssistant.Views
 	        switch (selectedItem)
 	        {
 	            case "Total Price":
-	                lpms.OrderBy(lpm => lpm.Price).ForEach(locationPriceModels.Add);
+	                lpms.OrderBy(lpm => lpm.Price).ThenBy(lpm => lpm.Distance).ForEach(locationPriceModels.Add);
 	                break;
 	            case "Items Matched":
-	                lpms.OrderBy(lpm => lpm.NumberOfItemsMatched).ForEach(locationPriceModels.Add);
+	                lpms.OrderBy(lpm => lpm.NumberOfItemsMatched).ThenBy(lpm => lpm.Price).ForEach(locationPriceModels.Add);
 	                break;
 	            case "Distance":
-	                lpms.OrderBy(lpm => lpm.Distance).ForEach(locationPriceModels.Add);
+	                lpms.OrderBy(lpm => lpm.Distance).ThenBy(lpm => lpm.Price).ForEach(locationPriceModels.Add);
 	                break;
 	            default:
 	                lpms.ForEach(locationPriceModels.Add);

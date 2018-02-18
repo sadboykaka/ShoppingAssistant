@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Java.Security.Interfaces;
 using ShoppingAssistant.Models;
 using Xamarin.Forms.Internals;
 
@@ -49,6 +48,12 @@ namespace ShoppingAssistant.APIClasses
                 }
             );
 
+            if (locations == null)
+            {
+                App.Log.Error("GetLocationModelsAsync", "Lcoations not returned by API helper. Url = " + baseUrl + LocationModel.UrlSuffix + " \nLat = " + lat + "\nLng = " + lng);
+                return null;
+            }
+
             foreach (var location in locations)
             {
                 await GetItemPriceLocationModelsAsync(location);
@@ -64,6 +69,11 @@ namespace ShoppingAssistant.APIClasses
         /// <returns></returns>
         private async Task GetItemPriceLocationModelsAsync(LocationModel location)
         {
+            if (location == null)
+            {
+                App.Log.Error("test", "locationisnull");
+            }
+
             var url = baseUrl + LocationModel.UrlSuffix + "/" + location.RemoteDbId + "/" +
                       ItemPriceLocationModel.UrlSuffix;
 

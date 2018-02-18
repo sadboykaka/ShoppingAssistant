@@ -5,12 +5,20 @@ using Xamarin.Forms;
 [assembly: Dependency(typeof(NotificationHelper))]
 namespace ShoppingAssistant.Droid.Dependencies
 {
-    internal class NotificationHelper : INotificationHelper
+    /// <summary>
+    /// Android NotificationHelper implementation
+    /// </summary>
+    public class NotificationHelper : INotificationHelper
     {
 
-        public void CreateNotification(string text, string title)
+        /// <summary>
+        /// Method to create a notification with the given text and title
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="title"></param>
+        public void CreateNotification(string title, string text)
         {
-            ((MainActivity) Forms.Context).CreateNotification(text, title);
+            ((MainActivity) Forms.Context).CreateNotification(title, text);
         }
     }
 }

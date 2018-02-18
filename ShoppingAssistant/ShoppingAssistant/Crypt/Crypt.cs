@@ -59,7 +59,7 @@ namespace ShoppingAssistant.Crypt
                         new CryptoStream(mStream, aes.CreateEncryptor(), CryptoStreamMode.Write))
                     {
                         cStream.Write(bytesBuff, 0, bytesBuff.Length);
-                        cStream.Close();
+                        //cStream.Close();
                     }
 
                     inText = Convert.ToBase64String(mStream.ToArray());
@@ -88,7 +88,7 @@ namespace ShoppingAssistant.Crypt
                     using (CryptoStream cStream = new CryptoStream(mStream, aes.CreateDecryptor(), CryptoStreamMode.Write))
                     {
                         cStream.Write(bytesBuff, 0, bytesBuff.Length);
-                        cStream.Close();
+                        //cStream.Close();
                     }
                     cryptTxt = Encoding.Unicode.GetString(mStream.ToArray());
                 }

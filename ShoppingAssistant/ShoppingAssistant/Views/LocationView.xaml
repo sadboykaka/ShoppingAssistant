@@ -14,7 +14,7 @@
                          Padding="15,0,0,0">
                 <Label Text="Item: "
                        VerticalOptions="Center"/>
-                <Entry Placeholder="Search"
+                <Entry Placeholder="Filter"
                        x:Name="ItemFilterTextEntry"
                        Text="{Binding ItemFilterText}"
                        HorizontalOptions="FillAndExpand"/>

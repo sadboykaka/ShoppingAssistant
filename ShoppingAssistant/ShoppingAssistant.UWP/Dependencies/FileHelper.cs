@@ -1,13 +1,14 @@
 ﻿using System;
 using System.IO;
-using ShoppingAssistant.Droid.Dependencies;
+using Windows.Storage;
+using ShoppingAssistant.UWP.Dependencies;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(FileHelper))]
-namespace ShoppingAssistant.Droid.Dependencies
+namespace ShoppingAssistant.UWP.Dependencies
 {
     /// <summary>
-    /// Android FileHelper implementation
+    /// UWP FileHelper implementation
     /// </summary>
     public class FileHelper : IFileHelper
     {
@@ -18,8 +19,7 @@ namespace ShoppingAssistant.Droid.Dependencies
         /// <returns></returns>
         public string GetLocalFilePath(string filename)
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            return Path.Combine(path, filename);
+            return Path.Combine(ApplicationData.Current.LocalFolder.Path, filename);
         }
     }
 }

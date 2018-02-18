@@ -24,5 +24,8 @@ namespace ShoppingAssistant.Models
         public string Measure { get; set; }
             
         public int LocalDbLocationId { get; set; }
+
+        [JsonProperty("imageurl")]
+        public string ImageUrl { get; set; }
     }
 }

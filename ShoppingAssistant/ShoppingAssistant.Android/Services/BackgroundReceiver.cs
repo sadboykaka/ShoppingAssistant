@@ -13,6 +13,11 @@ namespace ShoppingAssistant.Droid.Services
     [BroadcastReceiver]
     public class BackgroundReceiver : BroadcastReceiver
     {
+        /// <summary>
+        /// Overriden OnReceive method. Called by alarm manager
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="intent"></param>
         public override void OnReceive(Context context, Intent intent)
         {
             try

@@ -26,5 +26,10 @@ namespace ShoppingAssistant.ViewModels
         /// The price of the item that the iqp has been matched to
         /// </summary>
         public double Price { get; set; }
+
+        /// <summary>
+        /// Bindable Image URL
+        /// </summary>
+        public string ImageUrl { get; set; }
     }
 }
