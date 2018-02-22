@@ -42,7 +42,7 @@ namespace ShoppingAssistant.APIClasses
         /// <summary>
         /// Constructor
         /// </summary>
-        public ApiHelper()
+        protected ApiHelper()
         {
             client = new HttpClient(new NativeMessageHandler());
         }
@@ -146,7 +146,12 @@ namespace ShoppingAssistant.APIClasses
             }
         }
 
-        public async Task<string> GetStringResponse(string url)
+        /// <summary>
+        /// Method to get string data asynchronously from the given url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        protected async Task<string> GetStringResponse(string url)
         {
             var uri = new Uri(url);
             var response = await client.GetAsync(uri);
@@ -198,35 +203,13 @@ namespace ShoppingAssistant.APIClasses
         }
 
         /// <summary>
-        /// Method to get json data asynchronously for a given type from the given url
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public async Task<List<T>> RefreshDataAsync<T>(string url)
-        {
-            // Get http response
-            var uri = new Uri(url);
-            var response = await client.GetAsync(uri);
-
-
-            // Return null if not successful
-            if (!response.IsSuccessStatusCode) return null;
-
-            // Convert json in http response to a List of T items
-            var content = await response.Content.ReadAsStringAsync();
-            var items = JsonConvert.DeserializeObject<List<T>>(content);
-            return items;
-        }
-
-        /// <summary>
         /// Method to perform a POST request with empty content at the given url with the given url parameters
         /// Returns boolean indicating success
         /// </summary>
         /// <param name="url"></param>
         /// <param name="urlparams"></param>
         /// <returns></returns>
-        public async Task<bool> SaveItemAsync(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
+        protected async Task<bool> SaveItemAsync(string url, IEnumerable<KeyValuePair<string, string>> urlparams)
         {
             UriBuilder builder = new UriBuilder(url);
 
@@ -255,6 +238,28 @@ namespace ShoppingAssistant.APIClasses
                 App.Log.Error("PutItemAsync", "Uri = " + builder.Uri + "\n" + e.Message + "\n" + e.StackTrace);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Method to get json data asynchronously for a given type from the given url
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public async Task<List<T>> RefreshDataAsync<T>(string url)
+        {
+            // Get http response
+            var uri = new Uri(url);
+            var response = await client.GetAsync(uri);
+
+
+            // Return null if not successful
+            if (!response.IsSuccessStatusCode) return null;
+
+            // Convert json in http response to a List of T items
+            var content = await response.Content.ReadAsStringAsync();
+            var items = JsonConvert.DeserializeObject<List<T>>(content);
+            return items;
         }
 
         /// <summary>

@@ -85,7 +85,6 @@ namespace ShoppingAssistant
 		    suppressTextChangedEvent = false;
 			
 			// Populate the binding properties
-			//Items = new ObservableCollection<string>(itemsCollection.OrderBy(item => item));
             Items = new ObservableCollection<string>();
             Recipes = new ObservableCollection<Recipe>();
 		    ItemsListView.HeightRequest = 0;
@@ -307,9 +306,6 @@ namespace ShoppingAssistant
                         });
                     }
                 }
-
-                //recipe.Ingredients.ForEach(ingredient =>
-                    //models.Add(new ItemQuantityPairModel {Name = ingredient.Food, Quantity = ingredient.Quantity, Measure = ingredient.Measure}));
             }
             
 

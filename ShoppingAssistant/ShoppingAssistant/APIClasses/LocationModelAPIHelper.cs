@@ -8,7 +8,7 @@ namespace ShoppingAssistant.APIClasses
     /// <summary>
     /// API Helper class for LocationModel
     /// </summary>
-    public class LocationModelAPIHelper
+    public class LocationModelApiHelper
     {
         /// <summary>
         /// Generic API Helper object
@@ -25,7 +25,7 @@ namespace ShoppingAssistant.APIClasses
         /// </summary>
         /// <param name="baseUrl"></param>
         /// <param name="helper"></param>
-        public LocationModelAPIHelper(string baseUrl, ApiHelper helper)
+        public LocationModelApiHelper(string baseUrl, ApiHelper helper)
         {
             this.helper = helper;
             this.baseUrl = baseUrl;

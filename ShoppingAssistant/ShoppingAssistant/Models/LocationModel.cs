@@ -5,30 +5,49 @@ using SQLite;
 
 namespace ShoppingAssistant.Models
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Location Model
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class LocationModel : Model
     {
-        public const string UrlSuffix = "locations";
-
-        /// <summary>
-        /// Name of the location
-        /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// General area descriptor. Typically address line
-        /// </summary>
-        [JsonProperty("vicinity")]
-        public string Vicinity { get; set; }
-
         /// <summary>
         /// Private latitiude value between -90 and 90 degrees
         /// </summary>
         private float latitude;
 
         /// <summary>
+        /// Private longitude value between -180 and 180 degrees
+        /// </summary>
+        private float longitude;
+
+        /// <summary>
+        /// API suffix
+        /// </summary>
+        public const string UrlSuffix = "locations";
+
+        /// <summary>
+        /// Name of the location
+        /// Stored in the local database
+        /// Supplied by the remote database
+        /// </summary>
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// General area descriptor. Typically address line
+        /// Stored in the local database
+        /// Supplied by the remote database
+        /// </summary>
+        [JsonProperty("vicinity")]
+        public string Vicinity { get; set; }
+        
+
+        /// <summary>
         /// Latitude value between -90 and 90 degrees
+        /// Stored in the local database
+        /// Supplied by the remote database
         /// </summary>
         [JsonProperty("lat")]
         public float Latitude
@@ -37,13 +56,11 @@ namespace ShoppingAssistant.Models
             set => latitude = value < 90 | value > -90 ? value : latitude;
         }
 
-        /// <summary>
-        /// Private longitude value between -180 and 180 degrees
-        /// </summary>
-        private float longitude;
 
         /// <summary>
         /// Longitude value between -180 and 180 degrees
+        /// Stored in the local database
+        /// Supplied by the remote database
         /// </summary>
         [JsonProperty("lng")]
         public float Longitude
@@ -54,6 +71,8 @@ namespace ShoppingAssistant.Models
 
         /// <summary>
         /// Google location id
+        /// Stored in the local database
+        /// Supplied by the remote database
         /// </summary>
         [JsonProperty("googleid")]
         public string GoogleId { get; set; }
@@ -68,12 +87,7 @@ namespace ShoppingAssistant.Models
         /// <summary>
         /// Collection of associated ItemPriceLocationModels
         /// </summary>
-        private ObservableCollection<ItemPriceLocationModel> ipls = new ObservableCollection<ItemPriceLocationModel>();
-
-        /// <summary>
-        /// Getter for collection of associated ItemPriceLocationModels
-        /// </summary>
-        public ObservableCollection<ItemPriceLocationModel> ItemPriceLocations => ipls;
+        public ObservableCollection<ItemPriceLocationModel> ItemPriceLocations { get; } = new ObservableCollection<ItemPriceLocationModel>();
 
         /// <summary>
         /// Method to add an ItemPriceLocationModel to this location
@@ -81,7 +95,7 @@ namespace ShoppingAssistant.Models
         /// <param name="newIpl"></param>
         public void AddItem(ItemPriceLocationModel newIpl)
         {
-            ipls.Add(newIpl);
+            ItemPriceLocations.Add(newIpl);
         }
 
         /// <summary>

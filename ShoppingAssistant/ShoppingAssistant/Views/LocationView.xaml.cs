@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ShoppingAssistant.EventClasses;
 using ShoppingAssistant.Models;
 using Xamarin.Forms;
@@ -14,43 +11,72 @@ namespace ShoppingAssistant.Views
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class LocationView : ContentPage
 	{
-		private object selectedItem = null;
-		private LocationModel locationModel;
-		private bool requiresUpdate = false;
+        /// <summary>
+        /// LocationModel for this view
+        /// </summary>
+	    private readonly LocationModel locationModel;
 
-		public event ItemPriceLocationEventHandler IplEvent;
+        /// <summary>
+        /// Does the location required updating
+        /// </summary>
+		private bool requiresUpdate;
 
-		private ObservableCollection<ItemPriceLocationModel> iplsMaster;
+        /// <summary>
+        /// Master collection of item price locations as this can be called back after a location is found
+        /// </summary>
+	    private readonly ObservableCollection<ItemPriceLocationModel> iplsMaster;
 
-		private ObservableCollection<ItemPriceLocationModel> iplsMutable;
+        /// <summary>
+        /// Mutable collection of item price locations for this view
+        /// </summary>
+		private readonly ObservableCollection<ItemPriceLocationModel> iplsMutable;
 
-		public ObservableCollection<ItemPriceLocationModel> Ipls { get { return iplsMutable; } }
+        /// <summary>
+        /// Binding property
+        /// </summary>
+		public ObservableCollection<ItemPriceLocationModel> Ipls => iplsMutable;
 
+	    /// <summary>
+        /// Binding property
+        /// </summary>
 		public string ItemFilterText { get; set; }
 	
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="location"></param>
 		public LocationView (LocationModel location)
 		{
 			InitializeComponent ();
 			
+            // Set references
 			locationModel = location;
 			iplsMaster = locationModel.ItemPriceLocations;
+
+            // Create mutable collection
 			iplsMutable = new ObservableCollection<ItemPriceLocationModel>(iplsMaster);
-
-
-
+            
+            // Subscribe to events
 			ItemFilterTextEntry.TextChanged += OnFilterTextChanged;
-
 			BtnAddIpl.Clicked += delegate { OnAddItemClick(); };
 
 			BindingContext = this;
 		}
 
+        /// <summary>
+        /// Method called when add item is pressed
+        /// Opens the add item view
+        /// </summary>
 		private async void OnAddItemClick()
 		{
 			await Navigation.PushAsync(new AddItemPriceLocationView(AddIplEvent));
 		}
 
+        /// <summary>
+        /// Called when a new ipl is to be added to the list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
 		private async void AddIplEvent(object sender, ItemPriceLocationEventArgs args)
 		{
 			requiresUpdate = true;
@@ -61,15 +87,25 @@ namespace ShoppingAssistant.Views
 			await Navigation.PopAsync();
 		}
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Overriden OnDisappearing method
+        /// </summary>
 		protected override void OnDisappearing()
 		{
 			if (requiresUpdate)
 			{
 				App.MasterController.LocationController.SaveLocationModel(locationModel);
 			}
+
 			base.OnDisappearing();
 		}
 
+        /// <summary>
+        /// Method called when the filter text is changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
 		public void OnFilterTextChanged(object sender, EventArgs args)
 		{
 			// Create temp collection for the given filter text

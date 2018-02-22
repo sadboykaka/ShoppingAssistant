@@ -142,14 +142,6 @@ namespace ShoppingAssistant
             App.MasterController.ShoppingListController.DeleteItem(shoppingList, iqp);
             //App.MasterController.ShoppingListController.SaveShoppingListModel(shoppingList);
         }
-
-        /// <summary>
-        /// Method to remove the delete button from the toolbar
-        /// </summary>
-        private void RemoveToolbarItems()
-        {
-            ToolbarItems.Clear();
-        }
         
         /// <summary>
         /// Method called when AddItem button is clicked
@@ -186,16 +178,6 @@ namespace ShoppingAssistant
             LblShareResult.IsVisible = true;
             LblShareResult.Text = response ? "Shared with user" : "Could not share with user";
             LblShareResult.TextColor = response ? Color.Green : Color.Red;
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Overriden OnDisappearing
-        /// Called when this page is removed from the NavigationStack
-        /// </summary>
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
         }
     }
 }

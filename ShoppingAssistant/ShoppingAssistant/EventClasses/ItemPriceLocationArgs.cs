@@ -1,19 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using ShoppingAssistant.Models;
 
 namespace ShoppingAssistant.EventClasses
 {
+    /// <summary>
+    /// An event handler delegate taking ItemPriceLocationEventArgs
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="args"></param>
     public delegate void ItemPriceLocationEventHandler(object sender, ItemPriceLocationEventArgs args);
 
+    /// <inheritdoc />
+    /// <summary>
+    /// ItemPriceLocation EventArgs
+    /// </summary>
     public class ItemPriceLocationEventArgs : EventArgs
     {
-        public ItemPriceLocationModel ItemPriceLocationModel { get; set; }
+        /// <summary>
+        /// ItemPriceLocationModel
+        /// </summary>
+        public ItemPriceLocationModel ItemPriceLocationModel { get; }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="ipl"></param>
         public ItemPriceLocationEventArgs(ItemPriceLocationModel ipl)
         {
-            this.ItemPriceLocationModel = ipl;
+            ItemPriceLocationModel = ipl;
         }
     }
 }

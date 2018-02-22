@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ShoppingAssistant.Models;
 using Xamarin.Forms.Internals;
@@ -27,6 +26,7 @@ namespace ShoppingAssistant.DatabaseClasses
         /// <param name="createTables">Should the tables be constructed?</param>
         public ShoppingListDatabaseHelper(string dbPath, bool createTables) : base(dbPath)
         {
+            // Create the tables if necessary
             if (createTables)
             {
                 CreateDatabases();
@@ -38,15 +38,16 @@ namespace ShoppingAssistant.DatabaseClasses
         /// </summary>
         private void CreateDatabases()
         {
+            // Drop the tables
             //DatabaseAsyncConnection.DropTableAsync<ShoppingListModel>();
             //DatabaseAsyncConnection.DropTableAsync<ItemQuantityPairModel>();
             //DatabaseAsyncConnection.DropTableAsync<ListOwnerModel>();
             
+            // Create the tables if necessary
             DatabaseAsyncConnection.CreateTableAsync<LocationModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
             DatabaseAsyncConnection.CreateTableAsync<ShoppingListModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
             DatabaseAsyncConnection.CreateTableAsync<ItemQuantityPairModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
-            DatabaseAsyncConnection
-                .CreateTableAsync<ListOwnerModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
+            DatabaseAsyncConnection.CreateTableAsync<ListOwnerModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
         }
 
         /// <summary>
@@ -114,10 +115,10 @@ namespace ShoppingAssistant.DatabaseClasses
                 }
             }
 
-            items.RemoveAll(item => item.Name == null && item.Measure == null);
+            items?.RemoveAll(item => item.Name == null && item.Measure == null);
 
             // Select the ItemQuantityPairModels and attach them to the relevant ShoppingListModels
-            items.ForEach(i => lists.FirstOrDefault(l => l.LocalDbId == i.LocalDbShoppingListId)?.Items.Add(i));
+            items?.ForEach(i => lists.FirstOrDefault(l => l.LocalDbId == i.RemoteDbShoppingListId)?.Items.Add(i));
 
             // Return the ShoppingListModels
             return lists;   
@@ -138,7 +139,7 @@ namespace ShoppingAssistant.DatabaseClasses
             // Save the item quantity pairs
             foreach (var item in list.Items)
             {
-                item.LocalDbShoppingListId = list.LocalDbId.Value;
+                item.RemoteDbShoppingListId = list.LocalDbId.Value;
                 SaveItemsAsync(item);
             }
             

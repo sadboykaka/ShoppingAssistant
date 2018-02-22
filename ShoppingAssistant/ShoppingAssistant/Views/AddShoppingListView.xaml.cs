@@ -14,15 +14,27 @@ namespace ShoppingAssistant.Views
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class AddShoppingListView : ContentPage
 	{
-		private ShoppingListEventHandler callback;
+        /// <summary>
+        /// ShoppingListEventHandler for calling back with a new shopping list
+        /// </summary>
+		private readonly ShoppingListEventHandler callback;
+
+        /// <summary>
+        /// Binding Property for shopping list name
+        /// </summary>
 		public string NameField{ get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="callback"></param>
 		public AddShoppingListView (ShoppingListEventHandler callback)
 		{
 			InitializeComponent();
 			this.callback = callback;
 
-			this.NameField = DateTime.Now.ToString();
+            // Set default value to current time
+			NameField = DateTime.Now.ToString();
 
 			BindingContext = this;
 
@@ -30,6 +42,9 @@ namespace ShoppingAssistant.Views
 			btnAddItem.Clicked += delegate { RaiseNewShoppingListEvent(); };
 		}
 		
+        /// <summary>
+        /// Method to raise a new shopping list event
+        /// </summary>
 		private void RaiseNewShoppingListEvent()
 		{
 			var newShoppingListModel = new ShoppingListModel()

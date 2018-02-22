@@ -15,9 +15,10 @@ namespace ShoppingAssistant.DatabaseClasses
         /// <param name="createTables"></param>
         public LocationModelDatabaseHelper(string dbPath, bool createTables) : base(dbPath)
         {
+            // Create tables if required
             if (createTables)
             {
-                this.CreateDatabases();
+                CreateDatabases();
             }
         }
         
@@ -26,29 +27,13 @@ namespace ShoppingAssistant.DatabaseClasses
         /// </summary>
         private void CreateDatabases()
         {
+            // Drop tables
             //DatabaseAsyncConnection.DropTableAsync<LocationModel>();
             //DatabaseAsyncConnection.DropTableAsync<ItemPriceLocationModel>();
 
+            // Create tables if they don't already exist
             DatabaseAsyncConnection.CreateTableAsync<LocationModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
             DatabaseAsyncConnection.CreateTableAsync<ItemPriceLocationModel>(SQLite.CreateFlags.ImplicitPK | SQLite.CreateFlags.AutoIncPK).Wait();
-        }
-
-        /// <summary>
-        /// Method to delete a LocationModel asynchronously
-        /// </summary>
-        /// <param name="location"></param>
-        public void DeleteLocationModelAsync(LocationModel location)
-        {
-            try
-            {
-                location.ItemPriceLocations.ForEach(ilp => DeleteItemAsync(ilp));
-
-                DeleteItemAsync(location);
-            }
-            catch (Exception e)
-            {
-                App.Log.Error("DeleteShoppingListAsync", e.Message + e.GetBaseException().Message);
-            }
         }
 
         /// <summary>

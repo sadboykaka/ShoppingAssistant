@@ -19,39 +19,34 @@ namespace ShoppingAssistant.Controllers
         /// <summary>
         /// Const notification title for new shopping lists
         /// </summary>
-        private const string NEW_SHOPPING_LIST_TITLE = "You have a new shopping list";
+        private const string NewShoppingListTitle = "You have a new shopping list";
 
         /// <summary>
         /// Const notification text for new shopping lists
         /// Takes 1 parameter giving the shopping list name
         /// </summary>
-        private const string NEW_SHOPPING_LIST_TEXT = "The shopping list {0} has been added to your account";
+        private const string NewShoppingListText = "The shopping list {0} has been added to your account";
 
         /// <summary>
         /// Const notification title for updated shopping lists
         /// </summary>
-        private const string UPDATED_SHOPPING_LIST_TITLE = "A shopping list has been updated";
+        private const string UpdatedShoppingListTitle = "A shopping list has been updated";
 
         /// <summary>
         /// Const notification text for updated shopping lists
         /// Takes 1 parameter giving the shopping list name
         /// </summary>
-        private const string UPDATED_SHOPPING_LIST_TEXT = "The shopping list {0} has been updated";
+        private const string UpdatedShoppingListText = "The shopping list {0} has been updated";
 
         /// <summary>
         /// Static reference to ShoppingList specific database helper class
         /// </summary>
-        private static ShoppingListDatabaseHelper databaseHelper;
+        private readonly ShoppingListDatabaseHelper databaseHelper;
 
         /// <summary>
         /// Static reference to ShoppingList specific api helper class
         /// </summary>
-        private static ShoppingListApiHelper apiHelper;
-        
-        /// <summary>
-        /// Base of API url to be used
-        /// </summary>
-        private readonly string baseApiUrl;
+        private readonly ShoppingListApiHelper apiHelper;
 
         /// <summary>
         /// Observable colleciton of shopping lists
@@ -159,7 +154,7 @@ namespace ShoppingAssistant.Controllers
                     databaseHelper.SaveShoppingListAsync(list);
 
                     App.Log.Debug("OnApiRetrieval", "New shopping list retrieved from API");
-                    App.NotificationHelper.CreateNotification(NEW_SHOPPING_LIST_TITLE, string.Format(NEW_SHOPPING_LIST_TEXT, list.Name));
+                    App.NotificationHelper.CreateNotification(NewShoppingListTitle, string.Format(NewShoppingListText, list.Name));
                 }
                 else if (RubyDateParser.Compare(oldList.LastUpdated, list.LastUpdated) <= 0)
                 {
@@ -173,8 +168,8 @@ namespace ShoppingAssistant.Controllers
                     App.Log.Debug("OnApiRetrieval", $"Found newer version of shopping list {list.Name} on API");
                     if (!oldList.Equals(list))
                     {
-                        App.NotificationHelper.CreateNotification(UPDATED_SHOPPING_LIST_TITLE,
-                            string.Format(UPDATED_SHOPPING_LIST_TEXT, list.Name));
+                        App.NotificationHelper.CreateNotification(UpdatedShoppingListTitle,
+                            string.Format(UpdatedShoppingListText, list.Name));
                     }
                 }
 

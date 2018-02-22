@@ -9,23 +9,16 @@ namespace ShoppingAssistant.Views
 	public partial class LocationPriceModelView : ContentPage
 	{
         /// <summary>
-        /// LocationPrice ViewModel
-        /// </summary>
-	    public LocationPriceViewModel LocationPriceViewModel;
-
-        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="model"></param>
 		public LocationPriceModelView (LocationPriceViewModel model)
 		{
 			InitializeComponent ();
+            
+		    Title = model.ShoppingListName;
 
-		    LocationPriceViewModel = model;
-
-		    Title = LocationPriceViewModel.ShoppingListName;
-
-		    BindingContext = LocationPriceViewModel;
+		    BindingContext = model;
 		}
 
 

@@ -44,13 +44,8 @@ namespace ShoppingAssistant.ViewModels
         public string ShoppingListName { get; set; }
 
         /// <summary>
-        /// Item matches for the current model
-        /// </summary>
-        private ObservableCollection<ItemMatchViewModel> itemMatches = new ObservableCollection<ItemMatchViewModel>();
-
-        /// <summary>
         /// Bindable ItemMatch collection
         /// </summary>
-        public ObservableCollection<ItemMatchViewModel> ItemMatches => itemMatches;
+        public ObservableCollection<ItemMatchViewModel> ItemMatches { get; } = new ObservableCollection<ItemMatchViewModel>();
     }
 }

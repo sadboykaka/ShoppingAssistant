@@ -22,9 +22,9 @@ namespace ShoppingAssistant.APIClasses
         private UserModel user;
 
         /// <summary>
-        /// Mutex semaphore to ensureonly one thread attempts to log in at a time
+        /// Mutex semaphore to ensure only one thread attempts to log in at a time
         /// </summary>
-        private SemaphoreSlim mutex;
+        private readonly SemaphoreSlim mutex;
         
         /// <summary>
         /// Base api url
@@ -43,8 +43,9 @@ namespace ShoppingAssistant.APIClasses
         }
 
         /// <summary>
-        /// TODO Convert to queue?
-        /// Method to 
+        /// TODO Convert to a queue?
+        /// Method to await log in
+        /// Waits for 2 seconds before retrying
         /// </summary>
         private async void AwaitLogin()
         {

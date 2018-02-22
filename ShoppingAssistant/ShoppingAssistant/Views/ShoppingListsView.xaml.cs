@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ShoppingAssistant.EventClasses;
 using ShoppingAssistant.Models;
 using Xamarin.Forms;
@@ -11,48 +7,74 @@ using Xamarin.Forms.Xaml;
 
 namespace ShoppingAssistant.Views
 {
+    /// <summary>
+    /// Views for the shopping lists collection
+    /// </summary>
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ShoppingListsView : ContentPage
 	{
-		public NavigationPage navPage = new NavigationPage();
+        /// <summary>
+        /// Reference to the ShoppingListModels collection
+        /// </summary>
+		private readonly ObservableCollection<ShoppingListModel> shoppingLists = App.MasterController.ShoppingListController.ShoppingListModels;
 
-		private ObservableCollection<ShoppingListModel> shoppingLists = App.MasterController.ShoppingListController.ShoppingListModels;
+        /// <summary>
+        /// Bindable property
+        /// </summary>
 		public ObservableCollection<ShoppingListModel> ShoppingLists { get { return shoppingLists; } }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
 		public ShoppingListsView()
 		{
 			InitializeComponent();
-
-			//System.Net.ServicePointManager.ServerCertificateValidationCallback += CertificateValidationCallBack;
+            
 		    Title = "Shopping Lists";
-			// Set the button event listeners
-			this.SetBtnListeners();
+
+            // Set the button event handlers
+		    SetBtnHandlers();
 
 			BindingContext = this;
 
 		}
 
-		private void SetBtnListeners()
+        /// <summary>
+        /// Method to set the button event handlers
+        /// </summary>
+		private void SetBtnHandlers()
 		{
 			var shoppingListBtn = this.FindByName<Button>("BtnNewShoppingList");
 			shoppingListBtn.Clicked += delegate { OnShoppingListBtnClick(); };
-		}
+	    }
 
+        /// <summary>
+        /// Event handler called when a new shopping list is created
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+	    private async void AddShoppingListEvent(object sender, ShoppingListEventArgs args)
+	    {
+	        shoppingLists.Add(args.ShoppingList);
+	        await Navigation.PopAsync();
+	    }
 
+        /// <summary>
+        /// Method called when the delete menu item is pressed
+        /// Deletes the selected shopping list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 		public void OnDelete(object sender, EventArgs e)
 		{
 			var mi = ((MenuItem)sender);
-			//DisplayAlert("Delete Context Action", mi.CommandParameter + " delete context action", "OK");
-
-			//ListView listView = this.FindByName<ListView>("ItemListView");
-			//ShoppingList selectedList = (ShoppingList)listView.SelectedItem;
-
-			//listView.SelectedItem = null;
 			var model = (ShoppingListModel)mi.CommandParameter;
 
+            // Delete the shopping list
 			App.MasterController.ShoppingListController.DeleteShoppingListAsync(model);
 
-			this.shoppingLists.Remove((ShoppingListModel)mi.CommandParameter);
+            // Remove the shopping list from the screen
+			shoppingLists.Remove((ShoppingListModel)mi.CommandParameter);
 		}
 
 		/// <summary>
@@ -62,7 +84,7 @@ namespace ShoppingAssistant.Views
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		void Handle_ItemTapped(object sender, EventArgs args)
+		public void Handle_ItemTapped(object sender, EventArgs args)
 		{
 			var listView = (ListView)sender;
 			var list = (ShoppingListModel)listView.SelectedItem;
@@ -71,13 +93,11 @@ namespace ShoppingAssistant.Views
 			Navigation.PushAsync(new ShoppingListView(list));
 		}
 
-		private async void AddShoppingListEvent(object sender, ShoppingListEventArgs args)
-		{
-			this.shoppingLists.Add(args.ShoppingList);
-			await Navigation.PopAsync();
-		}
 
-		async void OnShoppingListBtnClick()
+        /// <summary>
+        /// On click event of the new shopping list button
+        /// </summary>
+		public async void OnShoppingListBtnClick()
 		{
 			await Navigation.PushAsync(new AddShoppingListView(AddShoppingListEvent));
 		}

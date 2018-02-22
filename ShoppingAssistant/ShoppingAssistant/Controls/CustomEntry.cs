@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace ShoppingAssistant.Controls
 {
-    // TODO custom entry renderers for uwp
+    /// <inheritdoc />
     /// <summary>
     /// Custom Entry class that selects all text in an Entry on focus
+    /// Required for the CustomEntryRenderer implementation
+    /// TODO custom entry renderers for uwp
     /// </summary>
-    class CustomEntry : Entry
+    internal class CustomEntry : Entry
     {
     }
 }

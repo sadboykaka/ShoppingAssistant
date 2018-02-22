@@ -15,17 +15,17 @@ namespace ShoppingAssistant.Views
 		/// <summary>
 		/// Reference to LocationModelManager
 		/// </summary>
-		private LocationController locationModelManager;
+		private readonly LocationController locationModelManager;
 
 		/// <summary>
 		/// Reference to master location model collection
 		/// </summary>
-		private ObservableCollection<LocationModel> locationsMaster;
+		private readonly ObservableCollection<LocationModel> locationsMaster;
 
 		/// <summary>
 		/// Private binding property - mutable so user can filter it
 		/// </summary>
-		private ObservableCollection<LocationModel> locationsMutable;
+		private readonly ObservableCollection<LocationModel> locationsMutable;
 
 		/// <summary>
 		/// Binding property
@@ -93,7 +93,12 @@ namespace ShoppingAssistant.Views
 			}
 		}
 
-		public void AddLocationModel(LocationModel model)
+        /// <summary>
+        /// Method to add a LocationModel to the mutable collection
+        /// Replaces the old item if it exists and orders by distance
+        /// </summary>
+        /// <param name="model"></param>
+        private void AddLocationModel(LocationModel model)
 		{
 			for (int i = 0; i <= locationsMutable.Count; i++)
 			{

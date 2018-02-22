@@ -1,39 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using ShoppingAssistant.Models;
-using Xamarin.Forms.Internals;
-using Xamarin.Forms.Xaml;
 
 namespace ShoppingAssistant.APIClasses
 {
     /// <summary>
     /// ShoppingList specific helper class for the API
     /// </summary>
-    class ShoppingListApiHelper
+    internal class ShoppingListApiHelper
     {
-
+        /// <summary>
+        /// API helper member
+        /// </summary>
         private readonly LoginApiHelper helper;
         
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="helper"></param>
         public ShoppingListApiHelper(LoginApiHelper helper)
         {
             this.helper = helper;
         }
-        
-        public async Task<List<ShoppingListModel>> GetShoppingListModelsAsync()
-        {
-            List<ShoppingListModel> lists = await helper.RefreshDataAsync<ShoppingListModel>(helper.BaseUrl + ShoppingListModel.UrlSuffix);
 
-            foreach (var list in lists)
-            {
-                await GetItemQuantityPairModelsAsync(list);
-            }
-
-            return lists;
-        }
-
-        public async Task GetItemQuantityPairModelsAsync(ShoppingListModel list)
+        /// <summary>
+        /// Method to get the ItemQuantityPairModels for a given ShoppingListModel from the API database asynchronously
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private async Task GetItemQuantityPairModelsAsync(ShoppingListModel list)
         {
             try
             {
@@ -50,6 +46,29 @@ namespace ShoppingAssistant.APIClasses
             }
         }
 
+        /// <summary>
+        /// Method to get the ShoppingListModels asynchronously from the API database
+        /// Retrieves the ItemQuantityPairModel before calling back to the invoker of the method
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<ShoppingListModel>> GetShoppingListModelsAsync()
+        {
+            var lists = await helper.RefreshDataAsync<ShoppingListModel>(helper.BaseUrl + ShoppingListModel.UrlSuffix);
+
+            foreach (var list in lists)
+            {
+                await GetItemQuantityPairModelsAsync(list);
+            }
+
+            return lists;
+        }
+
+        /// <summary>
+        /// Method to save a ShoppingListModel to the API database asynchronously
+        /// Saves the ItemQuantityPairModels associated to this ShoppingListModel as well
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public async Task SaveShoppingListModelAsync(ShoppingListModel list)
         {
             try
@@ -77,6 +96,12 @@ namespace ShoppingAssistant.APIClasses
             }
         }
 
+        /// <summary>
+        /// Method to delete an ItemQuantityPairModel from the API database asynchronously
+        /// Returns true if successful, false if not
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public async Task<bool> DeleteItemQuantityPairModelAsync(ItemQuantityPairModel item)
         {
             if (item.RemoteDbId == null) return true;
@@ -84,7 +109,13 @@ namespace ShoppingAssistant.APIClasses
                                                 ItemQuantityPairModel.UrlSuffix + "/" + item.RemoteDbId);
         }
 
-        public async Task<bool> DeleteShoppingListModelAsync<T>(T item) where T : Model
+        /// <summary>
+        /// Method to delete a ShoppingListModel from the API database asynchronously
+        /// Returns true if successful, false if not
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public async Task<bool> DeleteShoppingListModelAsync(ShoppingListModel item)
         {
             if (item.RemoteDbId == null) return false;
             return await helper.DeleteItemAsync(helper.BaseUrl + item.UrlSuffixProperty + "/" + item.RemoteDbId);
@@ -104,12 +135,6 @@ namespace ShoppingAssistant.APIClasses
                 new KeyValuePair<string, string>("email", email),
                 new KeyValuePair<string, string>("slist_id", list.RemoteDbId.ToString())
             });
-
-            //var url = helper.BaseUrl + ShoppingListModel.UrlSuffix + "/" + list.RemoteDbId;
-            //return await helper.PutItemAsync(url, new List<KeyValuePair<string, string>>(1)
-            //{
-            //    new KeyValuePair<string, string>("email", email)
-            //});
         }
     }
 }

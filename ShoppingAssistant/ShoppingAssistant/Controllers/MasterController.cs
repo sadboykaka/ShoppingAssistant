@@ -17,7 +17,7 @@ namespace ShoppingAssistant.Controllers
         /// </summary>
         // private const string BaseApiUrl = "https://rails-tutorial-benhudds.c9users.io/";
         // private const string BaseApiUrl = "https://ancient-mountain-71816.herokuapp.com/";
-        private const string BaseApiUrl = "http://46.101.2.125:5468/";
+        private const string BaseApiUrl = "https://shoppingassistantapi.co.uk/";
 
 
         /// <summary>
@@ -35,11 +35,6 @@ namespace ShoppingAssistant.Controllers
         /// </summary>
         private readonly string localDatabasePath =
             DependencyService.Get<IFileHelper>().GetLocalFilePath(LocalDatabaseBaseName);
-
-        /// <summary>
-        /// Helper for API with login
-        /// </summary>
-        private readonly LoginApiHelper helper;
 
         /// <summary>
         /// Edamam API helper class
@@ -73,7 +68,7 @@ namespace ShoppingAssistant.Controllers
         {
             try
             {
-                helper = new LoginApiHelper(BaseApiUrl);
+                var helper = new LoginApiHelper(BaseApiUrl);
 
                 Items = new SortedSet<string>();
 
@@ -100,6 +95,12 @@ namespace ShoppingAssistant.Controllers
             }
         }
 
+        /// <summary>
+        /// Asynchronous Login method that returns a LoginResponse
+        /// Starts retrieval of shopping lists if successful
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<LoginResponse> Login(UserModel user)
         {
             var response = await LoginController.Login(user);
@@ -111,12 +112,19 @@ namespace ShoppingAssistant.Controllers
                     break;
                 case LoginResponse.InvalidCredentials:
                 case LoginResponse.NoResponse:
+                default:
                     break;
             }
-            
+
             return response;
         }
 
+        /// <summary>
+        /// Asynchronous Register method that returns a LoginResponse
+        /// Starts retrieval of shopping lists if successful
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<LoginResponse> Register(UserModel user)
         {
             var response = await LoginController.Register(user);
@@ -134,10 +142,14 @@ namespace ShoppingAssistant.Controllers
             return response;
         }
 
+        /// <summary>
+        /// Method called when a user is logged out.
+        /// Clears the controller collections
+        /// </summary>
         public void Logout()
         {
-            this.ShoppingListController.ShoppingListModels.Clear();
-            this.LocationController.LocationModels.Clear();
+            ShoppingListController.ShoppingListModels.Clear();
+            LocationController.LocationModels.Clear();
         }
 
     }

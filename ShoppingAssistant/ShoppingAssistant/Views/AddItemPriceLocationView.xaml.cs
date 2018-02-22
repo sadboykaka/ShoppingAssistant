@@ -11,7 +11,7 @@ namespace ShoppingAssistant.Views
 		/// <summary>
 		/// ItemPriceLocationEventHandler on which we callback with new ItemPriceLocationModel
 		/// </summary>1
-		private ItemPriceLocationEventHandler callBack;
+		private readonly ItemPriceLocationEventHandler callBack;
 
 		/// <summary>
 		/// Binding Property

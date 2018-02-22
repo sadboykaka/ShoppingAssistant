@@ -15,8 +15,9 @@ namespace ShoppingAssistant
 	{
         /// <summary>
         /// Boolean indicating if the application is running in the foreground or background
+        /// Default false
         /// </summary>
-	    public static bool Minimised = false;
+	    public static bool Minimised;
 
 		/// <summary>
 		/// Logger reference

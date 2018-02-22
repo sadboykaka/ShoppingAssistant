@@ -59,9 +59,6 @@ namespace ShoppingAssistant.Controllers
                     App.Log.Debug("Login", "Saving credentials for user " + user.Email);
                     await dbHelper.SaveItemsAsync(user);
                     break;
-                // If invalid, return
-                case LoginResponse.InvalidCredentials:
-                    break;
                 // If we cannot connect to the API then we try to log in from the credentials stored in the database
                 case LoginResponse.NoResponse:
                     var localUsers = await dbHelper.GetItemsAsync<UserModel>();
@@ -74,6 +71,10 @@ namespace ShoppingAssistant.Controllers
                         App.Log.Debug("Login", "Logged user " + user.Email + " in from the local database");
                         return LoginResponse.Success;
                     }
+                    break;
+                // If invalid, return
+                case LoginResponse.InvalidCredentials:
+                default:
                     break;
             }
 
@@ -101,6 +102,7 @@ namespace ShoppingAssistant.Controllers
                     break;
                 case LoginResponse.InvalidCredentials:
                 case LoginResponse.NoResponse:
+                default:
                     break;
             }
 

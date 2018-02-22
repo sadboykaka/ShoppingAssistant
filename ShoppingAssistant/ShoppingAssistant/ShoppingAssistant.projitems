@@ -16,7 +16,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\RubyDateParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)APIClasses\ShoppingListAPIHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\LoginController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controllers\NotificationController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\ShoppingListController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\CustomEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DatabaseClasses\DatabaseHelper.cs" />
@@ -31,7 +30,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\GeolocationController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyInterfaces\ILog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\EdamamApiResponse.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\ItemIdModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemPriceLocationModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ItemQuantityPairModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ListOwnerModel.cs" />
@@ -39,7 +37,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\LocationController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Model.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)EventClasses\ItemQuantityPairArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Models\ItemModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\MasterController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ShoppingListModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserModel.cs" />

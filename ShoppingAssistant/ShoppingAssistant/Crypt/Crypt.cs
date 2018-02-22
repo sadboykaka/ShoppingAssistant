@@ -10,6 +10,8 @@ namespace ShoppingAssistant.Crypt
 {
     /// <summary>
     /// Static encryption class
+    /// Implementation by KMullins, April 2014
+    /// https://forums.xamarin.com/discussion/16071/encryption-decryption-in-xamarin
     /// </summary>
     public static class Crypt
     {

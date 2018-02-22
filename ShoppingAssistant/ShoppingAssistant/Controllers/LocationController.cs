@@ -12,19 +12,19 @@ namespace ShoppingAssistant.Controllers
 {
     /// <summary>
     /// Controller class for the LocationModels
-    /// Gets LocationMOdels from the local database and API
+    /// Gets LocationModels from the local database and API
     /// </summary>
     public class LocationController
     {
         /// <summary>
         /// Static reference to database helper class
         /// </summary>
-        private static LocationModelDatabaseHelper databaseHelper;
+        private readonly LocationModelDatabaseHelper databaseHelper;
 
         /// <summary>
         /// Static reference to api helper class
         /// </summary>
-        private static LocationModelAPIHelper apiHelper;
+        private readonly LocationModelApiHelper apiHelper;
 
         /// <summary>
         /// GeolocationController class that gets current location using platofmr specific methods
@@ -32,24 +32,33 @@ namespace ShoppingAssistant.Controllers
         private readonly GeolocationController geolocationController = App.GeolocationController;
 
         /// <summary>
-        /// Collection of LocationModels
+        /// Local database name
         /// </summary>
-        public ObservableCollection<LocationModel> LocationModels { get; private set; }
-
         private string localDatabaseName;
 
-        private string baseApiUrl;
-
+        /// <summary>
+        /// Collection of LocationModels
+        /// </summary>
+        public ObservableCollection<LocationModel> LocationModels { get; }
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="localDatabaseName"></param>
+        /// <param name="baseApiUrl"></param>
+        /// <param name="apiHelperParam"></param>
         public LocationController(string localDatabaseName, string baseApiUrl, ApiHelper apiHelperParam)
         {
             this.localDatabaseName = localDatabaseName;
-            this.baseApiUrl = baseApiUrl;
 
+            // Create the required helpers
             databaseHelper = new LocationModelDatabaseHelper(this.localDatabaseName, true);
-            apiHelper = new LocationModelAPIHelper(baseApiUrl, apiHelperParam);
+            apiHelper = new LocationModelApiHelper(baseApiUrl, apiHelperParam);
 
+            // Create the collection
             LocationModels = new ObservableCollection<LocationModel>();
 
+            // Subscribe to new location events
             geolocationController.NewPositionEvent += NewPositionEventHandler;
             geolocationController.GetCurrentLocation();
             
@@ -65,6 +74,11 @@ namespace ShoppingAssistant.Controllers
             
         }
 
+        /// <summary>
+        /// Event handler for new GPS positions
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private async void NewPositionEventHandler(object sender, PositionEventArgs args)
         {
             try
@@ -72,8 +86,8 @@ namespace ShoppingAssistant.Controllers
                 // Get the location models for the current location
                 AddLocationModels(databaseHelper.GetLocationModels());
                 SaveAndAddLocationModels(await apiHelper.GetLocationModelsAsync(
-                geolocationController.Position.Latitude,
-                geolocationController.Position.Longitude));
+                    geolocationController.Position.Latitude,
+                    geolocationController.Position.Longitude));
             }
             catch (Exception ex)
             {
@@ -81,7 +95,11 @@ namespace ShoppingAssistant.Controllers
             }
         }
 
-        private void SaveAndAddLocationModels(IEnumerable<LocationModel> models)
+        /// <summary>
+        /// Method to save the LocationModels to the local database and add them to the observable collection
+        /// </summary>
+        /// <param name="models"></param>
+        private void SaveAndAddLocationModels(List<LocationModel> models)
         {
             models.ForEach(databaseHelper.SaveLocationModelAsync);
 
@@ -125,7 +143,7 @@ namespace ShoppingAssistant.Controllers
                 if (model.Deleted)
                 {
                     // Delete the item properly without adding it to the collection
-                    this.DeleteModelAsync(model);
+                    DeleteModelAsync(model);
                     break;
                 }
 
@@ -137,11 +155,12 @@ namespace ShoppingAssistant.Controllers
                     model.Longitude);
 
                 // Find the first location model with the same RemoteDbId (if it exists)
-                var oldList = this.LocationModels.FirstOrDefault(l => l.RemoteDbId == model.RemoteDbId);
+                var oldList = LocationModels.FirstOrDefault(l => l.RemoteDbId == model.RemoteDbId);
+                
                 if (oldList == null)
                 {
                     // Insert the list as no list with the same RemoteDbId could be found
-                    this.LocationModels.Add(model);
+                    LocationModels.Add(model);
 
                     // Add all the items to the Items collection
                     model.ItemPriceLocations.Select(i => i.Name).ForEach(App.MasterController.AddItem);
@@ -149,7 +168,7 @@ namespace ShoppingAssistant.Controllers
                 else if (RubyDateParser.Compare(oldList.LastUpdated, model.LastUpdated) < 0)
                 {
                     // Replace the old list with the new if it was last updated more recently
-                    oldList = model;
+                    LocationModels[LocationModels.IndexOf(oldList)] = model;
                 }
             }
         }

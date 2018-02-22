@@ -26,8 +26,10 @@ namespace ShoppingAssistant.DatabaseClasses
         {
             DatabaseAsyncConnection = new SQLiteAsyncConnection(dbPath);
 
-            // Create the user table (if it does not already exist)
+            // Drop tables
             //DatabaseAsyncConnection.DropTableAsync<UserModel>();
+
+            // Create the user table (if it does not already exist)
             DatabaseAsyncConnection.CreateTableAsync<UserModel>(CreateFlags.ImplicitPK | CreateFlags.AutoIncPK).Wait();
         }
 

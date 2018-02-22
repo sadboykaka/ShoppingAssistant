@@ -96,12 +96,12 @@ namespace ShoppingAssistant.APIClasses
             }
         }
 
+        /// <summary>
+        /// Method to parse ingredients in the EdamamResponse given pulling the quantity, measurement and food items out of the concatenated text part.
+        /// </summary>
+        /// <param name="response"></param>
         private void SanitiseEdamamResponse(EdamamResponse response)
         {
-            string text;
-            double quantity;
-            string measure;
-            string food;
             try
             {
                 foreach (var hit in response.Hits)
@@ -109,74 +109,72 @@ namespace ShoppingAssistant.APIClasses
                     foreach (var ing in hit.Recipe.Ingredients)
                     {
                         // Attempt to populate the data fields from the text if they have not been populated by the API
-                        if (ing.Food == null && ing.Measure == null && ing.Quantity == 0.0)
+                        // Skip this iteration if they have been populated
+                        if (ing.Food != null || ing.Measure != null || ing.Quantity != 0.0) continue;
+
+                        // First we want to remove any text within brackets
+                        var text = ing.Text;
+
+
+                        if (text.Any(c => c == '(') && text.Any(c => c == ')'))
                         {
-                            // First we want to remove any text within brackets
-                            text = ing.Text;
+                            // Find start bracket
+                            var start = text.IndexOf('(');
+                            var end = text.LastIndexOf(')');
 
+                            // Remove any text between the brackets
+                            text.Remove(start, end - start);
+                        }
 
-                            if (text.Any(c => c == '(') && text.Any(c => c == ')'))
+                        // Split into constituent parts
+                        var split = text.Split(' ');
+                        string food;
+                        if (double.TryParse(split.First(), out var quantity))
+                        {
+                            var measure = split[1];
+                            food = string.Empty;
+
+                            if (split.Length == 2)
                             {
-                                // Find start bracket
-                                var start = text.IndexOf('(');
-                                var end = text.LastIndexOf(')');
-
-                                // Remove any text between the brackets
-                                text.Remove(start, end - start);
-                            }
-
-                            // Split into constituent parts
-                            var split = text.Split(' ');
-                            if (double.TryParse(split.First(), out quantity))
-                            {
-                                measure = split[1];
-                                food = string.Empty;
-
-                                if (split.Length == 2)
-                                {
-                                    measure = "<unit>";
-                                    food = split[1];
-                                }
-                                else
-                                {
-                                    for (int i = 2; i < split.Length; i++)
-                                    {
-                                        food += split[i] + " ";
-                                    }
-                                }
-
-                                ing.Food = food;
-                                ing.Measure = measure;
-                                ing.Quantity = quantity;
-
+                                measure = "<unit>";
+                                food = split[1];
                             }
                             else
                             {
-                                // Check for fractional first value, otherwise assume the entire string is the item text
-                                var first = split.First().Split('/');
-                                double firstNum;
-                                double secondNum;
-                                if (double.TryParse(first.First(), out firstNum) &&
-                                    double.TryParse(first.Last(), out secondNum))
+                                for (var i = 2; i < split.Length; i++)
                                 {
-                                    food = "";
-                                    for (int i = 2; i < split.Length; i++)
-                                    {
-                                        food += split[i] + " ";
-                                    }
-                                    ing.Food = food;
-                                    ing.Quantity = firstNum / secondNum;
-                                    ing.Measure = split[1];
-                                }
-                                else
-                                {
-                                    ing.Food = text;
-                                    ing.Measure = "grams";
-                                    ing.Quantity = Math.Round(ing.Weight, 0);
-                                    ing.Quantity = ing.Weight;
+                                    food += split[i] + " ";
                                 }
                             }
 
+                            ing.Food = food;
+                            ing.Measure = measure;
+                            ing.Quantity = quantity;
+
+                        }
+                        else
+                        {
+                            // Check for fractional first value, otherwise assume the entire string is the item text
+                            var first = split.First().Split('/');
+                            if (double.TryParse(first.First(), out var firstNum) &&
+                                double.TryParse(first.Last(), out var secondNum))
+                            {
+                                food = "";
+                                for (var i = 2; i < split.Length; i++)
+                                {
+                                    food += split[i] + " ";
+                                }
+                                ing.Food = food;
+                                ing.Quantity = firstNum / secondNum;
+                                ing.Measure = split[1];
+                            }
+                            else
+                            {
+                                ing.Food = text;
+                                ing.Measure = "grams";
+                                ing.Quantity = Math.Round(ing.Weight, 0);
+                                ing.Quantity = ing.Weight;
+                            }
                         }
                     }
                 }
